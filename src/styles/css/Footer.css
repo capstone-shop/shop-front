@@ -1,0 +1,90 @@
+.footer{
+    background: #303740;
+    padding: 0;
+    margin: 0 auto;
+    /*position: fixed;*/
+    /*left: 0;*/
+    /*bottom: 0;*/
+    width: 100%;
+}
+
+.footer-wrapper {
+    display: flex;
+    max-width: 1152px;
+    margin: 0 auto;
+    flex-direction: column;
+}
+
+.footer-container{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #444;
+    padding: 32px 20px;
+}
+
+.footer-container2{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #333; /* 아래에만 border를 추가합니다. */
+    padding: 32px 20px;
+}
+
+.social-links{
+    list-style-type: none;
+    color: white;
+    font-size: 14px;
+
+}
+
+.social-links > h4{
+    line-height: 1.43;
+    font-size: 14px;
+}
+
+.social-links > li{
+    margin-bottom: 7px
+}
+
+.social-links > li > a{
+    text-decoration: none;
+    font-size: 14px;
+    color: #a4a4a4;
+}
+
+.company-info{
+    color: #a4a4a4;
+    font-size: 11px;
+    flex-direction: column;
+}
+
+.company-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.company-list ul li {
+    position: relative;
+    display: inline-block;
+    margin: 0 8px;
+    font-size: 12px;
+}
+
+.company-list ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.company-list ul li {
+    position: relative;
+    padding-left: 20px; /* | 와 텍스트 사이의 간격 조절 */
+    line-height: 1.5; /* 텍스트의 줄 높이 조절 */
+    vertical-align: middle; /* 세로 정렬 */
+}
+
+.company-list ul li::before {
+    content: "|"; /* 대체할 문자나 모양 */
+    position: absolute;
+    left: 0;
+}

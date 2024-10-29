@@ -1,13 +1,16 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/css/Header.css';
+import { Link } from 'react-router-dom';
 function Header() {
   return (
     <div className={'div0'}>
       <div className={'div1'}>
         <div className={'div1-1'}>
           <img src={''} alt={'회사 로고'} />
-          <span>회사이름</span>
+          <Link className={'form-link'} to="/">
+            <span>회사이름</span>
+          </Link>
         </div>
         <div className={'div1-2'}>
           <input
@@ -28,36 +31,40 @@ function Header() {
           </button>
         </div>
         <div className={'div1-3'}>
-          <a href={''}>회원가입</a>
-          <a href={'signIn'}>로그인</a>
+          <Link className={'form-link'} to="/signUp">
+            <span>회원가입</span>
+          </Link>
+          <Link className={'form-link'} to="/signIn">
+            <span>로그인</span>
+          </Link>
         </div>
       </div>
       <div className={'div2'}>
         <div>
           <span>카테고리</span>
         </div>
-        <div>
-          <li>
-            <span>
-              <a href={''}>목록 1</a>
-            </span>
-          </li>
-          <li>
-            <span>
-              <a href={''}>목록 2</a>
-            </span>
-          </li>
-          <li>
-            <span>
-              <a href={''}>목록 3</a>
-            </span>
-          </li>
-          <li>
-            <span>
-              <a href={''}>목록 4</a>
-            </span>
-          </li>
-        </div>
+        {/*<div>*/}
+        {/*  <li>*/}
+        {/*    <span>*/}
+        {/*      <a href={''}>목록 1</a>*/}
+        {/*    </span>*/}
+        {/*  </li>*/}
+        {/*  <li>*/}
+        {/*    <span>*/}
+        {/*      <a href={''}>목록 2</a>*/}
+        {/*    </span>*/}
+        {/*  </li>*/}
+        {/*  <li>*/}
+        {/*    <span>*/}
+        {/*      <a href={''}>목록 3</a>*/}
+        {/*    </span>*/}
+        {/*  </li>*/}
+        {/*  <li>*/}
+        {/*    <span>*/}
+        {/*      <a href={''}>목록 4</a>*/}
+        {/*    </span>*/}
+        {/*  </li>*/}
+        {/*</div>*/}
       </div>
     </div>
   );
