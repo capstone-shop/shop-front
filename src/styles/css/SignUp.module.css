@@ -1,59 +1,188 @@
-/* SignUp.module.css */
+/*!* SignUp.module.css *!*/
 
-.formContainer {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+/*.formContainer {*/
+/*    max-width: 600px;*/
+/*    margin: 0 auto;*/
+/*    padding: 20px;*/
+/*    border: 1px solid #e0e0e0;*/
+/*    border-radius: 8px;*/
+/*}*/
+
+/*.formGroup {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    margin-bottom: 15px;*/
+/*}*/
+
+/*.formGroup label {*/
+/*    flex: 0 0 120px; !* Label의 너비를 고정 *!*/
+/*    font-weight: bold;*/
+/*    color: rgb(51, 51, 51);*/
+/*    font-size: 14px;*/
+/*}*/
+
+/*.inputField {*/
+/*    flex: 1; !* Input이 남은 공간을 차지 *!*/
+/*    padding: 8px;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 4px;*/
+/*    font-size: 14px;*/
+/*}*/
+
+/*.radioGroup, .checkboxGroup {*/
+/*    display: flex;*/
+/*    gap: 10px;*/
+/*    margin-top: 5px;*/
+/*}*/
+
+/*.errorMessage {*/
+/*    color: #d9534f;*/
+/*    font-size: 12px;*/
+/*    margin-top: 5px;*/
+/*}*/
+
+/*.submitButton {*/
+/*    width: 50%;*/
+/*    padding: 10px;*/
+/*    font-size: 16px;*/
+/*    font-weight: bold;*/
+/*    background-color: #6a1b9a;*/
+/*    color: #fff;*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    cursor: pointer;*/
+/*    margin-top: 15px;*/
+/*}*/
+
+/*.submitButton:hover {*/
+/*    background-color: #4a148c;*/
+/*}*/
+
+/* SignUpForm.module.css */
+
+.signUpFormContainer {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 상하 정렬 */
+    flex-wrap: wrap; /* 폭이 넘치는 요소를 wrap 처리 */
+    min-width: 1050px;
+    margin-top: 90px;
+    margin-bottom: 60px;
+    background-color: rgb(255, 255, 255);
 }
 
-.formGroup {
+.signUpGroup {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
 }
 
-.formGroup label {
+.signUpGroup label {
     flex: 0 0 120px; /* Label의 너비를 고정 */
     font-weight: bold;
     color: rgb(51, 51, 51);
     font-size: 14px;
 }
 
-.inputField {
-    flex: 1; /* Input이 남은 공간을 차지 */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+.signUpRequired {
+    color: rgb(238, 106, 123);
 }
 
-.radioGroup, .checkboxGroup {
-    display: flex;
-    gap: 10px;
-    margin-top: 5px;
-}
-
-.errorMessage {
-    color: #d9534f;
-    font-size: 12px;
-    margin-top: 5px;
-}
-
-.submitButton {
-    width: 50%;
+.signUpInput,
+.signUpSocialButton {
+    width: 350px;
+    max-width: 400px;
+    height: 50px;
     padding: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #6a1b9a;
-    color: #fff;
-    border: none;
+    font-size: 15px;
     border-radius: 4px;
-    cursor: pointer;
-    margin-top: 15px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+    border: 1px solid #ccc;
 }
 
-.submitButton:hover {
-    background-color: #4a148c;
+.signUpAddressButton {
+    display: block; /* 요소가 가운데 정렬되도록 추가 */
+    width: 100%;    /* 버튼을 가득 채우고, max-width로 제한 */
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    margin: 10px auto;
+
+    font-size: 14px;
+    font-weight: bold;
+    color: rgb(241, 134, 60);
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(241, 134, 60);
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+}
+
+.signUpAddressButton:focus,
+.signUpAddressButton:active {
+    outline: none;
+    box-shadow: none;
+}
+
+.signUpButton {
+    background-color: rgb(241, 134, 60);
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    width: 200px;
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+}
+
+.signUpFlexContainer {
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.signUpBirthGroup{
+    width: 100%; /* 기본 너비를 100%로, max-width로 제한 */
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 수평 중앙 정렬 */
+    border: 1px solid #ccc;
+    display: flex; /* 내부 요소 수직 정렬을 위한 flex */
+    align-items: center; /* flex item 수직 중앙 정렬 */
+    justify-content: center; /* 내부 내용 중앙 정렬 */
+}
+
+.signUpBirthInput {
+    width: 60px;
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 4px;
+    margin-right: 4px;
+    border: none;
+    outline: none;
+}
+
+.birthInput::placeholder {
+    color: #aaa;
+}
+
+/* 구분자 스타일 */
+.separator {
+    font-size: 16px;
+    color: #555;
 }

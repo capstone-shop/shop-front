@@ -53,7 +53,7 @@ function SignUp() {
   }, [allChecked, setValue]);
 
   return (
-    <div>
+    <div className={styles.signUpFormContainer}>
       <div>
         <span>회원가입</span>
       </div>
@@ -63,13 +63,16 @@ function SignUp() {
           className={styles.formContainer}
         >
           {/* 아이디 */}
-          <div className={styles.formGroup}>
-            <label>아이디*</label>
+          <div className={styles.signUpGroup}>
+            <label>
+              아이디
+              <span className={styles.signUpRequired}>*</span>
+            </label>
             <input
               type="text"
               {...register('username', { required: '아이디를 입력해주세요.' })}
               placeholder="아이디를 입력해주세요"
-              className={styles.inputField}
+              className={styles.signUpInput}
             />
             {errors.username && (
               <p className={styles.errorMessage}>{errors.username.message}</p>
@@ -77,15 +80,18 @@ function SignUp() {
           </div>
 
           {/* 비밀번호 */}
-          <div className={styles.formGroup}>
-            <label>비밀번호*</label>
+          <div className={styles.signUpGroup}>
+            <label>
+              비밀번호
+              <span className={styles.signUpRequired}>*</span>
+            </label>
             <input
               type="password"
               {...register('password', {
                 required: '비밀번호를 입력해주세요.',
               })}
               placeholder="비밀번호를 입력해주세요"
-              className={styles.inputField}
+              className={styles.signUpInput}
             />
             {errors.password && (
               <p className={styles.errorMessage}>{errors.password.message}</p>
@@ -93,8 +99,11 @@ function SignUp() {
           </div>
 
           {/* 비밀번호 확인 */}
-          <div className={styles.formGroup}>
-            <label>비밀번호 확인*</label>
+          <div className={styles.signUpGroup}>
+            <label>
+              비밀번호 확인
+              <span className={styles.signUpRequired}>*</span>
+            </label>
             <input
               type="password"
               {...register('confirmPassword', {
@@ -104,7 +113,7 @@ function SignUp() {
                   '비밀번호가 일치하지 않습니다.',
               })}
               placeholder="비밀번호를 한번 더 입력해주세요"
-              className={styles.inputField}
+              className={styles.signUpInput}
             />
             {errors.confirmPassword && (
               <p className={styles.errorMessage}>
@@ -114,13 +123,16 @@ function SignUp() {
           </div>
 
           {/* 이름 */}
-          <div className={styles.formGroup}>
-            <label>이름*</label>
+          <div className={styles.signUpGroup}>
+            <label>
+              이름
+              <span className={styles.signUpRequired}>*</span>
+            </label>
             <input
               type="text"
               {...register('name', { required: '이름을 입력해주세요.' })}
               placeholder="이름을 입력해주세요"
-              className={styles.inputField}
+              className={styles.signUpInput}
             />
             {errors.name && (
               <p className={styles.errorMessage}>{errors.name.message}</p>
@@ -128,13 +140,16 @@ function SignUp() {
           </div>
 
           {/* 이메일 */}
-          <div className={styles.formGroup}>
-            <label>이메일*</label>
+          <div className={styles.signUpGroup}>
+            <label>
+              이메일
+              <span className={styles.signUpRequired}>*</span>
+            </label>
             <input
               type="text"
               {...register('email', { required: '이메일을 입력해주세요.' })}
               placeholder="예: marketkurly"
-              className={styles.inputField}
+              className={styles.signUpInput}
             />
             {errors.email && (
               <p className={styles.errorMessage}>{errors.email.message}</p>
@@ -142,8 +157,11 @@ function SignUp() {
           </div>
 
           {/* 휴대폰 */}
-          <div className={styles.formGroup}>
-            <label>휴대폰*</label>
+          <div className={styles.signUpGroup}>
+            <label>
+              휴대폰
+              <span className={styles.signUpRequired}>*</span>
+            </label>
             <input
               type="text"
               {...register('phone', {
@@ -151,7 +169,7 @@ function SignUp() {
                 pattern: { value: /^[0-9]+$/, message: '숫자만 입력해주세요.' },
               })}
               placeholder="숫자만 입력해주세요."
-              className={styles.inputField}
+              className={styles.signUpInput}
             />
             {errors.phone && (
               <p className={styles.errorMessage}>{errors.phone.message}</p>
@@ -159,9 +177,12 @@ function SignUp() {
           </div>
 
           {/* 주소 */}
-          <div className={styles.formGroup}>
-            <label>주소*</label>
-            <button type="button" className={styles.inputField}>
+          <div className={styles.signUpGroup}>
+            <label>
+              주소
+              <span className={styles.signUpRequired}>*</span>
+            </label>
+            <button type="button" className={styles.signUpAddressButton}>
               주소 검색
             </button>
             {/*<input*/}
@@ -176,7 +197,7 @@ function SignUp() {
           </div>
 
           {/* 성별 */}
-          <div className={styles.formGroup}>
+          <div className={styles.signUpGroup}>
             <label>성별</label>
             <div className={styles.radioGroup}>
               <label>
@@ -197,9 +218,39 @@ function SignUp() {
             </div>
           </div>
 
+          {/* 생년월일 */}
+          <div className={styles.signUpGroup}>
+            <label>생년월일</label>
+            <div className={styles.signUpBirthGroup}>
+              <input
+                type="text"
+                maxLength={4}
+                placeholder="YYYY"
+                className={styles.signUpBirthInput}
+              />
+              <span className={styles.separator}>/</span>
+              <input
+                type="text"
+                maxLength={2}
+                placeholder="MM"
+                className={styles.signUpBirthInput}
+              />
+              <span className={styles.separator}>/</span>
+              <input
+                type="text"
+                maxLength={2}
+                placeholder="DD"
+                className={styles.signUpBirthInput}
+              />
+            </div>
+          </div>
+
           {/* 약관 동의 */}
-          <div className={styles.formGroup}>
-            <label>이용약관 동의*</label>
+          <div className={styles.signUpGroup}>
+            <label>
+              이용약관동의
+              <span>*</span>
+            </label>
             <div className={styles.checkboxGroup}>
               <input
                 type="checkbox"
@@ -220,9 +271,11 @@ function SignUp() {
           </div>
 
           {/* 가입하기 버튼 */}
-          <button type="submit" className={styles.submitButton}>
-            가입하기
-          </button>
+          <div className={styles.signUpGroup}>
+            <button type="submit" className={styles.signUpButton}>
+              가입하기
+            </button>
+          </div>
         </form>
       </div>
     </div>
