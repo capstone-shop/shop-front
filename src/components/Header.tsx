@@ -82,7 +82,7 @@ function Header() {
           <input
             className="search-header-input"
             type="text"
-            placeholder="검색어를 입력해주세요"
+            placeholder="검색어를 입력"
           />
           <button className="search-header-btn">
             <svg
