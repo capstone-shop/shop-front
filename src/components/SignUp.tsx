@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from '../styles/css/SignUp.module.css';
+import DaumPost from './DaumPost';
 
 interface SignUpFormInputs {
   username: string;
@@ -52,6 +53,9 @@ function SignUp() {
     setValue('ageConfirmation', newCheckedState);
   }, [allChecked, setValue]);
 
+  const [address, setAddress] = useState(''); // 주소
+  const [extraAddress, setExtraAddress] = useState(''); // 나머지 주소
+
   return (
     <div className={styles.signUpFormContainer}>
       <div className={styles.signUp}>
@@ -92,9 +96,9 @@ function SignUp() {
               <input
                 type="text"
                 {...register('username', {
-                  required: '아이디를 입력해주세요.',
+                  required: '비밀번호를 입력해주세요.',
                 })}
-                placeholder="아이디를 입력해주세요"
+                placeholder="비밀번호를 입력해주세요"
                 className={styles.signUpInput}
               />
             </div>
@@ -115,7 +119,7 @@ function SignUp() {
                 {...register('username', {
                   required: '아이디를 입력해주세요.',
                 })}
-                placeholder="아이디를 입력해주세요"
+                placeholder="비밀번호를 한번 더 입력해주세요"
                 className={styles.signUpInput}
               />
             </div>
@@ -134,9 +138,9 @@ function SignUp() {
               <input
                 type="text"
                 {...register('username', {
-                  required: '아이디를 입력해주세요.',
+                  required: '이름을 입력해주세요.',
                 })}
-                placeholder="아이디를 입력해주세요"
+                placeholder="이름을 입력해주세요"
                 className={styles.signUpInput}
               />
             </div>
@@ -155,9 +159,9 @@ function SignUp() {
               <input
                 type="text"
                 {...register('username', {
-                  required: '아이디를 입력해주세요.',
+                  required: '이메일을 입력해주세요.',
                 })}
-                placeholder="아이디를 입력해주세요"
+                placeholder="이메일을 입력해주세요"
                 className={styles.signUpInput}
               />
             </div>
@@ -176,9 +180,9 @@ function SignUp() {
               <input
                 type="text"
                 {...register('username', {
-                  required: '아이디를 입력해주세요.',
+                  required: '숫자만 입력해주세요.',
                 })}
-                placeholder="아이디를 입력해주세요"
+                placeholder="숫자만 입력해주세요."
                 className={styles.signUpInput}
               />
             </div>
@@ -194,7 +198,13 @@ function SignUp() {
               </label>
             </div>
             <div className={styles.signUpAddressButton}>
-              <button type="button">주소 검색</button>
+              <div>
+                <DaumPost setAddress={setAddress} />
+              </div>
+              <div>
+                {/* DaumPost 컴포넌트에 setAddress 함수를 전달 */}
+                <input type="text" value={address} readOnly />
+              </div>
             </div>
             <div className={styles.emptySpace}></div>
           </div>
@@ -204,24 +214,45 @@ function SignUp() {
             <div className={styles.labelContainer}>
               <label>성별</label>
             </div>
-            <div className={styles.radioGroup}>
-              <label>
-                <input type="radio" value="남자" {...register('gender')} /> 남자
+            <div className={styles.signUpRadioGroup}>
+              {/* 남자 */}
+              <input
+                type="radio"
+                id="male"
+                value="남자"
+                {...register('gender')}
+                className={styles.signUpRadioInput}
+              />
+              <label htmlFor="male" className={styles.signUpRadioLabel}>
+                남자
               </label>
-              <label>
-                <input type="radio" value="여자" {...register('gender')} /> 여자
+
+              {/* 여자 */}
+              <input
+                type="radio"
+                id="female"
+                value="여자"
+                {...register('gender')}
+                className={styles.signUpRadioInput}
+              />
+              <label htmlFor="female" className={styles.signUpRadioLabel}>
+                여자
               </label>
-              <label>
-                <input
-                  type="radio"
-                  value="선택안함"
-                  {...register('gender')}
-                  defaultChecked
-                />{' '}
+
+              {/* 선택안함 */}
+              <input
+                type="radio"
+                id="none"
+                value="선택안함"
+                {...register('gender')}
+                defaultChecked
+                className={styles.signUpRadioInput}
+              />
+              <label htmlFor="none" className={styles.signUpRadioLabel}>
                 선택안함
               </label>
             </div>
-            <div></div>
+            <div className={styles.emptySpace}></div>
           </div>
 
           {/* 생년월일 */}
@@ -259,25 +290,33 @@ function SignUp() {
             <div className={styles.labelContainer}>
               <label>
                 이용약관동의
-                <span>*</span>
+                <span className={styles.signUpRequired}>*</span>
               </label>
             </div>
             <div className={styles.checkboxGroup}>
+              {/* 전체 동의 체크박스 */}
               <input
                 type="checkbox"
+                id="allCheck" // id 추가
                 checked={allChecked}
                 onChange={handleAllCheck}
               />
-              <span>전체 동의합니다.</span>
+              <label htmlFor="allCheck">
+                <span>전체 동의합니다.</span>
+              </label>
             </div>
             <div>
+              {/* 이용약관 동의 체크박스 */}
               <input
                 type="checkbox"
+                id="termsOfService" // id 추가
                 {...register('termsOfService', {
                   required: '이용약관에 동의해야 합니다.',
                 })}
               />
-              <span>이용약관 동의 (필수)</span>
+              <label htmlFor="termsOfService">
+                <span>이용약관 동의</span>
+              </label>
             </div>
             <div></div>
           </div>
