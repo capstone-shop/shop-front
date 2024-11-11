@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from '../styles/css/SignUp.module.css';
 import DaumPost from './DaumPost';
+import { signUp } from '../api/Utils';
 
 interface SignUpFormInputs {
   username: string;
@@ -55,6 +56,17 @@ function SignUp() {
 
   const [address, setAddress] = useState(''); // 주소
   const [extraAddress, setExtraAddress] = useState(''); // 나머지 주소
+
+  const handleSignUp = async (formData: SignUpFormInputs) => {
+    try {
+      const response = await signUp(formData);
+      console.log('회원가입 성공:', response.message);
+      // 회원가입 성공 시 추가 작업 (예: 로그인 페이지로 리디렉트)
+    } catch (error) {
+      console.error('회원가입 실패:', error);
+      // 에러 메시지 사용자에게 표시
+    }
+  };
 
   return (
     <div className={styles.signUpFormContainer}>

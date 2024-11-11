@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/css/SignIn.css';
-import { Link } from 'react-router-dom';
-import { signIn } from '../api/Auth';
+import { Link, useNavigate } from 'react-router-dom';
+import { signIn } from '../api/Utils';
 import {
   NAVER_AUTH_URL,
   GOOGLE_AUTH_URL,
@@ -10,25 +10,38 @@ import {
 } from '../constants/constant';
 
 function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState<string | null>(null);
 
-  // 로그인 핸들러
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault(); // 기본 폼 제출 동작 방지
+    e.preventDefault();
 
     try {
-      setError(null); // 에러 메시지 초기화
-      const response = await signIn(email, password);
+      setError(null);
 
-      // 성공적으로 로그인했을 때 토큰을 로컬 스토리지에 저장
+      // 로그인 요청
+      const response = await signIn(formData);
+
+      // 토큰을 로컬 스토리지에 저장
       localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
+      if (response.refreshToken) {
+        localStorage.setItem('refreshToken', response.refreshToken);
+      }
 
       alert('로그인 성공!');
+      // 로그인 성공 후 리디렉션
+      navigate('/'); // 경로를 navigate 함수에 인자로 넘김
     } catch (err) {
-      // 에러 메시지를 설정하고 콘솔에 전체 에러 출력
+      // 에러 처리
       const message =
         (err as Error).message ||
         '로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.';
@@ -38,7 +51,7 @@ function SignIn() {
   };
 
   const handleSocialLogin = (url: string) => {
-    window.location.href = url; // 해당 URL로 페이지 이동
+    window.location.href = url;
   };
 
   return (
@@ -52,18 +65,19 @@ function SignIn() {
           <div>
             <input
               className="form-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)} // 이메일 입력 상태 업데이트
-              type="email" // type을 email로 설정
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
               placeholder="아이디(이메일)를 입력해주세요"
             />
           </div>
           <div>
             <input
               className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)} // 비밀번호 입력 상태 업데이트
               type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
               placeholder="비밀번호를 입력해주세요"
             />
           </div>

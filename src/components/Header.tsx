@@ -3,7 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/css/Header.css';
 import { Link } from 'react-router-dom';
 
-function Header() {
+// `Header` 컴포넌트에 전달되는 props의 타입 정의
+interface HeaderProps {
+  authenticated: boolean; // 로그인 상태를 나타냄
+  onLogout: () => void; // 로그아웃 함수
+}
+
+function Header({ authenticated, onLogout }: HeaderProps) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -96,13 +102,25 @@ function Header() {
             </svg>
           </button>
         </div>
+        {/* 로그인/로그아웃 및 기타 링크 */}
         <div className="div1-3">
-          <Link className="form-link" to="/signUp">
-            <span>회원가입</span>
+          <Link className="form-link" to="/ProductSale">
+            <span>판매하기</span>
           </Link>
-          <Link className="form-link" to="/signIn">
-            <span>로그인</span>
-          </Link>
+          {authenticated ? (
+            <button className="form-link" onClick={onLogout}>
+              로그아웃
+            </button>
+          ) : (
+            <>
+              <Link className="form-link" to="/signUp">
+                <span>회원가입</span>
+              </Link>
+              <Link className="form-link" to="/signIn">
+                <span>로그인</span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
       <div className="div2">

@@ -10,8 +10,7 @@
     position: relative;
     width: 1050px; /* 부모 요소의 너비를 전체로 설정 */
     height: 100px;
-    margin-left: 40px;
-    margin-right: 40px;
+    margin: 0 auto;
     padding: 20px;
     letter-spacing: -0.3px;
     display: flex;
@@ -22,8 +21,8 @@
 }
 
 .div1 > * {
-    padding-left: 70px;
-    padding-right: 70px;
+    padding-left: 40px;
+    padding-right: 40px;
 }
 
 .div1-1 {
