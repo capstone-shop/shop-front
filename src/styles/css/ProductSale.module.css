@@ -1,0 +1,49 @@
+.productSaleFormContainer {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 상하 정렬 */
+    flex-wrap: wrap; /* 폭이 넘치는 요소를 wrap 처리 */
+    min-width: 1050px;
+    margin-top: 90px;
+    margin-bottom: 60px;
+    background-color: rgb(255, 255, 255);
+}
+
+.productSale {
+    width: 100%;
+    line-height: 35px;
+    text-align: center;
+    letter-spacing: -1px;
+    color: #333;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.productSaleSubContainer {
+    width: 640px;
+    margin: 0 auto;
+}
+
+.radioItem {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.radioInput {
+    margin-right: 10px;
+    margin-top: 4px; /* 라디오 버튼을 텍스트와 수직 정렬 */
+}
+
+.radioLabel {
+    font-weight: bold;
+    color: #333;
+}
+
+.radioDescription {
+    margin-left: 22px;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 4px;
+}

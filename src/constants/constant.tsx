@@ -1,5 +1,5 @@
 // 백엔드 URL
-export const API_BASE_URL = 'http://localhost:8080';
+export const API_BASE_URL = 'https://api.induk.shop';
 // 토큰 관련 상수
 export const ACCESS_TOKEN = 'accessToken';
 export const REFRESH_TOKEN = 'refreshToken';

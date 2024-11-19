@@ -1,0 +1,36 @@
+.login {
+    width: 500px; /* 너비를 키웁니다 */
+    padding: 20px; /* 패딩 추가 */
+    text-align: center;
+    margin: 200px auto;
+    box-sizing: border-box; /* 박스 사이징을 border-box로 설정 */
+}
+
+.login input {
+    width: 100%; /* 입력 필드를 박스 전체 너비로 설정 */
+    padding: 20px; /* 패딩 추가 */
+    margin: 10px 0; /* 입력 필드 사이의 마진 추가 */
+    border: 1px solid #ccc; /* 테두리 설정 */
+    border-radius: 5px; /* 입력 필드 모서리를 둥글게 */
+    box-sizing: border-box; /* border-box 모델 적용 */
+}
+
+.login button {
+    width: 100%; /* 버튼을 박스 전체 너비로 설정 */
+    padding: 10px; /* 패딩 추가 */
+    border: none; /* 기본 테두리 제거 */
+    border-radius: 5px; /* 모서리를 둥글게 */
+    background-color: #333; /* 버튼 색상 */
+    color: white; /* 글자 색상 */
+    font-size: 16px; /* 글자 크기 */
+    cursor: pointer; /* 커서 포인터로 변경 */
+}
+
+.login button:hover {
+    background-color: #555; /* 호버 시 버튼 색상 변화 */
+}
+.login a{
+    display: block; /* 링크를 블록 요소로 설정하여 줄 바꿈 */
+    margin: 10px 0; /* 버튼과 링크 사이의 마진 추가 */
+    color: #333; /* 링크 색상 */
+}

@@ -1,5 +1,6 @@
 // 상수 및 외부 모듈 임포트
 import { ACCESS_TOKEN, API_BASE_URL } from '../constants/constant';
+import exp from 'constants';
 
 // 인터페이스 정의
 interface RequestOptions extends RequestInit {
@@ -46,6 +47,13 @@ interface SignUpRequest {
 interface SignUpResponse {
   success: boolean; // 요청 성공 여부
   message: string; // 응답 메시지 (예: '회원가입이 완료되었습니다.')
+}
+
+// 어드민 카테고리 응답 타입
+interface AdminCategory {
+  id: number;
+  title: string;
+  isLeaf: boolean;
 }
 
 // request 함수: 주어진 옵션을 사용하여 HTTP 요청을 보내고, 응답을 처리
@@ -146,6 +154,24 @@ export function getCurrentUser(): Promise<any> {
       );
       return Promise.reject(
         new Error('현재 사용자 정보를 불러오는 중 문제가 발생했습니다.')
+      );
+    });
+}
+
+// Admin 카테고리 조회 요청 함수
+
+export function getAdminCategory() {
+  return request({
+    url: `${API_BASE_URL}/api/v1/category`,
+    method: 'GET',
+  })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('카테고리 정보를 불러오는 중 오류가 발생했습니다:', error);
+      return Promise.reject(
+        new Error('카테고리 정보를 불러오는 중 문제가 발생했습니다.')
       );
     });
 }
