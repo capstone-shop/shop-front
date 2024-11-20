@@ -1,14 +1,15 @@
 import React from 'react';
-import '../styles/header.css';
 import { Link } from 'react-router-dom';
+
+import styles from '../styles/header.module.css';
 
 function AdminHeader() {
   return (
-    <div className="header">
+    <div className={styles.header}>
       <h3>로고 이미지</h3>
-      <div className="header-right">
+      <div className={styles.headerRight}>
         <span>사용자명</span>
-        <Link to="/">
+        <Link to="../">
           <span>쇼핑몰 가기</span>
         </Link>
         <span></span>
