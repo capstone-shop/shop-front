@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/css/Header.css';
+import '../styles/css/Header.module.css';
 import { Link } from 'react-router-dom';
+import styles from '../styles/css/Header.module.css';
 
 // `Header` 컴포넌트에 전달되는 props의 타입 정의
 interface HeaderProps {
@@ -76,21 +76,21 @@ function Header({ authenticated, onLogout }: HeaderProps) {
   ];
 
   return (
-    <div className="div0">
-      <div className="div1">
-        <div className="div1-1">
+    <div className={styles.HeaderContainer}>
+      <div className={styles.HeaderSubContainer}>
+        <div className="">
           <img src={''} alt="회사 로고" />
           <Link className="form-link" to="/">
             <span>회사이름</span>
           </Link>
         </div>
-        <div className="div1-2">
+        <div className={styles.HeaderSearch}>
           <input
-            className="search-header-input"
+            className={styles.HeaderSearchInput}
             type="text"
             placeholder="검색어를 입력"
           />
-          <button className="search-header-btn">
+          <button className={styles.HeaderSearchBtn}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -103,7 +103,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
           </button>
         </div>
         {/* 로그인/로그아웃 및 기타 링크 */}
-        <div className="div1-3">
+        <div className="">
           <Link className="form-link" to="/ProductSale">
             <span>판매하기</span>
           </Link>
@@ -123,7 +123,8 @@ function Header({ authenticated, onLogout }: HeaderProps) {
           )}
         </div>
       </div>
-      <div className="div2">
+      {/* 헤더 카테고리 */}
+      <div className={styles.HeaderCategory}>
         <div
           style={{
             display: 'flex',

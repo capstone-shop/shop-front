@@ -11,39 +11,240 @@
 
 .productSale {
     width: 100%;
+    margin-bottom: 50px;
+    font-size: 28px;
     line-height: 35px;
+    font-weight: 500;
     text-align: center;
     letter-spacing: -1px;
     color: #333;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-bottom: 20px;
 }
 
 .productSaleSubContainer {
-    width: 640px;
+    width: 1050px;
     margin: 0 auto;
 }
 
+.productSaleGroup {
+    display: inline-flex;
+    width: 100%;
+}
+
+.productSaleGroup .labelContainer {
+    flex: 0 0 139px; /* Label의 너비를 고정 */
+    height: 100%;
+    font-weight: bold;
+    color: rgb(51, 51, 51);
+    font-size: 14px;
+}
+
+.productSaleDivider{
+    width: 100%;
+    height: 1px;
+    background-color: #efefef;
+    margin: 20px 0;
+}
+
+/* 이미지 등록 버튼 */
+
+.uploadContainer {
+    width: 150px;
+    height: 150px;
+    position: relative;
+}
+
+.uploadButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.cameraIcon {
+    width: 40px;
+    height: 40px;
+    color: #ccc;
+    margin-bottom: 8px;
+}
+
+.previewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* 이미지 등록 버튼 */
+
+/* 상품 입력 Input */
+.inputContainer {
+    position: relative;
+    width: 100%;
+}
+
+.inputField {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #252525;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.inputField::placeholder {
+    color: #595959;
+}
+/* 상품 입력 Input */
+
+/* 상품 설명 입력 Textarea */
+.textAreaContainer {
+    position: relative;
+    width: 100%;
+}
+
+.textAreaField {
+    width: 100%;
+    height: 120px; /* 텍스트 영역 높이 */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #626262;
+    resize: none; /* 사용자가 크기 조절 불가 */
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.textAreaField::placeholder {
+    color: #595959;
+    font-size: 13px;
+}
+/* 상품 설명 입력 Textarea */
+
+/* 상품 가격 입력 */
+.priceInput {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0 12px;
+    height: 40px;
+}
+
+.priceInputField {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background-color: transparent;
+    color: #595959;
+}
+
+.priceInputField::placeholder {
+    color: #595959;
+}
+
+.priceInputUnit {
+    margin-left: 8px;
+    color: #595959;
+    font-size: 14px;
+}
+
+
+/* 상품 가격 입력 */
+
+/* 라디오 그룹 전체 */
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 개별 라디오 항목 */
 .radioItem {
     display: flex;
-    align-items: flex-start;
-    margin-bottom: 15px;
+    align-items: center;
+    gap: 8px;
 }
 
-.radioInput {
-    margin-right: 10px;
-    margin-top: 4px; /* 라디오 버튼을 텍스트와 수직 정렬 */
-}
-
-.radioLabel {
+/* 제목 (왼쪽 텍스트) */
+.radioText {
+    flex: 0 0 139px; /* Label의 너비를 고정 */
+    height: 100%;
     font-weight: bold;
-    color: #333;
+    color: rgb(51, 51, 51);
+    font-size: 14px;
 }
 
-.radioDescription {
-    margin-left: 22px;
-    color: #666;
-    font-size: 0.9em;
-    margin-top: 4px;
+/* 라디오 버튼 옵션 그룹 */
+.radioOptions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
 }
+
+/* 숨겨진 기본 라디오 버튼 */
+.radioInput {
+    display: none;
+}
+
+/* 커스텀 라디오 버튼 */
+.radioLabel {
+    position: relative;
+    padding-left: 28px; /* 버튼과 텍스트 간격 */
+    font-size: 14px;
+    color: #555;
+    cursor: pointer;
+}
+
+/* 커스텀 라디오 버튼 외곽선 */
+.radioLabel::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #ccc; /* 기본 테두리 */
+    background-color: #fff; /* 기본 배경 */
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* 선택된 상태 */
+.radioInput:checked + .radioLabel::before {
+    border-color: rgb(241, 134, 60); /* 선택된 테두리 색상 */
+    background-color: rgb(241, 134, 60); /* 선택된 배경 */
+}
+
+.radioInput:checked + .radioLabel::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #fff; /* 선택된 내부 원 */
+}
+
