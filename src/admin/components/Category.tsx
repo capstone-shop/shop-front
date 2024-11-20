@@ -2,10 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { CategoryEditModal } from './CategoryEditModal';
 import { CategoryDeleteModal } from './CategoryDeleteModal';
 import CategoryAddModal from '../components/CategoryAddModal';
-import '../styles/category.css';
-import '../styles/categoryModal.css';
-import { getAdminCategory } from '../../api/Utils';
-import TestModal from './TestModal';
+// import { getAdminCategory } from '../../api/Utils';
+
+import styles from '../styles/category.module.css';
 
 type CategoryType = 'large' | 'middle' | 'small';
 
@@ -22,31 +21,31 @@ function Category() {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  useEffect(() => {
-    // API 호출 함수
-    const fetchCategories = async () => {
-      try {
-        const data = await getAdminCategory(); // API 호출
-        setCate(data); // 상태 업데이트
-        console.log('카테고리 데이터:', data); // 콘솔 출력
-      } catch (error) {
-        // instanceof를 사용하여 Error 객체인지 확인
-        if (error instanceof Error) {
-          console.error(
-            '카테고리 정보를 불러오는 중 오류가 발생했습니다:',
-            error.message
-          );
-        } else {
-          console.error(
-            '카테고리 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.',
-            error
-          );
-        }
-      }
-    };
-
-    fetchCategories(); // 함수 호출
-  }, []); // 빈 배열로 의존성 설정 → 컴포넌트 마운트 시 한 번 실행
+  // useEffect(() => {
+  // // API 호출 함수
+  // const fetchCategories = async () => {
+  //   try {
+  //     const data = await getAdminCategory(); // API 호출
+  //     setCate(data); // 상태 업데이트
+  //     console.log('카테고리 데이터:', data); // 콘솔 출력
+  //   } catch (error) {
+  //     // instanceof를 사용하여 Error 객체인지 확인
+  //     if (error instanceof Error) {
+  //       console.error(
+  //         '카테고리 정보를 불러오는 중 오류가 발생했습니다:',
+  //         error.message
+  //       );
+  //     } else {
+  //       console.error(
+  //         '카테고리 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.',
+  //         error
+  //       );
+  //     }
+  //   }
+  //   };
+  //
+  //   fetchCategories(); // 함수 호출
+  // }, []); // 빈 배열로 의존성 설정 → 컴포넌트 마운트 시 한 번 실행
 
   const dragItem = useRef<number | null>(null); // 드래그할 아이템의 인덱스
   const dragOverItem = useRef<number | null>(null); // 드랍할 위치의 아이템의 인덱스
@@ -75,7 +74,6 @@ function Category() {
   } | null>(null);
   // 추가 모달 상태
   const [addCategory, setAddCategory] = useState<{
-    name: string;
     type: CategoryType;
   } | null>(null);
 
@@ -160,7 +158,8 @@ function Category() {
 
   // 추가 클릭 이벤트
   const handleAddClick = (categoryType: CategoryType) => {
-    setAddCategory({ name: '', type: categoryType }); // 카테고리 추가 상태 설정
+    setAddCategory({ type: categoryType }); // 카테고리 추가 상태 설정
+    console.log('추가 상태 설정됨.');
   };
 
   // 수정 내용 저장
@@ -229,32 +228,17 @@ function Category() {
 
   return (
     <div>
-      <div className="category-panel">
+      <div className={styles.categoryPanel}>
         {/* 대 카테고리 */}
-        <div className="category-column">
-          <div className="title">
+        <div className={styles.categoryColumn}>
+          <div className={styles.title}>
             <p>대 카테고리 </p>
             <button
-              className="category-btn"
+              className={styles.categoryBtn}
               onClick={() => handleAddClick('large')}
             >
               등록하기
             </button>
-            <div>
-              <button
-                onClick={handleOpenModal}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                모달 열기
-              </button>
-            </div>
           </div>
           <ul>
             {categories.large.map((largeCategory_name: string, i: number) => {
@@ -263,7 +247,7 @@ function Category() {
                   key={i}
                   className={
                     selectedLargeCategory === largeCategory_name
-                      ? 'selected'
+                      ? styles.selected
                       : ''
                   }
                   onClick={(e) =>
@@ -276,7 +260,7 @@ function Category() {
                   onDragOver={(e) => e.preventDefault()}
                 >
                   <span>{largeCategory_name}</span>
-                  <div className="button-group">
+                  <div className={styles.buttonGroup}>
                     <button
                       onClick={(e) =>
                         handleEditClick(e, largeCategory_name, 'large')
@@ -300,11 +284,11 @@ function Category() {
 
         {/* 중 카테고리 (대 카테고리 선택 후 보여짐) */}
         {selectedLargeCategory && categories.middle.length > 0 && (
-          <div className="category-column">
-            <div className="title">
+          <div className={styles.categoryColumn}>
+            <div className={styles.title}>
               <p>중 카테고리 </p>
               <button
-                className="category-btn"
+                className={styles.categoryBtn}
                 onClick={() => handleAddClick('middle')}
               >
                 등록하기
@@ -318,7 +302,7 @@ function Category() {
                       key={i}
                       className={
                         selectedMiddleCategory === middleCategory_name
-                          ? 'selected'
+                          ? styles.selected
                           : ''
                       }
                       onClick={(e) =>
@@ -331,7 +315,7 @@ function Category() {
                       onDragOver={(e) => e.preventDefault()}
                     >
                       <span>{middleCategory_name}</span>
-                      <div className="button-group">
+                      <div className={styles.buttonGroup}>
                         <button
                           onClick={(e) =>
                             handleEditClick(e, middleCategory_name, 'middle')
@@ -357,11 +341,11 @@ function Category() {
 
         {/* 소 카테고리 (중 카테고리 선택 후 보여짐) */}
         {selectedMiddleCategory && categories.small.length > 0 && (
-          <div className="category-column">
-            <div className="title">
+          <div className={styles.categoryColumn}>
+            <div className={styles.title}>
               <p>소 카테고리 </p>
               <button
-                className="category-btn"
+                className={styles.categoryBtn}
                 onClick={() => handleAddClick('small')}
               >
                 등록하기
@@ -382,7 +366,7 @@ function Category() {
                     onDragOver={(e) => e.preventDefault()}
                   >
                     <span>{smallCategory_name}</span>
-                    <div className="button-group">
+                    <div className={styles.buttonGroup}>
                       <button
                         onClick={(e) =>
                           handleEditClick(e, smallCategory_name, 'small')
@@ -434,9 +418,6 @@ function Category() {
           onCancel={handleCancel}
         />
       )}
-
-      {/*테스트 모달*/}
-      {isModalOpen && <TestModal onClose={handleCloseModal} />}
     </div>
   );
 }
