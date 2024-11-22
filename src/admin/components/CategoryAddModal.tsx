@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from '../styles/categoryModal.module.css'; // CSS 모듈 import
 
 interface CategoryAddModalProps {
+  parentsTitle: string | null;
   categoryType: 'large' | 'middle' | 'small'; // 카테고리 타입 (대/중/소)
   onSave: (
     // 저장 함수
@@ -12,6 +13,7 @@ interface CategoryAddModalProps {
 }
 
 function CategoryAddModal({
+  parentsTitle,
   categoryType,
   onSave,
   onCancel,
@@ -33,16 +35,12 @@ function CategoryAddModal({
 
   return (
     <div className={styles.modalContainer}>
-      {/* 모달 컨테이너 */}
       <div className={styles.modal}>
-        {/* 모달 창 */}
-        <h3>카테고리 추가하기</h3> {/* 모달 제목 */}
+        <h3>카테고리 추가하기</h3>
         <div className={styles.modalContent}>
-          {/* 모달 내용 */}
-          <p>부모 카테고리 : </p> {/* 부모 카테고리 표시 */}
-          <p>카테고리 분류 : {categoryTypeLabel}</p> {/* 카테고리 타입 표시 */}
+          {parentsTitle && <p>부모 카테고리 : {parentsTitle} </p>}
+          <p>카테고리 분류 : {categoryTypeLabel}</p>
           <div className={styles.labelDiv}>
-            {/* 레이블 및 입력 필드 구분 */}
             <label>
               <span>카테고리 이름 :</span>
               <input
@@ -66,9 +64,8 @@ function CategoryAddModal({
             </label>
           </div>
           <div className={styles.modalActions}>
-            {/* 모달 액션 버튼들 */}
-            <button onClick={handleSaveClick}>저장</button> {/* 저장 버튼 */}
-            <button onClick={onCancel}>취소</button> {/* 취소 버튼 */}
+            <button onClick={handleSaveClick}>저장</button>
+            <button onClick={onCancel}>취소</button>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ const UserAddModal: React.FC<UserAddModalProps> = ({ onClose, onAddUser }) => {
     dealing_count: 0,
     reputation: 0,
     role: '유저',
-    auth_provider: '네이버',
+    auth_provider: '',
     profile_image: null, // 프로필 이미지 초기값
     created_at: '',
     modified_at: '',

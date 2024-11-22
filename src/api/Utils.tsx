@@ -159,10 +159,13 @@ export function getCurrentUser(): Promise<any> {
 }
 
 // Admin 카테고리 조회 요청 함수
+export function getAdminCategory(categoryId: string | number = '') {
+  const url = categoryId
+    ? `${API_BASE_URL}/api/v1/category/${categoryId}/sub` // 선택된 카테고리 ID가 있을 때, 하위 카테고리 요청
+    : `${API_BASE_URL}/api/v1/category`; // 기본 카테고리 리스트 요청
 
-export function getAdminCategory() {
   return request({
-    url: `${API_BASE_URL}/api/v1/category`,
+    url,
     method: 'GET',
   })
     .then((response) => {
