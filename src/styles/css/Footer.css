@@ -1,5 +1,5 @@
 .footer{
-    background: #303740;
+    background: #f6f6f6;
     padding: 0;
     margin: 0 auto;
     /*position: fixed;*/
@@ -18,14 +18,13 @@
 .footer-container{
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #313131;
     padding: 32px 20px;
 }
 
 .footer-container2{
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #333; /* 아래에만 border를 추가합니다. */
     padding: 32px 20px;
 }
 
@@ -52,8 +51,8 @@
 }
 
 .company-info{
-    color: #a4a4a4;
-    font-size: 11px;
+    color: #282828;
+    font-size: 13px;
     flex-direction: column;
 }
 

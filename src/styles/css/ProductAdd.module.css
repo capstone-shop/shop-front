@@ -248,3 +248,43 @@
     background-color: #fff; /* 선택된 내부 원 */
 }
 
+/* 버튼 그룹 컨테이너 */
+.buttonGroup {
+    display: flex; /* 플렉스 컨테이너로 설정 */
+    justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
+    gap: 12px; /* 버튼 간 간격 */
+    margin-top: 16px; /* 버튼 그룹 위쪽에 여백 */
+}
+
+/* 공통 버튼 스타일 */
+button {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 임시저장 버튼 스타일 */
+.tempSaveButton {
+    background-color: #f3f3f3;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.tempSaveButton:hover {
+    background-color: #e6e6e6;
+    border-color: #bbb;
+}
+
+/* 등록하기 버튼 스타일 */
+.submitButton {
+    background-color: rgb(241, 134, 60);
+    color: #fff;
+}
+
+.submitButton:hover {
+    background-color: rgb(230, 120, 50);
+}

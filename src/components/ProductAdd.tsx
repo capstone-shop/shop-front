@@ -1,7 +1,7 @@
-import styles from '../styles/css/ProductSale.module.css';
+import styles from '../styles/css/ProductAdd.module.css';
 import React, { useState } from 'react';
 
-function ProductSale() {
+function ProductAdd() {
   const [selectedCondition, setSelectedCondition] = useState<string>('');
   const [image, setImage] = useState<string | null>(null);
 
@@ -201,20 +201,12 @@ function ProductSale() {
           <div className={styles.radioItem}>
             <span className={styles.radioText}>직거래</span>
             <div className={styles.radioOptions}>
-              <input
-                type="radio"
-                id="directDealYes"
-                name="directDeal"
-                value="가능"
-                className={styles.radioInput}
-              />
+              <input type="radio" value="가능" className={styles.radioInput} />
               <label htmlFor="directDealYes" className={styles.radioLabel}>
                 가능
               </label>
               <input
                 type="radio"
-                id="directDealNo"
-                name="directDeal"
                 value="불가"
                 defaultChecked
                 className={styles.radioInput}
@@ -229,20 +221,12 @@ function ProductSale() {
           <div className={styles.radioItem}>
             <span className={styles.radioText}>네고 가능 여부</span>
             <div className={styles.radioOptions}>
-              <input
-                type="radio"
-                id="negoAvailableYes"
-                name="negoAvailable"
-                value="가능"
-                className={styles.radioInput}
-              />
+              <input type="radio" value="가능" className={styles.radioInput} />
               <label htmlFor="negoAvailableYes" className={styles.radioLabel}>
                 가능
               </label>
               <input
                 type="radio"
-                id="negoAvailableNo"
-                name="negoAvailable"
                 value="불가"
                 defaultChecked
                 className={styles.radioInput}
@@ -257,20 +241,12 @@ function ProductSale() {
           <div className={styles.radioItem}>
             <span className={styles.radioText}>택배 거래</span>
             <div className={styles.radioOptions}>
-              <input
-                type="radio"
-                id="deliveryDealYes"
-                name="deliveryDeal"
-                value="가능"
-                className={styles.radioInput}
-              />
+              <input type="radio" value="가능" className={styles.radioInput} />
               <label htmlFor="deliveryDealYes" className={styles.radioLabel}>
                 가능
               </label>
               <input
                 type="radio"
-                id="deliveryDealNo"
-                name="deliveryDeal"
                 value="불가"
                 defaultChecked
                 className={styles.radioInput}
@@ -286,22 +262,24 @@ function ProductSale() {
         <div className={styles.productSaleDivider}></div>
         {/* 거래 장소 입력 */}
         <div className={styles.productSaleGroup}>
-          <div>
+          <div className={styles.labelContainer}>
             <label>거래 장소 입력란</label>
           </div>
-          <div>
-            <input />
+          <div className={styles.inputContainer}>
+            <input
+              type="text"
+              placeholder="거래 장소를 입력해 주세요"
+              className={styles.inputField}
+            />
           </div>
         </div>
         {/* 구분선 */}
         <div className={styles.productSaleDivider}></div>
         {/* 등록 */}
-        <div className={styles.productSaleGroup}>
-          <div>
-            <button>임시저장</button>
-          </div>
-          <div>
-            <button>등록하기</button>
+        <div>
+          <div className={styles.buttonGroup}>
+            <button className={styles.tempSaveButton}>임시저장</button>
+            <button className={styles.submitButton}>등록하기</button>
           </div>
         </div>
       </form>
@@ -309,4 +287,4 @@ function ProductSale() {
   );
 }
 
-export default ProductSale;
+export default ProductAdd;

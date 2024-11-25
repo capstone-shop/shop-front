@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/css/SignIn.css';
+import styles from '../styles/css/SignIn.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { signIn } from '../api/Utils';
 import {
@@ -55,16 +55,16 @@ function SignIn() {
   };
 
   return (
-    <div className="form-background">
+    <div className={styles.signInFormContainer}>
       <form onSubmit={handleSignIn}>
-        <div>
+        <div className={styles.signIn}>
           <span>로그인</span>
         </div>
 
         <div>
           <div>
             <input
-              className="form-input"
+              className={styles.signInFormInput}
               name="email"
               value={formData.email}
               onChange={handleInputChange}
@@ -73,7 +73,7 @@ function SignIn() {
           </div>
           <div>
             <input
-              className="form-input"
+              className={styles.signInFormInput}
               type="password"
               name="password"
               value={formData.password}
@@ -82,35 +82,29 @@ function SignIn() {
             />
           </div>
         </div>
-
         <div>
-          <button type="submit" className="form-button">
+          <button type="submit" className={styles.signInFormBtn}>
             로그인
           </button>
         </div>
-
-        {/* 에러 메시지 표시 */}
-        {error && <p className="error-message">{error}</p>}
-
-        <div>
+        <div className={styles.signInFormLinkContainer}>
           <span>
-            <Link className="form-link" to="/signup">
+            <Link className={styles.signInFormLink} to="/signup">
               회원가입
             </Link>
-            <Link className="form-link" to="/find-id">
-              ID 찾기
+            <Link className={styles.signInFormLink} to="/find-id">
+              아이디 찾기
             </Link>
-            <Link className="form-link" to="/find-password">
+            <Link className={styles.signInFormLink} to="/find-password">
               비밀번호 찾기
             </Link>
           </span>
         </div>
-
         <div>
           <div>
             <button
               type="button"
-              className="form-social-button naver"
+              className={styles.signInFormNaverBtn}
               aria-label="Naver로 로그인"
               onClick={() => handleSocialLogin(NAVER_AUTH_URL)}
             >
@@ -120,7 +114,7 @@ function SignIn() {
           <div>
             <button
               type="button"
-              className="form-social-button google"
+              className={styles.signInFormGoogleBtn}
               aria-label="Google로 로그인"
               onClick={() => handleSocialLogin(GOOGLE_AUTH_URL)}
             >
@@ -130,7 +124,7 @@ function SignIn() {
           <div>
             <button
               type="button"
-              className="form-social-button kakao"
+              className={styles.signInFormKaKaoBtn}
               aria-label="Kakao로 로그인"
               onClick={() => handleSocialLogin(KAKAO_AUTH_URL)}
             >

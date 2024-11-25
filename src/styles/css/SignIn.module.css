@@ -1,0 +1,116 @@
+.signInFormContainer {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 상하 정렬 */
+    flex-wrap: wrap; /* 폭이 넘치는 요소를 wrap 처리 */
+    min-width: 1050px;
+    margin-top: 90px;
+    margin-bottom: 60px;
+    background-color: rgb(255, 255, 255);
+}
+
+.signIn {
+    width: 100%;
+    margin-bottom: 50px;
+    font-size: 28px;
+    line-height: 35px;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: -1px;
+    color: #333;
+}
+
+.signInFormInput{
+    width: 350px;
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+    border: 1px solid #ccc;
+}
+
+.signInFormBtn{
+    width: 350px;
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+    background-color: rgb(241, 134, 60);
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.signInFormGoogleBtn {
+    width: 350px;
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+    font-weight: bold;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+    background-color: #4285F4;
+}
+
+.signInFormNaverBtn {
+    width: 350px;
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+    font-weight: bold;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+    background-color: rgb(3, 199, 90);
+}
+
+.signInFormKaKaoBtn {
+    width: 350px;
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+    font-weight: bold;
+    border: 1px solid white;
+    cursor: pointer;
+    background-color: #FEE500;
+    color: black;
+}
+
+.signInFormLink {
+    text-decoration: none;
+    color: black;
+    transition: opacity 0.2s;
+    margin: 0 15px; /* 링크 간 가로 여백 */
+}
+
+.signInFormLink:hover {
+    opacity: 0.7;
+}
+
+.signInFormLinkContainer {
+    display: flex; /* 플렉스 컨테이너 활성화 */
+    justify-content: center; /* 가로로 가운데 정렬 */
+    /*align-items: center; !* 세로로 가운데 정렬 (선택 사항) *!*/
+    flex-wrap: wrap; /* 여러 줄로 표시되도록 설정 (필요 시) */
+    gap: 20px; /* 링크들 간의 간격 추가 */
+}

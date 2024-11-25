@@ -80,7 +80,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
       <div className={styles.HeaderSubContainer}>
         <div className="">
           <img src={''} alt="회사 로고" />
-          <Link className="form-link" to="/">
+          <Link className={styles.HeaderLink} to="/">
             <span>회사이름</span>
           </Link>
         </div>
@@ -104,19 +104,19 @@ function Header({ authenticated, onLogout }: HeaderProps) {
         </div>
         {/* 로그인/로그아웃 및 기타 링크 */}
         <div className="">
-          <Link className="form-link" to="/ProductSale">
+          <Link className={styles.HeaderLink} to="/productAdd">
             <span>판매하기</span>
           </Link>
           {authenticated ? (
-            <button className="form-link" onClick={onLogout}>
+            <button className={styles.HeaderLink} onClick={onLogout}>
               로그아웃
             </button>
           ) : (
             <>
-              <Link className="form-link" to="/signUp">
+              <Link className={styles.HeaderLink} to="/signUp">
                 <span>회원가입</span>
               </Link>
-              <Link className="form-link" to="/signIn">
+              <Link className={styles.HeaderLink} to="/signIn">
                 <span>로그인</span>
               </Link>
             </>
