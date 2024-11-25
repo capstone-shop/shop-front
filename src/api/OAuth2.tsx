@@ -33,7 +33,7 @@ const OAuth2RedirectHandler: React.FC = () => {
       navigate('/', { state: { from: location } });
     } else {
       // `token`이 없는 경우, 로그인 실패로 간주하고 로그인 페이지로 이동
-      navigate('/signIn', {
+      navigate('/signin', {
         state: {
           from: location, // 이전 위치 정보를 전달
           error: error || 'Unknown error occurred', // 오류 메시지 전달. 없으면 기본 메시지 설정

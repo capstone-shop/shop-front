@@ -140,14 +140,13 @@ export function getCurrentUser(): Promise<any> {
   }
 
   return request({
-    url: `${API_BASE_URL}/user/me`,
+    url: `${API_BASE_URL}/api/v1/user/me`,
     method: 'GET',
   })
     .then((response) => {
       return response;
     })
     .catch((error) => {
-      // 한글 에러 메시지를 사용하여 에러 처리
       console.error(
         '현재 사용자 정보를 불러오는 중 오류가 발생했습니다:',
         error

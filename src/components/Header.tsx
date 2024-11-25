@@ -116,7 +116,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
               <Link className={styles.HeaderLink} to="/signUp">
                 <span>회원가입</span>
               </Link>
-              <Link className={styles.HeaderLink} to="/signIn">
+              <Link className={styles.HeaderLink} to="/signin">
                 <span>로그인</span>
               </Link>
             </>

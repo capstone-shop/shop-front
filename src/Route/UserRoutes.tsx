@@ -42,7 +42,7 @@ function UserRoutes() {
       authenticated: false,
       currentUser: null,
     });
-    navigate('/signIn');
+    navigate('/signin');
   };
 
   return (
@@ -50,7 +50,7 @@ function UserRoutes() {
       <Header authenticated={authState.authenticated} onLogout={handleLogout} />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/signIn" element={<SignIn />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/product" element={<Product />} />
         <Route path="/productSearch" element={<ProductSearch />} />
@@ -63,7 +63,7 @@ function UserRoutes() {
         {/*    authState.authenticated ? (*/}
         {/*      <ProductSale />*/}
         {/*    ) : (*/}
-        {/*      <Navigate to="/signIn" replace />*/}
+        {/*      <Navigate to="/signin" replace />*/}
         {/*    )*/}
         {/*  }*/}
         {/*/>*/}
