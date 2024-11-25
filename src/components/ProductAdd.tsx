@@ -3,19 +3,31 @@ import React, { useState } from 'react';
 
 function ProductAdd() {
   const [selectedCondition, setSelectedCondition] = useState<string>('');
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]); // 이미지 배열 상태
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === 'string') {
-          setImage(reader.result); // 업로드한 이미지를 상태로 설정
-        }
-      };
-      reader.readAsDataURL(file);
+    const files = event.target.files;
+    if (files) {
+      const newImages: string[] = [];
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            newImages.push(reader.result); // 이미지 URL을 배열에 추가
+            // 모든 이미지를 로드한 후 상태 업데이트
+            if (newImages.length === files.length) {
+              setImages((prev) => [...prev, ...newImages]); // 기존 이미지와 병합
+            }
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    // 특정 인덱스의 이미지를 삭제
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleConditionChange = (value: string) => {
@@ -61,49 +73,55 @@ function ProductAdd() {
           <div className={styles.labelContainer}>
             <label>상품 이미지</label>
           </div>
-          {/* 이미지 업로드 버튼 */}
           <div className={styles.uploadContainer}>
+            {/* 이미지 업로드 버튼 */}
             <label htmlFor="image-input" className={styles.uploadButton}>
-              {image ? (
-                <img
-                  src={image}
-                  alt="Uploaded"
-                  className={styles.previewImage}
-                />
-              ) : (
-                <div className={styles.placeholder}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={styles.cameraIcon}
-                  >
-                    <rect
-                      x="3"
-                      y="8"
-                      width="18"
-                      height="12"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <circle cx="12" cy="14" r="3"></circle>
-                    <path d="M5 8l2-3h10l2 3"></path>
-                  </svg>
-                  <p>이미지 등록</p>
-                </div>
-              )}
+              <div className={styles.placeholder}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={styles.cameraIcon}
+                >
+                  <rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect>
+                  <circle cx="12" cy="14" r="3"></circle>
+                  <path d="M5 8l2-3h10l2 3"></path>
+                </svg>
+                <p>이미지 등록</p>
+              </div>
             </label>
             <input
               id="image-input"
               type="file"
               accept="image/*"
               onChange={handleImageChange}
+              multiple // 다중 이미지 업로드를 가능하게 설정
               style={{ display: 'none' }}
             />
+          </div>
+
+          {/* 이미지 미리보기 */}
+          <div className={styles.previewContainer}>
+            {images.map((image, index) => (
+              <div key={index} className={styles.previewWrapper}>
+                <img
+                  src={image}
+                  alt={`Uploaded ${index}`}
+                  className={styles.previewImage}
+                />
+                <button
+                  type="button"
+                  className={styles.removeButton}
+                  onClick={() => handleRemoveImage(index)} // 이미지 삭제 핸들러
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
           </div>
         </div>
         {/* 구분선 */}
