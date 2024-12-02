@@ -68,6 +68,10 @@
     color: black;
     transition: opacity 0.2s;
     margin: 0 15px; /* 링크 간 가로 여백 */
+    font-family: "맑은 고딕", "Malgun Gothic", sans-serif; /* 폰트 설정 */
+    font-size: 17px; /* 폰트 크기 */
+    font-weight: 400; /* 폰트 굵기 */
+    letter-spacing: 1.0px; /* 글자 간 여백 추가 */
 }
 
 

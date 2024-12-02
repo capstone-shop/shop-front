@@ -79,9 +79,8 @@ function Header({ authenticated, onLogout }: HeaderProps) {
     <div className={styles.HeaderContainer}>
       <div className={styles.HeaderSubContainer}>
         <div className="">
-          <img src={''} alt="회사 로고" />
           <Link className={styles.HeaderLink} to="/">
-            <span>회사이름</span>
+            <span>FASTBUYING</span>
           </Link>
         </div>
         <div className={styles.HeaderSearch}>

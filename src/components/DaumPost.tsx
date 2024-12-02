@@ -3,7 +3,7 @@ import { useDaumPostcodePopup, Address } from 'react-daum-postcode';
 
 // Props 타입 정의: setAddress가 문자열 상태를 변경할 수 있도록 함
 interface DaumPostProps {
-  setAddress: React.Dispatch<React.SetStateAction<string>>;
+  setAddress: (address: string) => void; // 단순 문자열을 전달하는 함수
 }
 
 // DaumPost 컴포넌트: '주소 검색' 버튼을 렌더링하고, Daum 우편번호 팝업을 화면 중앙에 표시

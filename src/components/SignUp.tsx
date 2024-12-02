@@ -3,27 +3,15 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from '../styles/css/SignUp.module.css';
 import DaumPost from './DaumPost';
 import { signUp } from '../api/Utils';
+import { useNavigate } from 'react-router-dom';
 
 interface SignUpFormInputs {
-  username: string;
-  password: string;
-  confirmPassword: string;
-  name: string;
   email: string;
+  password: string;
+  name: string;
   phone: string;
   address: string;
-  gender: string;
-  birthYear: string;
-  birthMonth: string;
-  birthDay: string;
-  additionalInfo?: string;
-  termsOfService: boolean;
-  privacyPolicy: boolean;
-  optionalPrivacyPolicy?: boolean;
-  marketingConsent?: boolean;
-  smsConsent?: boolean;
-  emailConsent?: boolean;
-  ageConfirmation: boolean;
+  profileImages?: string; // 프로필 이미지 (선택사항)
 }
 
 function SignUp() {
@@ -36,35 +24,43 @@ function SignUp() {
   } = useForm<SignUpFormInputs>();
   const [allChecked, setAllChecked] = useState(false);
 
-  // 제출 핸들러
-  const onSubmit: SubmitHandler<SignUpFormInputs> = useCallback((data) => {
-    console.log(data);
+  // 약관 전체 동의 핸들러
+  const handleAllCheck = useCallback(() => {
+    setAllChecked((prev) => !prev);
   }, []);
 
-  // 전체 체크박스 핸들러
-  const handleAllCheck = useCallback(() => {
-    const newCheckedState = !allChecked;
-    setAllChecked(newCheckedState);
-    setValue('termsOfService', newCheckedState);
-    setValue('privacyPolicy', newCheckedState);
-    setValue('optionalPrivacyPolicy', newCheckedState);
-    setValue('marketingConsent', newCheckedState);
-    setValue('smsConsent', newCheckedState);
-    setValue('emailConsent', newCheckedState);
-    setValue('ageConfirmation', newCheckedState);
-  }, [allChecked, setValue]);
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
-  const [address, setAddress] = useState(''); // 주소
-  const [extraAddress, setExtraAddress] = useState(''); // 나머지 주소
+  // 주소 업데이트 핸들러
+  const handleAddressChange = (newAddress: string) => {
+    setValue('address', newAddress); // 폼 데이터로 주소 반영
+  };
 
-  const handleSignUp = async (formData: SignUpFormInputs) => {
+  // 회원가입 폼 제출 핸들러
+  const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
+    // 데이터 변환: 필드 이름 매핑 및 기본값 추가
+    const formData = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      address: data.address,
+      phone_number: data.phone, // 필드명 변환
+      profileImages: data.profileImages || '', // 선택적 필드 (기본값은 빈 문자열)
+      authProvider: 'local', // 고정 값
+      role: 'ROLE_USER', // 고정 값
+    };
+
+    console.log('전송 데이터:', formData);
+
     try {
-      const response = await signUp(formData);
-      console.log('회원가입 성공:', response.message);
-      // 회원가입 성공 시 추가 작업 (예: 로그인 페이지로 리디렉트)
+      const response = await signUp(formData); // API 호출
+      console.log('회원가입 성공:', response);
+      alert('회원가입 성공!');
+      navigate('/'); // 메인 페이지로 이동
     } catch (error) {
       console.error('회원가입 실패:', error);
-      // 에러 메시지 사용자에게 표시
+      alert('회원가입 실패!');
     }
   };
 
@@ -75,21 +71,21 @@ function SignUp() {
       </div>
       <div className={styles.signUpSubContainer}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* 아이디 */}
+          {/* 이메일 */}
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
               <label>
-                아이디
+                이메일
                 <span className={styles.signUpRequired}>*</span>
               </label>
             </div>
             <div className={styles.signUpInputContainer}>
               <input
-                type="text"
-                {...register('username', {
-                  required: '아이디를 입력해주세요.',
+                type="email"
+                {...register('email', {
+                  required: '이메일을 입력해주세요.',
                 })}
-                placeholder="아이디를 입력해주세요"
+                placeholder="이메일을 입력해주세요"
                 className={styles.signUpInput}
               />
             </div>
@@ -106,8 +102,8 @@ function SignUp() {
             </div>
             <div className={styles.signUpInputContainer}>
               <input
-                type="text"
-                {...register('username', {
+                type="password"
+                {...register('password', {
                   required: '비밀번호를 입력해주세요.',
                 })}
                 placeholder="비밀번호를 입력해주세요"
@@ -117,26 +113,26 @@ function SignUp() {
             <div className={styles.emptySpace}></div>
           </div>
 
-          {/* 비밀번호 확인 */}
-          <div className={styles.signUpGroup}>
-            <div className={styles.labelContainer}>
-              <label>
-                비밀번호 확인
-                <span className={styles.signUpRequired}>*</span>
-              </label>
-            </div>
-            <div className={styles.signUpInputContainer}>
-              <input
-                type="text"
-                {...register('username', {
-                  required: '아이디를 입력해주세요.',
-                })}
-                placeholder="비밀번호를 한번 더 입력해주세요"
-                className={styles.signUpInput}
-              />
-            </div>
-            <div className={styles.emptySpace}></div>
-          </div>
+          {/*/!* 비밀번호 확인 *!/*/}
+          {/*<div className={styles.signUpGroup}>*/}
+          {/*  <div className={styles.labelContainer}>*/}
+          {/*    <label>*/}
+          {/*      비밀번호 확인*/}
+          {/*      <span className={styles.signUpRequired}>*</span>*/}
+          {/*    </label>*/}
+          {/*  </div>*/}
+          {/*  <div className={styles.signUpInputContainer}>*/}
+          {/*    <input*/}
+          {/*      type="password"*/}
+          {/*      {...register('confirmPassword', {*/}
+          {/*        required: '비밀번호를 한번 더 입력해주세요.',*/}
+          {/*      })}*/}
+          {/*      placeholder="비밀번호를 한번 더 입력해주세요"*/}
+          {/*      className={styles.signUpInput}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*  <div className={styles.emptySpace}></div>*/}
+          {/*</div>*/}
 
           {/* 이름 */}
           <div className={styles.signUpGroup}>
@@ -149,31 +145,10 @@ function SignUp() {
             <div className={styles.signUpInputContainer}>
               <input
                 type="text"
-                {...register('username', {
+                {...register('name', {
                   required: '이름을 입력해주세요.',
                 })}
                 placeholder="이름을 입력해주세요"
-                className={styles.signUpInput}
-              />
-            </div>
-            <div className={styles.emptySpace}></div>
-          </div>
-
-          {/* 이메일 */}
-          <div className={styles.signUpGroup}>
-            <div className={styles.labelContainer}>
-              <label>
-                이메일
-                <span className={styles.signUpRequired}>*</span>
-              </label>
-            </div>
-            <div className={styles.signUpInputContainer}>
-              <input
-                type="text"
-                {...register('username', {
-                  required: '이메일을 입력해주세요.',
-                })}
-                placeholder="이메일을 입력해주세요"
                 className={styles.signUpInput}
               />
             </div>
@@ -191,7 +166,7 @@ function SignUp() {
             <div className={styles.signUpInputContainer}>
               <input
                 type="text"
-                {...register('username', {
+                {...register('phone', {
                   required: '숫자만 입력해주세요.',
                 })}
                 placeholder="숫자만 입력해주세요."
@@ -211,58 +186,13 @@ function SignUp() {
             </div>
             <div className={styles.signUpAddressButton}>
               <div>
-                <DaumPost setAddress={setAddress} />
+                <DaumPost setAddress={handleAddressChange} />
+                <input
+                  type="text"
+                  {...register('address', { required: '주소를 입력해주세요.' })}
+                  readOnly
+                />
               </div>
-              <div>
-                {/* DaumPost 컴포넌트에 setAddress 함수를 전달 */}
-                <input type="text" value={address} readOnly />
-              </div>
-            </div>
-            <div className={styles.emptySpace}></div>
-          </div>
-
-          {/* 성별 */}
-          <div className={styles.signUpGroup}>
-            <div className={styles.labelContainer}>
-              <label>성별</label>
-            </div>
-            <div className={styles.signUpRadioGroup}>
-              {/* 남자 */}
-              <input
-                type="radio"
-                id="male"
-                value="남자"
-                {...register('gender')}
-                className={styles.signUpRadioInput}
-              />
-              <label htmlFor="male" className={styles.signUpRadioLabel}>
-                남자
-              </label>
-
-              {/* 여자 */}
-              <input
-                type="radio"
-                id="female"
-                value="여자"
-                {...register('gender')}
-                className={styles.signUpRadioInput}
-              />
-              <label htmlFor="female" className={styles.signUpRadioLabel}>
-                여자
-              </label>
-
-              {/* 선택안함 */}
-              <input
-                type="radio"
-                id="none"
-                value="선택안함"
-                {...register('gender')}
-                defaultChecked
-                className={styles.signUpRadioInput}
-              />
-              <label htmlFor="none" className={styles.signUpRadioLabel}>
-                선택안함
-              </label>
             </div>
             <div className={styles.emptySpace}></div>
           </div>
@@ -295,42 +225,6 @@ function SignUp() {
               />
             </div>
             <div className={styles.emptySpace}></div>
-          </div>
-
-          {/* 약관 동의 */}
-          <div className={styles.signUpGroup}>
-            <div className={styles.labelContainer}>
-              <label>
-                이용약관동의
-                <span className={styles.signUpRequired}>*</span>
-              </label>
-            </div>
-            <div className={styles.checkboxGroup}>
-              {/* 전체 동의 체크박스 */}
-              <input
-                type="checkbox"
-                id="allCheck" // id 추가
-                checked={allChecked}
-                onChange={handleAllCheck}
-              />
-              <label htmlFor="allCheck">
-                <span>전체 동의합니다.</span>
-              </label>
-            </div>
-            <div>
-              {/* 이용약관 동의 체크박스 */}
-              <input
-                type="checkbox"
-                id="termsOfService" // id 추가
-                {...register('termsOfService', {
-                  required: '이용약관에 동의해야 합니다.',
-                })}
-              />
-              <label htmlFor="termsOfService">
-                <span>이용약관 동의</span>
-              </label>
-            </div>
-            <div></div>
           </div>
 
           {/* 가입하기 버튼 */}
