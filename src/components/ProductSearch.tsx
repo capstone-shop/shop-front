@@ -1,6 +1,6 @@
 import styles from '../styles/css/ProductSearch.module.css';
 import React, { useEffect, useState } from 'react';
-import { getProductSearch } from '../api/Utils';
+import formatDate, { getProductSearch } from '../api/Utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Product } from '../api/Utils'; // Product를 타입으로 import
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -220,7 +220,7 @@ function ProductSearch() {
             <div
               key={product.id}
               className={styles.card}
-              onClick={() => navigate(`/productdetail/${product.id}`)} // 클릭 시 상세보기 페이지로 이동
+              onClick={() => navigate(`/productDetail/${product.id}`)} // 클릭 시 상세보기 페이지로 이동
               style={{ cursor: 'pointer' }} // 클릭 가능하도록 커서 스타일 추가
             >
               <div className={styles.imageWrapper}>
@@ -250,9 +250,9 @@ function ProductSearch() {
                 </p>
                 <div className={styles.meta}>
                   <p>
-                    등록일: {new Date(product.createdAt).toLocaleDateString()} |
-                    찜횟수 : {product.wish} | 조회수 : {product.view} | 대화횟수
-                    :{product.chat} | 등록자 : {product.register.name} | 평점 :{' '}
+                    등록일 : {formatDate(product.createdAt || '')} | 찜횟수 :{' '}
+                    {product.wish} | 조회수 : {product.view} | 대화횟수 :
+                    {product.chat} | 등록자 : {product.register.name} | 평점 :{' '}
                     {product.register.reputation}
                   </p>
                 </div>

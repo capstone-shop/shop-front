@@ -88,7 +88,7 @@ interface ProductSearchResponse {
 
 // 상품 상세조회 화면 데이터 타입
 export interface ProductDetailResponse {
-  merchandise: Product[];
+  merchandise: Product;
   relatedMerchandise: Product[];
 }
 
@@ -272,13 +272,16 @@ export function getProductDetail(data: {
 }): Promise<ProductDetailResponse> {
   const { id } = data;
 
-  return request({
-    url: `${API_BASE_URL}/api/v1/merchandise/${id}`, // id를 URL에 삽입
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/merchandise/${id}`, // id를 URL에 삽입
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
-  })
+    false // 인증 헤더 제거 "필수"임
+  )
     .then((response) => response as ProductDetailResponse)
     .catch((error) => {
       console.error('상품 상세보기 조회 중 오류 발생:', error);
@@ -307,4 +310,23 @@ export function getAdminCategory(categoryId: string | number = '') {
         new Error('카테고리 정보를 불러오는 중 문제가 발생했습니다.')
       );
     });
+}
+
+// 시간 함수
+export default function formatDate(isoDateString: string): string {
+  const date = new Date(isoDateString);
+
+  const year = date.getFullYear(); // 연도
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+  const day = String(date.getDate()).padStart(2, '0'); // 일
+
+  const hours24 = date.getHours(); // 24시간 형식의 시
+  const minutes = String(date.getMinutes()).padStart(2, '0'); // 분
+
+  const isPM = hours24 >= 12; // 오후 여부
+  const hours12 = hours24 % 12 || 12; // 12시간 형식 (0시 -> 12시)
+
+  const period = isPM ? '오후' : '오전'; // 오전/오후
+
+  return `${year}-${month}-${day} ${period} ${hours12}:${minutes}`;
 }

@@ -12,6 +12,7 @@ import ProductEdit from '../components/ProductEdit';
 import ProductDelete from '../components/ProductDelete';
 import ProductSearch from '../components/ProductSearch';
 import ProductDetail from '../components/ProductDetail';
+import Chat from '../components/chat';
 
 function UserRoutes() {
   const [authState, setAuthState] = useState({
@@ -65,6 +66,8 @@ function UserRoutes() {
         {/* 상품 수정 */}
         <Route path="/productDelete" element={<ProductDelete />} />
         {/* 상품 삭제 */}
+        <Route path="/chat" element={<Chat />} />
+        {/* 채팅 */}
         {/*<Route*/}
         {/*  path="/productSale"*/}
         {/*  element={*/}
