@@ -13,6 +13,8 @@ import ProductDelete from '../components/ProductDelete';
 import ProductSearch from '../components/ProductSearch';
 import ProductDetail from '../components/ProductDetail';
 import Chat from '../components/chat';
+import UserInfoEdit from '../components/ProfileEdit';
+import ProfileEdit from '../components/ProfileEdit';
 
 function UserRoutes() {
   const [authState, setAuthState] = useState({
@@ -68,6 +70,9 @@ function UserRoutes() {
         {/* 상품 삭제 */}
         <Route path="/chat" element={<Chat />} />
         {/* 채팅 */}
+        <Route path="/profileedit" element={<ProfileEdit />} />
+        {/* 내 정보 수정 */}
+
         {/*<Route*/}
         {/*  path="/productSale"*/}
         {/*  element={*/}

@@ -209,6 +209,28 @@ export function getCurrentUser(): Promise<any> {
     });
 }
 
+// 현재 사용자 정보 요청 함수
+export function postCurrentUser(): Promise<any> {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+
+  return request({
+    url: `${API_BASE_URL}/api/v1/user/me`,
+    method: 'GET',
+  })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error(
+        '현재 사용자 정보를 불러오는 중 오류가 발생했습니다:',
+        error
+      );
+      return Promise.reject(
+        new Error('현재 사용자 정보를 불러오는 중 문제가 발생했습니다.')
+      );
+    });
+}
+
 // 홈화면 상품 조회
 export function getProductHome(data: ProductRequest): Promise<HomeData> {
   // 쿼리 파라미터 생성

@@ -10,7 +10,7 @@ interface HeaderProps {
   onLogout: () => void; // 로그아웃 함수
 }
 
-interface User {
+export interface User {
   createdAt: string;
   modifiedAt: string;
   name: string;
@@ -196,20 +196,11 @@ function Header({ authenticated, onLogout }: HeaderProps) {
                       </li>
                       <li>
                         <Link
-                          to="/profile"
+                          to="/profileedit"
                           className={styles.DropdownItem}
                           onClick={() => setIsDropdownOpen(false)}
                         >
                           내 정보 수정
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/account"
-                          className={styles.DropdownItem}
-                          onClick={() => setIsDropdownOpen(false)}
-                        >
-                          나의 가계부
                         </Link>
                       </li>
                     </ul>

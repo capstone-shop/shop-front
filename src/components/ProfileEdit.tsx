@@ -5,7 +5,7 @@ import DaumPost from './DaumPost';
 import { signUp } from '../api/Utils';
 import { useNavigate } from 'react-router-dom';
 
-interface SignUpFormInputs {
+interface ProfileEditFormInputs {
   email: string;
   password: string;
   name: string;
@@ -14,20 +14,14 @@ interface SignUpFormInputs {
   profileImages?: string; // 프로필 이미지 (선택사항)
 }
 
-function SignUp() {
+function ProfileEdit() {
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     formState: { errors },
-  } = useForm<SignUpFormInputs>();
-  const [allChecked, setAllChecked] = useState(false);
-
-  // 약관 전체 동의 핸들러
-  const handleAllCheck = useCallback(() => {
-    setAllChecked((prev) => !prev);
-  }, []);
+  } = useForm<ProfileEditFormInputs>();
 
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
@@ -37,8 +31,8 @@ function SignUp() {
     setValue('address', newAddress); // 폼 데이터로 주소 반영
   };
 
-  // 회원가입 폼 제출 핸들러
-  const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
+  // 내 정보 수정 폼 제출 핸들러
+  const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (data) => {
     // 데이터 변환: 필드 이름 매핑 및 기본값 추가
     const formData = {
       name: data.name,
@@ -55,19 +49,19 @@ function SignUp() {
 
     try {
       const response = await signUp(formData); // API 호출
-      console.log('회원가입 성공:', response);
-      alert('회원가입 성공!');
+      console.log('내정보 수정 성공:', response);
+      alert('내정보 수정 성공!');
       navigate('/'); // 메인 페이지로 이동
     } catch (error) {
-      console.error('회원가입 실패:', error);
-      alert('회원가입 실패!');
+      console.error('내정보 수정 실패:', error);
+      alert('내정보 수정 실패!');
     }
   };
 
   return (
     <div className={styles.signUpFormContainer}>
       <div className={styles.signUp}>
-        <span>회원가입</span>
+        <span>내 정보 수정</span>
       </div>
       <div className={styles.signUpSubContainer}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -176,6 +170,28 @@ function SignUp() {
             <div className={styles.emptySpace}></div>
           </div>
 
+          {/* 프로필 이미지 */}
+          <div className={styles.signUpGroup}>
+            <div className={styles.labelContainer}>
+              <label>
+                프로필 이미지
+                <span className={styles.signUpRequired}>*</span>
+              </label>
+            </div>
+            <div className={styles.signUpInputContainer}>
+              <label htmlFor="profileImage" className={styles.fileInputLabel}>
+                이미지 등록
+              </label>
+              <input
+                id="profileImage"
+                type="file"
+                accept="image/*"
+                className={styles.hiddenFileInput} // 기본 파일 입력 숨김
+              />
+            </div>
+            <div className={styles.emptySpace}></div>
+          </div>
+
           {/* 생년월일 */}
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
@@ -206,10 +222,10 @@ function SignUp() {
             <div className={styles.emptySpace}></div>
           </div>
 
-          {/* 가입하기 버튼 */}
+          {/* 수정하기 버튼 */}
           <div className={styles.signUpGroup}>
             <button type="submit" className={styles.signUpButton}>
-              가입하기
+              수정하기
             </button>
           </div>
         </form>
@@ -218,4 +234,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default ProfileEdit;

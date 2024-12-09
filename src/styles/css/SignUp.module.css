@@ -230,3 +230,21 @@
     font-size: 16px;
     color: #555;
 }
+
+/* 파일 입력 버튼 (커스터마이징) */
+.fileInputLabel {
+    display: inline-block;
+    padding: 8px 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 기본 파일 입력 숨김 */
+.hiddenFileInput {
+    display: none;
+}
