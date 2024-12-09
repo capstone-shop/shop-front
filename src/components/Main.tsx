@@ -13,7 +13,7 @@ function Main() {
     const fetchProducts = async () => {
       try {
         const response = await getProductHome({});
-        console.log('받아온 데이터:', response);
+        console.log('홈화면 API 데이터:', response);
         setHomeData(response);
       } catch (err) {
         console.error('데이터를 불러오는 중 오류 발생:', err);

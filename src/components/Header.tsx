@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/css/Header.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/css/Header.module.css';
 
 // `Header` 컴포넌트에 전달되는 props의 타입 정의
@@ -12,6 +12,20 @@ interface HeaderProps {
 function Header({ authenticated, onLogout }: HeaderProps) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
+  const navigate = useNavigate();
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      const trimmedQuery = searchQuery.trim();
+
+      // 공백 입력 시 기본 검색어나 빈 문자열로 대체
+      const finalQuery = trimmedQuery || ''; // 기본 검색어 설정 가능: 예) "defaultSearch"
+
+      // 검색 화면으로 이동
+      navigate(`/productSearch?query=${encodeURIComponent(finalQuery)}`);
+    }
+  };
 
   // 카테고리 목록 데이터 예시
   const categories = [
@@ -88,6 +102,9 @@ function Header({ authenticated, onLogout }: HeaderProps) {
             className={styles.HeaderSearchInput}
             type="text"
             placeholder="검색어를 입력"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button className={styles.HeaderSearchBtn}>
             <svg

@@ -1,6 +1,5 @@
 // 상수 및 외부 모듈 임포트
 import { ACCESS_TOKEN, API_BASE_URL } from '../constants/constant';
-import exp from 'constants';
 
 // 인터페이스 정의
 interface RequestOptions extends RequestInit {
@@ -38,12 +37,6 @@ interface SignUpResponse {
   message: string; // 응답 메시지 (예: '회원가입이 완료되었습니다.')
 }
 
-export interface ProductRequest {
-  category?: string; // 카테고리 필터
-  minPrice?: number; // 최소 가격
-  maxPrice?: number; // 최대 가격
-}
-
 // 상품 데이터 타입 (API 응답 데이터)
 export interface Product {
   id: number;
@@ -78,6 +71,27 @@ export interface HomeData {
   mostWished: Product[];
 }
 
+// 검색 요청 데이터 타입
+export interface ProductRequest {
+  page?: number; // 페이지 번호 (기본값=0)
+  size?: number; // 페이지 크기 (기본값=20)
+  sort?: string; // 정렬 기준, 예: "wish,desc"
+  search?: string; // 검색어 (기본값="")
+  filter?: string; // 필터 조건, 예: "wish,0;stat,1,2"
+}
+
+// 검색 화면 데이터 타입 (API 응답 데이터)
+interface ProductSearchResponse {
+  merchandise: Product[];
+  totalPage: number;
+}
+
+// 상품 상세조회 화면 데이터 타입
+export interface ProductDetailResponse {
+  merchandise: Product[];
+  relatedMerchandise: Product[];
+}
+
 // 어드민 카테고리 응답 타입
 interface AdminCategory {
   id: number;
@@ -107,6 +121,9 @@ const request = async (
 
   try {
     const response = await fetch(options.url, options);
+
+    // 상태 코드와 응답 내용을 확인
+    console.log('HTTP 상태 코드:', response.status);
 
     if (!response.ok) {
       const errorResponse = await response.json();
@@ -145,7 +162,7 @@ export function signIn(data: SignInRequest): Promise<SignInResponse> {
 export function signUp(data: SignUpRequest): Promise<SignUpResponse> {
   return request(
     {
-      url: `${API_BASE_URL}/signUp`, // 회원가입 API 엔드포인트
+      url: `${API_BASE_URL}api/v1/user/signup`, // 회원가입 API 엔드포인트
       method: 'POST',
       body: JSON.stringify(data), // 사용자 입력 데이터를 JSON으로 변환하여 요청 본문에 포함
     },
@@ -210,6 +227,64 @@ export function getProductHome(data: ProductRequest): Promise<HomeData> {
     .catch((error) => {
       console.error('상품 조회 중 오류 발생:', error);
       return Promise.reject(new Error('상품 조회 중 문제가 발생했습니다.'));
+    });
+}
+
+// 쿼리 파라미터 생성 유틸리티
+export function createQueryParams(data: ProductRequest): string {
+  const params = new URLSearchParams();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      params.append(key, String(value)); // 값이 존재하는 경우만 추가
+    }
+  });
+
+  return params.toString(); // "key1=value1&key2=value2" 형식 반환
+}
+
+// 검색화면 상품 조회
+export function getProductSearch(
+  data: ProductRequest
+): Promise<ProductSearchResponse> {
+  const queryParams = createQueryParams(data);
+
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/merchandise?${queryParams}`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    false
+  )
+    .then((response) => response as ProductSearchResponse)
+    .catch((error) => {
+      console.error('상품 조회 중 오류 발생:', error);
+      return Promise.reject(new Error('상품 조회 중 문제가 발생했습니다.'));
+    });
+}
+
+// 상품 상세보기 조회
+export function getProductDetail(data: {
+  id: number;
+}): Promise<ProductDetailResponse> {
+  const { id } = data;
+
+  return request({
+    url: `${API_BASE_URL}/api/v1/merchandise/${id}`, // id를 URL에 삽입
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response as ProductDetailResponse)
+    .catch((error) => {
+      console.error('상품 상세보기 조회 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('상품 상세보기 조회 중 문제가 발생했습니다.')
+      );
     });
 }
 

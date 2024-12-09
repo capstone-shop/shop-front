@@ -8,10 +8,10 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getCurrentUser } from '../api/Utils';
 import { ACCESS_TOKEN } from '../constants/constant';
-import Product from '../components/Product';
 import ProductEdit from '../components/ProductEdit';
 import ProductDelete from '../components/ProductDelete';
 import ProductSearch from '../components/ProductSearch';
+import ProductDetail from '../components/ProductDetail';
 
 function UserRoutes() {
   const [authState, setAuthState] = useState({
@@ -50,13 +50,21 @@ function UserRoutes() {
       <Header authenticated={authState.authenticated} onLogout={handleLogout} />
       <Routes>
         <Route path="/" element={<Main />} />
+        {/* 메인 */}
         <Route path="/signin" element={<SignIn />} />
+        {/* 로그인 */}
         <Route path="/signUp" element={<SignUp />} />
-        <Route path="/product" element={<Product />} />
+        {/* 회원가입 */}
+        <Route path="/productDetail/:id" element={<ProductDetail />} />
+        {/* 상품 상세보기 */}
         <Route path="/productSearch" element={<ProductSearch />} />
+        {/* 상품 검색 */}
         <Route path="/productAdd" element={<ProductAdd />} />
+        {/* 상품 등록 */}
         <Route path="/productEdit" element={<ProductEdit />} />
+        {/* 상품 수정 */}
         <Route path="/productDelete" element={<ProductDelete />} />
+        {/* 상품 삭제 */}
         {/*<Route*/}
         {/*  path="/productSale"*/}
         {/*  element={*/}

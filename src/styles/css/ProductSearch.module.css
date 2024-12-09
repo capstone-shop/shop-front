@@ -232,9 +232,52 @@
     font-weight: bold; /* 강조 */
 }
 
+
+/* 페이지네이션 */
+
 /* 버튼 호버 효과 */
 .option:hover {
     background-color: #f8f9fa; /* 밝은 배경색 */
 }
 
-/* 정렬 기능 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.pageButton {
+    width: 40px; /* 정사각형 버튼의 가로 크기 */
+    height: 40px; /* 정사각형 버튼의 세로 크기 */
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    border: 1px solid #ccc;
+    background: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 14px; /* 글씨 크기 */
+    font-weight: bold; /* 텍스트 굵기 */
+}
+
+.pageButton:hover {
+    background: #e1e1e1; /* 호버 효과 */
+}
+
+.active {
+    background: rgb(241, 134, 60); /* 활성화된 버튼의 배경색 */
+    color: white; /* 활성화된 버튼의 글자색 */
+    border: rgb(241, 134, 60);
+    font-weight: bold;
+}
+
+.disabled {
+    cursor: not-allowed;
+    background: #f3f3f3; /* 비활성화된 버튼의 배경색 */
+    color: #aaa; /* 비활성화된 버튼의 글자색 */
+}
+
+/* 페이지네이션 */
+

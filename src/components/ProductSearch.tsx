@@ -1,30 +1,16 @@
 import styles from '../styles/css/ProductSearch.module.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getProductSearch } from '../api/Utils';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { Product } from '../api/Utils'; // Product를 타입으로 import
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
 
 function ProductSearch() {
-  // interface PageNation {
-  //   page : [Integer] //생략가능, default=0
-  //   size=[Integer] //생략가능, default=20
-  //   sort=[String] //생략가능, default=”wish,desc”
-  //   search=[String] //생략가능, default=””
-  //   filter=[String] //생략가능, default=””
-  // }
-
-  interface Product {
-    id: number;
-    title: string;
-    subtitle: string;
-    category: string;
-    price: {
-      first: number;
-      second: number;
-    };
-    parcelAvailability: string;
-    rating: number;
-    reviews: number;
-    image: string;
-  }
-
+  const navigate = useNavigate(); // React Router의 useNavigate 훅 사용
   const options = [
     '찜 많은순',
     '낮은 가격순',
@@ -33,38 +19,38 @@ function ProductSearch() {
     '등록자 평점순',
     '상품명순',
   ];
+  const sortProducts = (products: Product[], sortOption: string): Product[] => {
+    switch (sortOption) {
+      case '찜 많은순':
+        return [...products].sort((a, b) => b.wish - a.wish); // wish 기준 내림차순
+      case '낮은 가격순':
+        return [...products].sort((a, b) => a.price - b.price); // price 기준 오름차순
+      case '높은 가격순':
+        return [...products].sort((a, b) => b.price - a.price); // price 기준 내림차순
+      case '신상품순':
+        return [...products].sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        ); // createdAt 기준 내림차순
+      case '등록자 평점순':
+        return [...products].sort(
+          (a, b) => b.register.reputation - a.register.reputation
+        ); // rating 기준 내림차순
+      case '상품명순':
+        return [...products].sort((a, b) => a.name.localeCompare(b.name)); // name 기준 알파벳 순
+      default:
+        return products; // 기본 정렬 (변경 없음)
+    }
+  };
 
   const [selected, setSelected] = useState<string>('찜 많은순');
 
   const handleSelect = (option: string) => {
     setSelected(option);
-    console.log(`Selected sorting option: ${option}`); // 정렬 상태를 콘솔에 출력 (테스트용)
+    const sortedProducts = sortProducts(originalProducts, option);
+    setProducts(sortedProducts); // 정렬된 데이터 반영
+    console.log(`Selected sorting option: ${option}`);
   };
-
-  const products: Product[] = [
-    {
-      id: 1,
-      title: '상품명',
-      subtitle: '상품 설명',
-      parcelAvailability: '택배 / 직거래',
-      category: '대 카테고리 / 중 카테고리 / 소 카테고리',
-      price: { first: 1000000, second: 1616290 },
-      rating: 4.8,
-      reviews: 822,
-      image: '/images/iphone16-256gb.jpg',
-    },
-    {
-      id: 1,
-      title: '상품명',
-      subtitle: '상품 설명',
-      parcelAvailability: '택배 / 직거래',
-      category: '대 카테고리 / 중 카테고리 / 소 카테고리',
-      price: { first: 1358000, second: 1616290 },
-      rating: 4.8,
-      reviews: 822,
-      image: '/images/iphone16-256gb.jpg',
-    },
-  ];
 
   const categories = [
     {
@@ -108,9 +94,72 @@ function ProductSearch() {
     },
   ];
 
+  const location = useLocation(); // URL 파라미터 추출
+  const query = new URLSearchParams(location.search).get('query') || ''; // 검색어 추출
+
+  const [originalProducts, setOriginalProducts] = useState<Product[]>([]); // 원본 데이터
+  const [products, setProducts] = useState<Product[]>([]); // 정렬된 데이터
+  const [totalPages, setTotalPages] = useState<number>(0); // 전체 페이지 수
+  const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
+  const [startPage, setStartPage] = useState(0); // 현재 버튼 그룹의 시작 페이지
+  const pageSize = 5; // 한 페이지당 항목 수
+  const maxButtons = 10; // 한 번에 표시할 최대 버튼 수
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 0 || newPage >= totalPages) return; // 범위를 벗어나면 무시
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // 화면 상단으로 이동
+  };
+
+  const handlePrevGroup = () => {
+    if (startPage > 0) {
+      setStartPage(startPage - maxButtons);
+    }
+  };
+
+  const handleNextGroup = () => {
+    if (startPage + maxButtons < totalPages) {
+      setStartPage(startPage + maxButtons);
+    }
+  };
+  const pageButtons = Array.from(
+    { length: Math.min(maxButtons, totalPages - startPage) },
+    (_, index) => startPage + index
+  );
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProductSearch({
+          search: query, // 검색어 전달
+          page: currentPage, // 현재 페이지 전달
+          size: pageSize, // 페이지 크기 전달
+        });
+        setOriginalProducts(data.merchandise);
+        setProducts(data.merchandise);
+        setTotalPages(data.totalPage);
+      } catch (error) {
+        console.error('상품 조회 실패:', error);
+      }
+    };
+
+    fetchProducts();
+  }, [query, currentPage]); // query와 currentPage 변경 시 실행
+
+  useEffect(() => {
+    const sortedProducts = sortProducts(originalProducts, selected); // 원본 데이터 사용
+    setProducts(sortedProducts); // 정렬된 데이터 업데이트
+  }, [selected, originalProducts]); // selected나 originalProducts가 변경될 때만 실행
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]); // currentPage 변경 시 실행
+
+  useEffect(() => {
+    setCurrentPage(0); // 검색어가 변경되면 현재 페이지를 초기화
+  }, [query]); // 검색어(query)가 변경될 때 실행
+
   return (
     <div className={styles.productSearchContainer}>
-      {/* 카테고리, 필터 */}
       <div className={styles.container}>
         {/* 카테고리 영역 */}
         <div className={styles.categoryRow}>
@@ -151,7 +200,7 @@ function ProductSearch() {
       </div>
       {/* 상품 리스트 */}
       <div>
-        {/*정렬기능*/}
+        {/* 정렬기능 */}
         <div className={styles.sortOptions}>
           {options.map((option) => (
             <button
@@ -165,45 +214,94 @@ function ProductSearch() {
             </button>
           ))}
         </div>
+        {/* 상품 리스트 */}
         <div className={styles.productList}>
           {products.map((product) => (
-            <div key={product.id} className={styles.card}>
-              {/* 상품 이미지 */}
+            <div
+              key={product.id}
+              className={styles.card}
+              onClick={() => navigate(`/productdetail/${product.id}`)} // 클릭 시 상세보기 페이지로 이동
+              style={{ cursor: 'pointer' }} // 클릭 가능하도록 커서 스타일 추가
+            >
               <div className={styles.imageWrapper}>
                 <img
-                  src={product.image}
-                  alt={product.title}
+                  src={product.images[0]}
+                  alt={product.name}
                   className={styles.productImage}
                 />
               </div>
-
-              {/* 상품 정보 */}
               <div className={styles.productInfo}>
-                <h2 className={styles.title}>{product.title}</h2>
-                <p className={styles.subtitle}>{product.subtitle}</p>
-                <p className={styles.category}>{product.category}</p>
-                <p className={styles.category}>{product.parcelAvailability}</p>
-                {/* 기타 정보 */}
+                <h2 className={styles.title}>{product.name}</h2>
+                <p
+                  className={styles.subtitle}
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                ></p>
+                <p className={styles.category}>
+                  카테고리 : {product.category[0]?.title}
+                </p>
+                <p className={styles.category}>
+                  네고 :
+                  {product.negotiationAvailable
+                    ? ' 가격흥정 가능'
+                    : ' 가격흥정 불가'}
+                </p>
+                <p className={styles.category}>
+                  거래방식 :{product.transactionMethod ? ' 택배' : ' 직거래'}
+                </p>
                 <div className={styles.meta}>
                   <p>
-                    등록일: 2024.09 | 상품의견 {product.reviews}개 | ⭐{' '}
-                    {product.rating}
+                    등록일: {new Date(product.createdAt).toLocaleDateString()} |
+                    찜횟수 : {product.wish} | 조회수 : {product.view} | 대화횟수
+                    :{product.chat} | 등록자 : {product.register.name} | 평점 :{' '}
+                    {product.register.reputation}
                   </p>
                 </div>
               </div>
-
-              {/* 가격 정보 */}
               <div className={styles.priceInfo}>
                 <p className={styles.firstPrice}>
-                  가격: {product.price.first.toLocaleString()}원
-                </p>
-                <p className={styles.secondPrice}>
-                  가격: {product.price.second.toLocaleString()}원
+                  가격: {product.price.toLocaleString()}원
                 </p>
               </div>
             </div>
           ))}
         </div>
+        {/* 페이지네이션 UI */}
+        {totalPages > 1 && (
+          <div className={styles.pagination}>
+            {/* 이전 그룹 버튼 */}
+            <button
+              className={`${styles.pageButton} ${startPage === 0 ? styles.disabled : ''}`}
+              onClick={handlePrevGroup}
+              disabled={startPage === 0}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
+
+            {/* 페이지 번호 버튼 */}
+            {pageButtons.map((page) => (
+              <button
+                key={page}
+                className={`${styles.pageButton} ${
+                  page === currentPage ? styles.active : ''
+                }`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page + 1}
+              </button>
+            ))}
+
+            {/* 다음 그룹 버튼 */}
+            <button
+              className={`${styles.pageButton} ${
+                startPage + maxButtons >= totalPages ? styles.disabled : ''
+              }`}
+              onClick={handleNextGroup}
+              disabled={startPage + maxButtons >= totalPages}
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

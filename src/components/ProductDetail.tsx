@@ -1,6 +1,8 @@
-import styles from '../styles/css/Product.module.css';
-import React, { useState } from 'react';
-function Product() {
+import styles from '../styles/css/ProductDetail.module.css';
+import React, { useEffect, useState } from 'react';
+import { getProductDetail, Product, ProductDetailResponse } from '../api/Utils';
+import { useParams } from 'react-router-dom';
+function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(1); // 현재 선택된 이미지
 
   const images = [
@@ -19,6 +21,26 @@ function Product() {
     location: '노원구 월계로',
     price: '1,400,000',
   }));
+
+  const { id } = useParams<{ id: string }>(); // URL에서 id 가져오기
+  const [productDetail, setProductDetail] =
+    useState<ProductDetailResponse | null>(null);
+
+  useEffect(() => {
+    const fetchProductDetail = async () => {
+      try {
+        const response = await getProductDetail({ id: Number(id) }); // id를 API 호출에 사용
+        setProductDetail(response);
+        console.log('상세보기 데이터:', response);
+      } catch (error) {
+        console.error('상품 상세정보를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    if (id) {
+      fetchProductDetail(); // URL에서 얻은 id를 기반으로 데이터 로드
+    }
+  }, [id]);
 
   return (
     <div className={styles.productContainer}>
@@ -168,4 +190,4 @@ function Product() {
   );
 }
 
-export default Product;
+export default ProductDetail;
