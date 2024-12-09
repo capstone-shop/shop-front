@@ -134,6 +134,7 @@
     position: relative;
     width: 150px;
     height: 150px;
+    overflow: hidden; /* 이미지 확대 시 영역 밖이 보이지 않도록 설정 */
 }
 
 .productImage {
@@ -141,6 +142,11 @@
     height: 100%;
     border-radius: 8px;
     object-fit: cover;
+    transition: transform 0.3s ease-in-out; /* 부드러운 확대 효과 */
+}
+
+.imageWrapper:hover .productImage {
+    transform: scale(1.1); /* 마우스 호버 시 이미지 크기 1.1배 확대 */
 }
 
 /* 상품 정보 */

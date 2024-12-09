@@ -8,22 +8,20 @@
 
 .HeaderSubContainer {
     position: relative;
-    width: 1050px; /* 부모 요소의 너비를 전체로 설정 */
+    width: 1050px;
     height: 100px;
     margin: 0 auto;
-    padding: 20px;
     letter-spacing: -0.3px;
     display: flex;
-    align-items: center; /* 세로 중앙 정렬 */
-    justify-content: center; /* 좌우 정렬 */
-    flex-wrap: wrap; /* 폭이 넘치는 요소 wrap 처리 */
-    /*border: 1px solid #c53131; !* 테두리 *!*/
+    align-items: center;
+    justify-content: space-between; /* 양쪽 끝으로 배치 */
+    flex-wrap: nowrap; /* 줄바꿈 방지 */
 }
 
-.HeaderSubContainer > * {
-    padding-left: 40px;
-    padding-right: 40px;
-}
+/*.HeaderSubContainer > * {*/
+/*    padding-left: 40px;*/
+/*    padding-right: 40px;*/
+/*}*/
 
 .HeaderSearch {
     display: flex;
@@ -33,7 +31,7 @@
     border-radius: 4px; /* 모서리 둥글게 설정 */
     padding: 0; /* 내부 패딩을 제거 */
     overflow: hidden; /* 내부 요소가 테두리를 넘어가지 않도록 */
-    width: 400px;
+    width: 1050px;
 }
 
 .HeaderSearchInput {
@@ -66,12 +64,18 @@
 .HeaderLink {
     text-decoration: none;
     color: black;
-    transition: opacity 0.2s;
     margin: 0 15px; /* 링크 간 가로 여백 */
     font-family: "맑은 고딕", "Malgun Gothic", sans-serif; /* 폰트 설정 */
-    font-size: 17px; /* 폰트 크기 */
+    font-size: 16px; /* 폰트 크기 */
     font-weight: 400; /* 폰트 굵기 */
     letter-spacing: 1.0px; /* 글자 간 여백 추가 */
+    cursor: pointer; /* 클릭 가능한 커서 */
+    transition: color 0.3s ease, background-color 0.3s ease; /* 부드러운 애니메이션 */
+}
+
+.HeaderLink:hover {
+    color: #f57c00; /* 호버 시 텍스트 색상 변경 */
+
 }
 
 
@@ -92,3 +96,94 @@
     padding-left: 70px;
     padding-right: 70px;
 }
+
+.HeaderLinks {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.HeaderLink {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.HeaderLink:hover {
+    color: #f57c00;
+}
+
+.UserMenu {
+    position: relative; /* 드롭다운 메뉴 배치용 */
+    display: inline-block;
+}
+
+.Dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 10px;
+    width: 200px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* 삼각형 */
+.Triangle {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid white;
+}
+
+.DropdownMenu {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.DropdownMenu li {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.DropdownMenu li:hover {
+    background-color: #f5f5f5;
+}
+
+/* Link 태그 기본 스타일 제거 */
+.HeaderLink {
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 부모의 텍스트 색상 상속 */
+}
+
+.HeaderLink:hover {
+    color: #f57c00; /* 호버 시 텍스트 색상 변경 */
+}
+
+/* 드롭다운 메뉴의 스타일 */
+.DropdownItem {
+    display: block;
+    padding: 8px 16px; /* 메뉴 간격 */
+    color: #333; /* 기본 텍스트 색상 */
+    text-decoration: none; /* 밑줄 제거 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.DropdownItem:hover {
+    background-color: #f5f5f5; /* 호버 시 배경색 */
+    color: #f57c00; /* 호버 시 텍스트 색상 변경 */
+}
+
+

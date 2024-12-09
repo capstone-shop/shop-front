@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles/css/Main.module.css';
 import Carousel from 'react-bootstrap/Carousel';
 import { getProductHome, HomeData } from '../api/Utils';
+import { useNavigate } from 'react-router-dom';
 
 function Main() {
   const [homeData, setHomeData] = useState<HomeData>({
@@ -24,8 +25,17 @@ function Main() {
   }, []);
 
   const ProductCard = ({ product }: { product: any }) => {
+    const navigate = useNavigate();
+
+    const handleCardClick = () => {
+      navigate(`/productDetail/${product.id}`); // 상품 ID를 경로에 추가
+    };
     return (
-      <div className={styles.productCard}>
+      <div
+        className={styles.productCard}
+        onClick={handleCardClick}
+        style={{ cursor: 'pointer' }}
+      >
         <div className={styles.productImage}>
           <img
             src={product.images[0]}

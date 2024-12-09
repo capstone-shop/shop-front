@@ -163,7 +163,7 @@ function ProductDetail() {
                   가격: {productDetail?.merchandise.price.toLocaleString()}원
                 </div>
                 <div className={styles.tradeMethod}>
-                  거래 방식:
+                  거래 방식 :
                   {productDetail?.merchandise.transactionMethod === 'DIRECT'
                     ? ' 직거래'
                     : productDetail?.merchandise.transactionMethod ===
@@ -173,11 +173,25 @@ function ProductDetail() {
                   ({productDetail?.merchandise.location || '위치 정보 없음'})
                 </div>
                 <div className={styles.productStatus}>
-                  상품 상태:{' '}
-                  {productDetail?.merchandise.merchandiseState === 'NEW'
-                    ? '미사용'
-                    : '중고'}
+                  상품 상태 :{' '}
+                  {(() => {
+                    switch (productDetail?.merchandise.merchandiseState) {
+                      case 'NEW':
+                        return '새 상품 (미사용)';
+                      case 'GOOD':
+                        return '사용감 없음';
+                      case 'AVERAGE':
+                        return '사용감 적음';
+                      case 'BAD':
+                        return '사용감 많음';
+                      case 'BROKEN':
+                        return '고장/파손 상품';
+                      default:
+                        return '상태 정보 없음'; // 데이터 값이 없거나 예상치 못한 값 처리
+                    }
+                  })()}
                 </div>
+
                 <div className={styles.actions}>
                   <button className={styles.chatButton}>채팅하기</button>
                   <button className={styles.likeButton}>찜하기</button>

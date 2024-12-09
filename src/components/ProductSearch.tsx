@@ -104,11 +104,6 @@ function ProductSearch() {
   const [startPage, setStartPage] = useState(0); // 현재 버튼 그룹의 시작 페이지
   const pageSize = 5; // 한 페이지당 항목 수
   const maxButtons = 10; // 한 번에 표시할 최대 버튼 수
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 0 || newPage >= totalPages) return; // 범위를 벗어나면 무시
-    setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // 화면 상단으로 이동
-  };
 
   const handlePrevGroup = () => {
     if (startPage > 0) {
@@ -247,6 +242,25 @@ function ProductSearch() {
                 </p>
                 <p className={styles.category}>
                   거래방식 :{product.transactionMethod ? ' 택배' : ' 직거래'}
+                </p>
+                <p className={styles.category}>
+                  상품 상태 :
+                  {(() => {
+                    switch (product.merchandiseState) {
+                      case 'NEW':
+                        return ' 새 상품 (미사용)';
+                      case 'GOOD':
+                        return ' 사용감 없음';
+                      case 'AVERAGE':
+                        return ' 사용감 적음';
+                      case 'BAD':
+                        return ' 사용감 많음';
+                      case 'BROKEN':
+                        return ' 고장/파손 상품';
+                      default:
+                        return ' 상태 정보 없음'; // 데이터가 없거나 예상치 못한 값 처리
+                    }
+                  })()}
                 </p>
                 <div className={styles.meta}>
                   <p>

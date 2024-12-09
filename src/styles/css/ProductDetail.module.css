@@ -94,6 +94,7 @@
     transform: scale(1.1);
 }
 
+
 .selectedProductThumbnail {
     border: 2px solid rgba(246, 123, 38, 0.53); /* 선택된 썸네일 강조 */
     border-radius: 4px;
@@ -314,6 +315,18 @@
     border-radius: 4px;
     font-size: 14px;
     color: #666;
+}
+
+.productImageContainer {
+    overflow: hidden; /* 확대될 때 이미지가 경계를 넘지 않도록 */
+}
+
+.productImage {
+    transition: transform 0.3s ease-in-out; /* 부드러운 확대 효과 */
+}
+
+.productImageContainer:hover .productImage {
+    transform: scale(1.1); /* 호버 시 이미지 1.1배 확대 */
 }
 
 /* 상품 제목 */

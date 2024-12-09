@@ -40,6 +40,7 @@ function SignIn() {
       alert('로그인 성공!');
       // 로그인 성공 후 리디렉션
       navigate('/'); // 경로를 navigate 함수에 인자로 넘김
+      window.location.reload(); // 강제 새로고침
     } catch (err) {
       // 에러 처리
       const message =

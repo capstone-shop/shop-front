@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/css/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/css/Header.module.css';
+import { getCurrentUser, getProductHome } from '../api/Utils';
 
 // `Header` 컴포넌트에 전달되는 props의 타입 정의
 interface HeaderProps {
@@ -9,10 +10,26 @@ interface HeaderProps {
   onLogout: () => void; // 로그아웃 함수
 }
 
+interface User {
+  createdAt: string;
+  modifiedAt: string;
+  name: string;
+  email: string;
+  address: string;
+  phoneNumber: string;
+  dealingCount: number;
+  reputation: number;
+  authProvider: string;
+  profileImages: string;
+}
+
 function Header({ authenticated, onLogout }: HeaderProps) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null); // 드롭다운을 참조하는 ref
   const navigate = useNavigate();
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -26,6 +43,41 @@ function Header({ authenticated, onLogout }: HeaderProps) {
       navigate(`/productSearch?query=${encodeURIComponent(finalQuery)}`);
     }
   };
+
+  // 드롭다운 열기/닫기 토글
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsDropdownOpen(false); // 드롭다운 닫기
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await getCurrentUser();
+        console.log('유저 데이터:', response);
+        setUser(response);
+      } catch (err) {
+        console.error('데이터를 불러오는 중 오류 발생:', err);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // 카테고리 목록 데이터 예시
   const categories = [
@@ -97,11 +149,97 @@ function Header({ authenticated, onLogout }: HeaderProps) {
             <span>FASTBUYING</span>
           </Link>
         </div>
+        {/* 로그인/회원가입 또는 로그아웃 */}
+        <div className={styles.HeaderLinks}>
+          <Link className={styles.HeaderLink} to="/productAdd">
+            판매하기
+          </Link>
+
+          {authenticated ? (
+            <>
+              {/* 사용자 이름과 드롭다운 */}
+              <div className={styles.UserMenu}>
+                <span className={styles.HeaderLink} onClick={toggleDropdown}>
+                  {user?.name || 'Guest'}
+                </span>
+                {/* 드롭다운 메뉴 */}
+                {isDropdownOpen && (
+                  <div ref={dropdownRef} className={styles.Dropdown}>
+                    <div className={styles.Triangle}></div>
+                    <ul className={styles.DropdownMenu}>
+                      <li>
+                        <Link
+                          to="/favorites"
+                          className={styles.DropdownItem}
+                          onClick={() => setIsDropdownOpen(false)} // 항목 클릭 시 드롭다운 닫기
+                        >
+                          찜한 상품
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/chat"
+                          className={styles.DropdownItem}
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          채팅 목록
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/products"
+                          className={styles.DropdownItem}
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          등록 상품
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/profile"
+                          className={styles.DropdownItem}
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          내 정보 수정
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/account"
+                          className={styles.DropdownItem}
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          나의 가계부
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* 로그아웃 버튼 */}
+              <span className={styles.HeaderLink} onClick={onLogout}>
+                로그아웃
+              </span>
+            </>
+          ) : (
+            <>
+              <Link className={styles.HeaderLink} to="/signUp">
+                회원가입
+              </Link>
+              <Link className={styles.HeaderLink} to="/signin">
+                로그인
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+      <div className={styles.CenterContainer}>
         <div className={styles.HeaderSearch}>
           <input
             className={styles.HeaderSearchInput}
             type="text"
-            placeholder="검색어를 입력"
+            placeholder="상품을 검색해주세요!"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -117,26 +255,6 @@ function Header({ authenticated, onLogout }: HeaderProps) {
               <path d="M10 2a8 8 0 016.32 12.905l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" />
             </svg>
           </button>
-        </div>
-        {/* 로그인/로그아웃 및 기타 링크 */}
-        <div className="">
-          <Link className={styles.HeaderLink} to="/productAdd">
-            <span>판매하기</span>
-          </Link>
-          {authenticated ? (
-            <button className={styles.HeaderLink} onClick={onLogout}>
-              로그아웃
-            </button>
-          ) : (
-            <>
-              <Link className={styles.HeaderLink} to="/signUp">
-                <span>회원가입</span>
-              </Link>
-              <Link className={styles.HeaderLink} to="/signin">
-                <span>로그인</span>
-              </Link>
-            </>
-          )}
         </div>
       </div>
       {/* 헤더 카테고리 */}

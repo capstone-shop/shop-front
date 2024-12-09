@@ -60,6 +60,18 @@
     margin-bottom: 20px;
 }
 
+.productImage {
+    overflow: hidden; /* 이미지 확대 시 영역 밖이 보이지 않도록 설정 */
+}
+
+.productImage img {
+    transition: transform 0.3s ease-in-out; /* 부드럽게 확대되도록 애니메이션 설정 */
+}
+
+.productImage:hover img {
+    transform: scale(1.1); /* 마우스 호버 시 10% 확대 */
+}
+
 .productName {
     font-size: 16px;
     line-height: 23px;

@@ -139,11 +139,14 @@ const request = async (
 
 // 사용자 로그인 요청 함수
 export function signIn(data: SignInRequest): Promise<SignInResponse> {
-  return request({
-    url: `${API_BASE_URL}/api/v1/user/signin`,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/user/signin`,
+      method: 'POST',
+      body: JSON.stringify(data),
+    },
+    false
+  )
     .then((response) => {
       // 서버 응답이 예상한 형태인지 확인 후, 맞지 않으면 에러 반환
       if (!response.accessToken || !response.tokenType) {
@@ -162,7 +165,7 @@ export function signIn(data: SignInRequest): Promise<SignInResponse> {
 export function signUp(data: SignUpRequest): Promise<SignUpResponse> {
   return request(
     {
-      url: `${API_BASE_URL}api/v1/user/signup`, // 회원가입 API 엔드포인트
+      url: `${API_BASE_URL}/api/v1/user/signup`, // 회원가입 API 엔드포인트
       method: 'POST',
       body: JSON.stringify(data), // 사용자 입력 데이터를 JSON으로 변환하여 요청 본문에 포함
     },
