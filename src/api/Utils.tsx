@@ -92,6 +92,12 @@ export interface ProductDetailResponse {
   relatedMerchandise: Product[];
 }
 
+// 상품 찜하기 요청
+export interface ProductDetailCalldibsResponse {
+  success: true;
+  message: string;
+}
+
 // 어드민 카테고리 응답 타입
 interface AdminCategory {
   id: number;
@@ -313,6 +319,29 @@ export function getProductDetail(data: {
       return Promise.reject(
         new Error('상품 상세보기 조회 중 문제가 발생했습니다.')
       );
+    });
+}
+
+// 상품 찜하기 요청
+export function patchProductDetailCalldibs(data: {
+  id: number;
+}): Promise<ProductDetailResponse> {
+  const { id } = data;
+
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/merchandise/${id}/wish`, // id를 URL에 삽입
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    true // 인증 헤더
+  )
+    .then((response) => response as ProductDetailResponse)
+    .catch((error) => {
+      console.error('상품 찜하기 중 오류 발생:', error);
+      return Promise.reject(new Error('상품 찜하기 중 문제가 발생했습니다.'));
     });
 }
 

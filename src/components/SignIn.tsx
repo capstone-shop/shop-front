@@ -8,11 +8,15 @@ import {
   GOOGLE_AUTH_URL,
   KAKAO_AUTH_URL,
 } from '../constants/constant';
+import SuccessModal from './SuccessModal';
 
 function SignIn() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState<string | null>(null);
+  // 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,6 +24,12 @@ function SignIn() {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // 모달 닫기
+    navigate('/'); // 성공 시 메인 페이지로 이동
+    window.location.reload(); // 강제 새로고침
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -37,10 +47,12 @@ function SignIn() {
         localStorage.setItem('refreshToken', response.refreshToken);
       }
 
-      alert('로그인 성공!');
+      setModalMessage('로그인이 성공적으로 완료되었습니다!');
+      setIsModalOpen(true);
       // 로그인 성공 후 리디렉션
-      navigate('/'); // 경로를 navigate 함수에 인자로 넘김
-      window.location.reload(); // 강제 새로고침
+
+      // navigate('/'); // 경로를 navigate 함수에 인자로 넘김
+      // window.location.reload(); // 강제 새로고침
     } catch (err) {
       // 에러 처리
       const message =
@@ -48,6 +60,8 @@ function SignIn() {
         '로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.';
       setError(message);
       console.error(err);
+      setModalMessage('로그인이 실패했습니다. 다시 시도해주세요.');
+      setIsModalOpen(true);
     }
   };
 
@@ -134,6 +148,13 @@ function SignIn() {
           </div>
         </div>
       </form>
+      {/* 모달 렌더링 */}
+      {isModalOpen && (
+        <SuccessModal
+          message={modalMessage}
+          onClose={closeModal} // 확인 버튼 클릭 시 닫기
+        />
+      )}
     </div>
   );
 }
