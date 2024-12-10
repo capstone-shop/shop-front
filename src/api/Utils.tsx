@@ -37,6 +37,12 @@ interface SignUpResponse {
   message: string; // 응답 메시지 (예: '회원가입이 완료되었습니다.')
 }
 
+// 소셜로그인시 추가정보 입력 타입
+export interface AdditionalInfoRequest {
+  address: string;
+  phone_number: string;
+}
+
 // 상품 데이터 타입 (API 응답 데이터)
 export interface Product {
   id: number;
@@ -126,11 +132,30 @@ const request = async (
     console.log('HTTP 상태 코드:', response.status);
 
     if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(errorResponse.message || 'API 요청 실패');
+      const errorText = await response.text(); // 오류 응답 본문을 텍스트로 읽음
+      try {
+        const errorResponse = JSON.parse(errorText);
+        throw new Error(errorResponse.message || 'API 요청 실패');
+      } catch {
+        throw new Error('API 요청 실패: 응답 본문을 파싱할 수 없습니다.');
+      }
     }
 
-    return await response.json();
+    // 응답 본문 처리
+    const text = await response.text();
+    if (!text) {
+      // 빈 본문 처리
+      console.log('응답 본문이 비어 있습니다.');
+      return null;
+    }
+
+    // JSON 파싱 시도
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      console.error('응답 JSON 파싱 오류:', error);
+      throw new Error('API 응답을 JSON으로 파싱할 수 없습니다.');
+    }
   } catch (error) {
     console.error('API 요청 오류:', error);
     throw error;
@@ -179,6 +204,23 @@ export function signUp(data: SignUpRequest): Promise<SignUpResponse> {
       // 에러 발생 시 한글로 에러 메시지 반환
       console.error('회원가입 요청 중 오류가 발생했습니다:', error);
       return Promise.reject(new Error('회원가입 중 문제가 발생했습니다.'));
+    });
+}
+
+// 소셜로그인 추가 정보 요청 함수
+export function postAdditionalInfo(data: AdditionalInfoRequest): Promise<void> {
+  return request({
+    url: `${API_BASE_URL}/api/v1/user/additional-info`,
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(() => {
+      // 서버 응답 본문이 없더라도 성공적으로 처리
+      console.log('추가 정보 요청이 성공적으로 처리되었습니다.');
+    })
+    .catch((error) => {
+      console.error('추가 정보 요청 중 오류가 발생했습니다:', error);
+      throw error;
     });
 }
 

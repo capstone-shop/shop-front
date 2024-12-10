@@ -12,9 +12,9 @@ import ProductEdit from '../components/ProductEdit';
 import ProductDelete from '../components/ProductDelete';
 import ProductSearch from '../components/ProductSearch';
 import ProductDetail from '../components/ProductDetail';
-import Chat from '../components/chat';
-import UserInfoEdit from '../components/ProfileEdit';
+import Chat from '../components/Chat';
 import ProfileEdit from '../components/ProfileEdit';
+import AdditionalInfo from '../components/AdditionalInfo';
 
 function UserRoutes() {
   const [authState, setAuthState] = useState({
@@ -72,7 +72,9 @@ function UserRoutes() {
         {/* 채팅 */}
         <Route path="/profileedit" element={<ProfileEdit />} />
         {/* 내 정보 수정 */}
+        <Route path="/additionalInfo" element={<AdditionalInfo />} />
 
+        {/* 추가 정보 입력 */}
         {/*<Route*/}
         {/*  path="/productSale"*/}
         {/*  element={*/}

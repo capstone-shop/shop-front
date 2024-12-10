@@ -1,0 +1,250 @@
+.signUpFormContainer {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 상하 정렬 */
+    flex-wrap: wrap; /* 폭이 넘치는 요소를 wrap 처리 */
+    min-width: 1050px;
+    margin-top: 90px;
+    margin-bottom: 60px;
+    background-color: rgb(255, 255, 255);
+}
+
+.signUp {
+    width: 100%;
+    margin-bottom: 50px;
+    font-size: 28px;
+    line-height: 35px;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: -1px;
+    color: #333;
+}
+
+.signUpSubContainer {
+    width: 640px;
+    margin: 0 auto;
+}
+
+.signUpGroup {
+    align-items: center;
+    display: inline-flex;
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.signUpGroup .labelContainer {
+    flex: 0 0 139px; /* Label의 너비를 고정 */
+    height: 100%;
+    font-weight: bold;
+    color: rgb(51, 51, 51);
+    font-size: 14px;
+}
+
+.signUpGroup .emptySpace {
+    flex: 0 0 120px;
+    margin-left: 8px;
+}
+
+.signUpRequired {
+    color: rgb(238, 106, 123);
+}
+
+.signUpInputContainer {
+    display: flex;
+    flex-direction: column; /* 세로 정렬로 오류 메시지를 입력 필드 아래에 배치 */
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+}
+
+.signUpInput {
+    width: 100%;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
+    padding: 0 10px;
+}
+
+.signUpAddressButton {
+    width: 100%;
+    max-width: 400px;
+}
+
+.signUpAddressButton button {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    background-color: rgb(241, 134, 60); /* 버튼 배경 색상 통일 */
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+
+    /* 기본 효과 제거 */
+    transition: none;
+}
+
+.signUpAddressButton button:active,
+.signUpAddressButton button:hover,
+.signUpAddressButton button:focus {
+    background-color: rgb(241, 134, 60); /* 눌렀을 때와 포커스일 때도 같은 색상 유지 */
+    outline: none; /* 포커스 시 나타나는 테두리 제거 */
+    box-shadow: none; /* 그림자 효과 제거 */
+}
+
+.signUpAddressButton input {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+.signUpRadioGroup {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.signUpRadioInput {
+    display: none; /* 기본 라디오 버튼 숨기기 */
+}
+
+.signUpRadioLabel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+    padding-left: 30px; /* 아이콘과 텍스트 간격 조정 */
+}
+
+/* 커스텀 라디오 버튼 스타일 */
+.signUpRadioLabel::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; /* 라디오 버튼 크기 */
+    height: 20px; /* 라디오 버튼 크기 */
+    border-radius: 50%;
+    border: 2px solid rgb(241, 134, 60); /* 테두리 색상 */
+    background-color: #fff; /* 버튼 배경 색상 */
+}
+
+/* 선택된 상태에서 색상 변경 */
+.signUpRadioInput:checked + .signUpRadioLabel::before {
+    background-color: rgb(241, 134, 60); /* 선택된 상태의 배경 색상 */
+}
+
+.signUpRadioInput:checked + .signUpRadioLabel::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #fff; /* 선택된 상태의 가운데 색상 */
+}
+
+
+
+.signUpButton {
+    background-color: rgb(241, 134, 60);
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    width: 200px;
+    max-width: 400px;
+    height: 50px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px auto; /* 요소들을 중앙 정렬 */
+}
+
+.signUpFlexContainer {
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.signUpBirthGroup{
+    width: 100%; /* 기본 너비를 100%로, max-width로 제한 */
+    max-width: 400px;
+    /*height: 50px;*/
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    display: flex; /* 내부 요소 수직 정렬을 위한 flex */
+    align-items: center; /* flex item 수직 중앙 정렬 */
+    justify-content: center; /* 내부 내용 중앙 정렬 */
+}
+
+.signUpBirthInput {
+    width: 60px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 4px;
+    margin-right: 4px;
+    border: none;
+    outline: none;
+}
+
+.birthInput::placeholder {
+    color: #aaa;
+}
+
+/* 구분자 스타일 */
+.separator {
+    font-size: 16px;
+    color: #555;
+}
+
+/* 파일 입력 버튼 (커스터마이징) */
+.fileInputLabel {
+    display: inline-block;
+    padding: 8px 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 기본 파일 입력 숨김 */
+.hiddenFileInput {
+    display: none;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/css/chat.module.css';
+import styles from '../styles/css/Chat.module.css';
 
 function Chat() {
   const chatUsers = [

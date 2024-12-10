@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 function ProductAdd() {
   const [selectedCondition, setSelectedCondition] = useState<string>('');
   const [images, setImages] = useState<string[]>([]); // 이미지 배열 상태
+  const [directDeal, setDirectDeal] = useState('불가');
+  const [negoAvailable, setNegoAvailable] = useState('불가');
+  const [deliveryDeal, setDeliveryDeal] = useState('불가');
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -219,14 +222,25 @@ function ProductAdd() {
           <div className={styles.radioItem}>
             <span className={styles.radioText}>직거래</span>
             <div className={styles.radioOptions}>
-              <input type="radio" value="가능" className={styles.radioInput} />
+              <input
+                type="radio"
+                id="directDealYes"
+                name="directDeal"
+                value="가능"
+                checked={directDeal === '가능'}
+                onChange={(e) => setDirectDeal(e.target.value)}
+                className={styles.radioInput}
+              />
               <label htmlFor="directDealYes" className={styles.radioLabel}>
                 가능
               </label>
               <input
                 type="radio"
+                id="directDealNo"
+                name="directDeal"
                 value="불가"
-                defaultChecked
+                checked={directDeal === '불가'}
+                onChange={(e) => setDirectDeal(e.target.value)}
                 className={styles.radioInput}
               />
               <label htmlFor="directDealNo" className={styles.radioLabel}>
@@ -239,14 +253,25 @@ function ProductAdd() {
           <div className={styles.radioItem}>
             <span className={styles.radioText}>네고 가능 여부</span>
             <div className={styles.radioOptions}>
-              <input type="radio" value="가능" className={styles.radioInput} />
+              <input
+                type="radio"
+                id="negoAvailableYes"
+                name="negoAvailable"
+                value="가능"
+                checked={negoAvailable === '가능'}
+                onChange={(e) => setNegoAvailable(e.target.value)}
+                className={styles.radioInput}
+              />
               <label htmlFor="negoAvailableYes" className={styles.radioLabel}>
                 가능
               </label>
               <input
                 type="radio"
+                id="negoAvailableNo"
+                name="negoAvailable"
                 value="불가"
-                defaultChecked
+                checked={negoAvailable === '불가'}
+                onChange={(e) => setNegoAvailable(e.target.value)}
                 className={styles.radioInput}
               />
               <label htmlFor="negoAvailableNo" className={styles.radioLabel}>
@@ -259,14 +284,25 @@ function ProductAdd() {
           <div className={styles.radioItem}>
             <span className={styles.radioText}>택배 거래</span>
             <div className={styles.radioOptions}>
-              <input type="radio" value="가능" className={styles.radioInput} />
+              <input
+                type="radio"
+                id="deliveryDealYes"
+                name="deliveryDeal"
+                value="가능"
+                checked={deliveryDeal === '가능'}
+                onChange={(e) => setDeliveryDeal(e.target.value)}
+                className={styles.radioInput}
+              />
               <label htmlFor="deliveryDealYes" className={styles.radioLabel}>
                 가능
               </label>
               <input
                 type="radio"
+                id="deliveryDealNo"
+                name="deliveryDeal"
                 value="불가"
-                defaultChecked
+                checked={deliveryDeal === '불가'}
+                onChange={(e) => setDeliveryDeal(e.target.value)}
                 className={styles.radioInput}
               />
               <label htmlFor="deliveryDealNo" className={styles.radioLabel}>
