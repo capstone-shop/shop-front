@@ -313,8 +313,8 @@ function Category() {
 
         {/* 중 카테고리 */}
         {selectedLargeId &&
-          categories.large.find((cat) => cat.id === selectedLargeId)
-            ?.isLeaf && (
+          categories.large.find((cat) => cat.id === selectedLargeId)?.isLeaf ===
+            false && (
             <div className={styles.categoryColumn}>
               <div className={styles.title}>
                 <p>중 카테고리 </p>
@@ -380,7 +380,7 @@ function Category() {
         {/* 소 카테고리 */}
         {selectedMiddleId &&
           categories.middle.find((cat) => cat.id === selectedMiddleId)
-            ?.isLeaf && (
+            ?.isLeaf === false && (
             <div className={styles.categoryColumn}>
               <div className={styles.title}>
                 <p>소 카테고리 </p>
