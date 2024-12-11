@@ -1,5 +1,6 @@
 // 상수 및 외부 모듈 임포트
 import { ACCESS_TOKEN, API_BASE_URL } from '../constants/constant';
+import category from '../admin/components/Category';
 
 // 인터페이스 정의
 interface RequestOptions extends RequestInit {
@@ -37,6 +38,18 @@ interface SignUpResponse {
   message: string; // 응답 메시지 (예: '회원가입이 완료되었습니다.')
 }
 
+// 사용자 정보 수정 데이터 타입()
+export interface userRequest {
+  name: string;
+  email: string;
+  password: string;
+  address: string;
+  phone_number: string;
+  profileImages: string;
+  authProvider: string;
+  role: string;
+}
+
 // 소셜로그인시 추가정보 입력 타입
 export interface AdditionalInfoRequest {
   address: string;
@@ -71,6 +84,13 @@ export interface Product {
   createdAt: string;
 }
 
+// 카테고리 데이터 타입 (API) 응답 데이터)
+export interface CategoryResponse {
+  id: number;
+  title: string;
+  isLeaf: boolean;
+}
+
 // 홈 화면 데이터 타입 (API 응답 데이터)
 export interface HomeData {
   recentlyRegistered: Product[];
@@ -98,10 +118,16 @@ export interface ProductDetailResponse {
   relatedMerchandise: Product[];
 }
 
-// 상품 찜하기 요청
-export interface ProductDetailCalldibsResponse {
-  success: true;
-  message: string;
+// 상품 찜하기 조회 요청
+export interface ProductWishGetResponse {
+  merchandiseId: number;
+  isWished: boolean;
+}
+
+// 상품 찜하기/찜하기 취소 요청
+export interface ProductWishPatchResponse {
+  merchandiseId: number;
+  isWished: boolean;
 }
 
 // 어드민 카테고리 응답 타입
@@ -257,24 +283,70 @@ export function getCurrentUser(): Promise<any> {
     });
 }
 
-// 현재 사용자 정보 요청 함수
-export function postCurrentUser(): Promise<any> {
-  const token = localStorage.getItem(ACCESS_TOKEN);
-
-  return request({
-    url: `${API_BASE_URL}/api/v1/user/me`,
-    method: 'GET',
-  })
+// 사용자 정보 수정 API
+export function putCurrentUser(data: userRequest): Promise<SignUpResponse> {
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/user/update`, // 회원가입 API 엔드포인트
+      method: 'PUT',
+      body: JSON.stringify(data), // 사용자 입력 데이터를 JSON으로 변환하여 요청 본문에 포함
+    },
+    true // 헤더 포함
+  )
     .then((response) => {
-      return response;
+      // 응답을 `SignUpResponse` 타입으로 반환
+      return response as SignUpResponse;
     })
     .catch((error) => {
-      console.error(
-        '현재 사용자 정보를 불러오는 중 오류가 발생했습니다:',
-        error
-      );
+      // 에러 발생 시 한글로 에러 메시지 반환
+      console.error('사용자 정보 수정 요청중 오류가 발생했습니다:', error);
       return Promise.reject(
-        new Error('현재 사용자 정보를 불러오는 중 문제가 발생했습니다.')
+        new Error('사용자 정보 수정 요청중 문제가 발생했습니다.')
+      );
+    });
+}
+
+// 대 카테고리 목록 조회
+export function getCategory(): Promise<CategoryResponse> {
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/category`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    false
+  )
+    .then((response) => response as CategoryResponse)
+    .catch((error) => {
+      console.error('카테고리 목록 조회 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('카테고리 목록 조회 중 문제가 발생했습니다.')
+      );
+    });
+}
+
+// 중/소 카테고리 목록 조회
+export function getSubCategory(data: {
+  id: number;
+}): Promise<CategoryResponse> {
+  const { id } = data;
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/category/${id}/sub`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    false
+  )
+    .then((response) => response as CategoryResponse)
+    .catch((error) => {
+      console.error('카테고리 목록 조회 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('카테고리 목록 조회 중 문제가 발생했습니다.')
       );
     });
 }
@@ -364,10 +436,35 @@ export function getProductDetail(data: {
     });
 }
 
-// 상품 찜하기 요청
-export function patchProductDetailCalldibs(data: {
+// 상품 찜하기 조회 API
+export function getProductWish(data: {
   id: number;
-}): Promise<ProductDetailResponse> {
+}): Promise<ProductWishGetResponse> {
+  const { id } = data;
+
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/merchandise/${id}/wish`, // id를 URL에 삽입
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    true // 인증 헤더
+  )
+    .then((response) => response as ProductWishGetResponse)
+    .catch((error) => {
+      console.error('상품 찜하기 조회 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('상품 찜하기 조회 중 문제가 발생했습니다.')
+      );
+    });
+}
+
+// 상품 찜하기/찜하기 취소 API
+export function patchProductWish(data: {
+  id: number;
+}): Promise<ProductWishPatchResponse> {
   const { id } = data;
 
   return request(
@@ -380,10 +477,12 @@ export function patchProductDetailCalldibs(data: {
     },
     true // 인증 헤더
   )
-    .then((response) => response as ProductDetailResponse)
+    .then((response) => response as ProductWishPatchResponse)
     .catch((error) => {
-      console.error('상품 찜하기 중 오류 발생:', error);
-      return Promise.reject(new Error('상품 찜하기 중 문제가 발생했습니다.'));
+      console.error('상품 찜하기/찜하기 취소 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('상품 찜하기/찜하기 취소 중 문제가 발생했습니다.')
+      );
     });
 }
 
@@ -408,7 +507,7 @@ export function getAdminCategory(categoryId: string | number = '') {
     });
 }
 
-// 시간 함수
+// 시간 유틸리티
 export default function formatDate(isoDateString: string): string {
   const date = new Date(isoDateString);
 

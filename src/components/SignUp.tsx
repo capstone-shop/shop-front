@@ -24,13 +24,8 @@ function SignUp() {
     setValue,
     formState: { errors },
   } = useForm<SignUpFormInputs>();
-  const [allChecked, setAllChecked] = useState(false);
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-  const [emailLocal, setEmailLocal] = useState('');
-  const [emailDomain, setEmailDomain] = useState('');
   const [isCustomDomain, setIsCustomDomain] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');

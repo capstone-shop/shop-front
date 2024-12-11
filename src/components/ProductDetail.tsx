@@ -2,7 +2,8 @@ import styles from '../styles/css/ProductDetail.module.css';
 import React, { useEffect, useState } from 'react';
 import formatDate, {
   getProductDetail,
-  Product,
+  getProductWish,
+  patchProductWish,
   ProductDetailResponse,
 } from '../api/Utils';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -11,23 +12,58 @@ function ProductDetail() {
   const { id } = useParams<{ id: string }>(); // URL에서 id 가져오기
   const [productDetail, setProductDetail] =
     useState<ProductDetailResponse | null>(null);
+  const [isWished, setIsWished] = useState(false); // 찜하기 상태
+  const [isLoading, setIsLoading] = useState(false); // 요청 중 상태
   const navigate = useNavigate(); // React Router의 navigate 함수
 
+  // 상품 상세 정보 및 찜 상태 로드
   useEffect(() => {
-    const fetchProductDetail = async () => {
+    const fetchProductData = async () => {
+      if (!id) return;
+
       try {
-        const response = await getProductDetail({ id: Number(id) }); // id를 API 호출에 사용
-        setProductDetail(response);
-        console.log('상세보기 데이터:', response);
+        // 상품 상세 정보 가져오기
+        const detailResponse = await getProductDetail({ id: Number(id) });
+        setProductDetail(detailResponse);
+
+        // 찜 상태 가져오기
+        const wishResponse = await getProductWish({ id: Number(id) });
+        setIsWished(wishResponse.isWished); // API 응답에서 isWished 설정
       } catch (error) {
-        console.error('상품 상세정보를 가져오는 중 오류 발생:', error);
+        console.error('상품 정보를 가져오는 중 오류 발생:', error);
       }
     };
 
-    if (id) {
-      fetchProductDetail(); // URL에서 얻은 id를 기반으로 데이터 로드
-    }
+    fetchProductData();
   }, [id]);
+
+  // 찜하기/찜하기 취소 핸들러
+  const handleWishToggle = async () => {
+    if (!id || isLoading) return; // 요청 중에는 처리 방지
+
+    setIsLoading(true); // 요청 시작 표시
+    try {
+      // 찜 상태 요청
+      await patchProductWish({ id: Number(id) });
+
+      // 상태를 서버 응답과 무관하게 UI에서만 업데이트
+      setIsWished((prevIsWished) => !prevIsWished);
+      setProductDetail((prevDetail) => {
+        if (!prevDetail) return prevDetail;
+        return {
+          ...prevDetail,
+          merchandise: {
+            ...prevDetail.merchandise,
+            wish: prevDetail.merchandise.wish + (isWished ? -1 : 1), // 현재 찜 상태에 따라 증가/감소
+          },
+        };
+      });
+    } catch (error) {
+      console.error('찜 상태 변경 중 오류 발생:', error);
+    } finally {
+      setIsLoading(false); // 요청 종료
+    }
+  };
 
   return (
     <div className={styles.productContainer}>
@@ -194,7 +230,12 @@ function ProductDetail() {
 
                 <div className={styles.actions}>
                   <button className={styles.chatButton}>채팅하기</button>
-                  <button className={styles.likeButton}>찜하기</button>
+                  <button
+                    className={`${styles.likeButton} ${isWished ? styles.liked : ''}`} // 찜 상태에 따른 스타일
+                    onClick={() => handleWishToggle()}
+                  >
+                    {isWished ? '찜 취소' : '찜 하기'}
+                  </button>
                 </div>
               </div>
 

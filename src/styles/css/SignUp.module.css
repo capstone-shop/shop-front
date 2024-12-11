@@ -337,3 +337,15 @@
     font-size: 15px;
     box-sizing: border-box;
 }
+
+.imageInputContainer {
+    display: flex;
+    flex-direction: column; /* 세로 정렬로 오류 메시지를 입력 필드 아래에 배치 */
+    width: 100%;
+    max-width: 333px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+}

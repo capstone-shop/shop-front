@@ -14,8 +14,9 @@ import ProductSearch from '../components/ProductSearch';
 import ProductDetail from '../components/ProductDetail';
 import Chat from '../components/Chat';
 import ProfileEdit from '../components/ProfileEdit';
-import AdditionalInfo from "../components/AdditionalInfo";
-import OAuth2RedirectHandler from "../api/OAuth2";
+import AdditionalInfo from '../components/AdditionalInfo';
+import OAuth2RedirectHandler from '../api/OAuth2';
+import UserWishes from '../components/UserWishes';
 
 function UserRoutes() {
   const [authState, setAuthState] = useState({
@@ -77,6 +78,9 @@ function UserRoutes() {
         {/* 추가 정보 입력 */}
         <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
         {/* 토큰 추출 */}
+        <Route path="/userwishes" element={<UserWishes />} />
+        {/* 찜한 상품 조회 */}
+
         {/*<Route*/}
         {/*  path="/productSale"*/}
         {/*  element={*/}

@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from '../styles/css/SignUp.module.css';
 import DaumPost from './DaumPost';
-import { signUp } from '../api/Utils';
+import { getCurrentUser, putCurrentUser } from '../api/Utils';
 import { useNavigate } from 'react-router-dom';
+import SuccessModal from './SuccessModal';
 
 interface ProfileEditFormInputs {
   email: string;
@@ -18,13 +19,36 @@ function ProfileEdit() {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<ProfileEditFormInputs>();
 
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null); // 이미지 미리보기 URL 저장
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // 파일 입력 요소 참조
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  const closeModal = () => {
+    setIsModalOpen(false); // 모달 닫기
+    navigate('/profileedit'); // 성공 시 메인 페이지로 이동
+  };
+
+  // 이미지 파일 선택 핸들러
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setPreview(reader.result as string); // 읽은 파일의 URL 저장
+      reader.readAsDataURL(file); // 파일 읽기
+    }
+  };
+
+  // 미리보기 클릭 핸들러
+  const handlePreviewClick = () => {
+    fileInputRef.current?.click(); // 파일 입력 요소 클릭
+  };
 
   // 주소 업데이트 핸들러
   const handleAddressChange = (newAddress: string) => {
@@ -33,30 +57,53 @@ function ProfileEdit() {
 
   // 내 정보 수정 폼 제출 핸들러
   const onSubmit: SubmitHandler<ProfileEditFormInputs> = async (data) => {
-    // 데이터 변환: 필드 이름 매핑 및 기본값 추가
+    console.log('onSubmit 실행됨:', data); // 실행 확인
     const formData = {
       name: data.name,
       email: data.email,
       password: data.password,
       address: data.address,
-      phone_number: data.phone, // 필드명 변환
-      profileImages: data.profileImages || '', // 선택적 필드 (기본값은 빈 문자열)
-      authProvider: 'local', // 고정 값
-      role: 'ROLE_USER', // 고정 값
+      phone_number: data.phone,
+      profileImages: data.profileImages || '',
+      authProvider: 'local',
+      role: 'ROLE_USER',
     };
 
-    console.log('전송 데이터:', formData);
-
     try {
-      const response = await signUp(formData); // API 호출
-      console.log('내정보 수정 성공:', response);
-      alert('내정보 수정 성공!');
-      navigate('/'); // 메인 페이지로 이동
+      console.log('전송 데이터:', formData);
+      await putCurrentUser(formData); // 서버 요청
+      // 성공 시 모달 띄우기
+      setModalMessage('내 정보 수정이 성공적으로 완료되었습니다!');
+      setIsModalOpen(true);
     } catch (error) {
       console.error('내정보 수정 실패:', error);
-      alert('내정보 수정 실패!');
+      // 실패 시 모달 띄우기
+      setModalMessage('내 정보 수정이 실패했습니다. 다시 시도해주세요');
+      setIsModalOpen(true);
     }
   };
+
+  // 사용자 데이터 가져오기
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getCurrentUser();
+        console.log('유저 데이터:', response);
+
+        // 폼 필드 초기화
+        setValue('email', response.email);
+        setValue('name', response.name);
+        setValue('phone', response.phoneNumber);
+        setValue('address', response.address);
+        setValue('profileImages', response.profileImages || '');
+      } catch (err) {
+        console.error('데이터를 불러오는 중 오류 발생:', err);
+        setError('사용자 정보를 불러오는 데 실패했습니다.');
+      }
+    };
+
+    fetchUser();
+  }, [setValue]);
 
   return (
     <div className={styles.signUpFormContainer}>
@@ -69,8 +116,7 @@ function ProfileEdit() {
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
               <label>
-                이메일
-                <span className={styles.signUpRequired}>*</span>
+                이메일<span className={styles.signUpRequired}>*</span>
               </label>
             </div>
             <div className={styles.signUpInputContainer}>
@@ -81,6 +127,7 @@ function ProfileEdit() {
                 })}
                 placeholder="이메일을 입력해주세요"
                 className={styles.signUpInput}
+                readOnly // 이메일은 수정 불가
               />
             </div>
             <div className={styles.emptySpace}></div>
@@ -90,8 +137,7 @@ function ProfileEdit() {
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
               <label>
-                비밀번호
-                <span className={styles.signUpRequired}>*</span>
+                비밀번호<span className={styles.signUpRequired}>*</span>
               </label>
             </div>
             <div className={styles.signUpInputContainer}>
@@ -107,12 +153,28 @@ function ProfileEdit() {
             <div className={styles.emptySpace}></div>
           </div>
 
+          {/* 비밀번호 오류 메세지 */}
+          {errors.password && (
+            <div className={styles.signUpGroup}>
+              <div className={styles.labelContainer}>
+                <label>
+                  <span className={styles.signUpRequired}></span>
+                </label>
+              </div>
+              <div className={styles.errorMessageContainer}>
+                <span className={styles.errorMessage}>
+                  {errors.password.message}
+                </span>
+              </div>
+              <div className={styles.emptySpace}></div>
+            </div>
+          )}
+
           {/* 이름 */}
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
               <label>
-                이름
-                <span className={styles.signUpRequired}>*</span>
+                이름<span className={styles.signUpRequired}>*</span>
               </label>
             </div>
             <div className={styles.signUpInputContainer}>
@@ -128,12 +190,28 @@ function ProfileEdit() {
             <div className={styles.emptySpace}></div>
           </div>
 
+          {/* 이름 오류 메세지 */}
+          {errors.name && (
+            <div className={styles.signUpGroup}>
+              <div className={styles.labelContainer}>
+                <label>
+                  <span className={styles.signUpRequired}></span>
+                </label>
+              </div>
+              <div className={styles.errorMessageContainer}>
+                <span className={styles.errorMessage}>
+                  {errors.name.message}
+                </span>
+              </div>
+              <div className={styles.emptySpace}></div>
+            </div>
+          )}
+
           {/* 휴대폰 */}
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
               <label>
-                휴대폰
-                <span className={styles.signUpRequired}>*</span>
+                휴대폰<span className={styles.signUpRequired}>*</span>
               </label>
             </div>
             <div className={styles.signUpInputContainer}>
@@ -141,6 +219,10 @@ function ProfileEdit() {
                 type="text"
                 {...register('phone', {
                   required: '숫자만 입력해주세요.',
+                  pattern: {
+                    value: /^[0-9]{10,11}$/,
+                    message: '휴대폰 번호는 10~11자리 숫자만 입력 가능합니다.',
+                  },
                 })}
                 placeholder="숫자만 입력해주세요."
                 className={styles.signUpInput}
@@ -149,12 +231,28 @@ function ProfileEdit() {
             <div className={styles.emptySpace}></div>
           </div>
 
+          {/* 휴대폰 오류 메세지 */}
+          {errors.phone && ( // 오류가 있을 때만 렌더링
+            <div className={styles.signUpGroup}>
+              <div className={styles.labelContainer}>
+                <label>
+                  <span className={styles.signUpRequired}></span>
+                </label>
+              </div>
+              <div className={styles.errorMessageContainer}>
+                <span className={styles.errorMessage}>
+                  {errors.phone.message}
+                </span>
+              </div>
+              <div className={styles.emptySpace}></div>
+            </div>
+          )}
+
           {/* 주소 */}
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
               <label>
-                주소
-                <span className={styles.signUpRequired}>*</span>
+                주소<span className={styles.signUpRequired}>*</span>
               </label>
             </div>
             <div className={styles.signUpAddressButton}>
@@ -164,59 +262,56 @@ function ProfileEdit() {
                   type="text"
                   {...register('address', { required: '주소를 입력해주세요.' })}
                   readOnly
+                  className={styles.signUpInput}
                 />
               </div>
             </div>
             <div className={styles.emptySpace}></div>
           </div>
 
+          {/* 주소 오류 메세지 */}
+          {errors.address && (
+            <div className={styles.signUpGroup}>
+              <div className={styles.labelContainer}>
+                <label>
+                  <span className={styles.signUpRequired}></span>
+                </label>
+              </div>
+              <div className={styles.errorMessageContainer}>
+                <span className={styles.errorMessage}>
+                  {errors.address.message}
+                </span>
+              </div>
+              <div className={styles.emptySpace}></div>
+            </div>
+          )}
+
           {/* 프로필 이미지 */}
           <div className={styles.signUpGroup}>
             <div className={styles.labelContainer}>
-              <label>
-                프로필 이미지
-                <span className={styles.signUpRequired}>*</span>
-              </label>
+              <label>프로필 이미지</label>
             </div>
-            <div className={styles.signUpInputContainer}>
-              <label htmlFor="profileImage" className={styles.fileInputLabel}>
-                이미지 등록
-              </label>
+            <div className={styles.imageInputContainer}>
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="미리보기"
+                  className={styles.previewImage}
+                  onClick={handlePreviewClick}
+                  style={{ cursor: 'pointer' }}
+                />
+              ) : (
+                <label htmlFor="profileImage" className={styles.fileInputLabel}>
+                  이미지 등록
+                </label>
+              )}
               <input
                 id="profileImage"
                 type="file"
                 accept="image/*"
-                className={styles.hiddenFileInput} // 기본 파일 입력 숨김
-              />
-            </div>
-            <div className={styles.emptySpace}></div>
-          </div>
-
-          {/* 생년월일 */}
-          <div className={styles.signUpGroup}>
-            <div className={styles.labelContainer}>
-              <label>생년월일</label>
-            </div>
-            <div className={styles.signUpBirthGroup}>
-              <input
-                type="text"
-                maxLength={4}
-                placeholder="YYYY"
-                className={styles.signUpBirthInput}
-              />
-              <span className={styles.separator}>/</span>
-              <input
-                type="text"
-                maxLength={2}
-                placeholder="MM"
-                className={styles.signUpBirthInput}
-              />
-              <span className={styles.separator}>/</span>
-              <input
-                type="text"
-                maxLength={2}
-                placeholder="DD"
-                className={styles.signUpBirthInput}
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                className={styles.hiddenFileInput}
               />
             </div>
             <div className={styles.emptySpace}></div>
@@ -230,6 +325,11 @@ function ProfileEdit() {
           </div>
         </form>
       </div>
+
+      {/* 모달 렌더링 */}
+      {isModalOpen && (
+        <SuccessModal message={modalMessage} onClose={closeModal} />
+      )}
     </div>
   );
 }

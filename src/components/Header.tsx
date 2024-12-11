@@ -2,7 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../styles/css/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/css/Header.module.css';
-import { getCurrentUser, getProductHome } from '../api/Utils';
+import {
+  CategoryResponse,
+  getCategory,
+  getCurrentUser,
+  getProductHome,
+  getSubCategory,
+} from '../api/Utils';
 
 // `Header` 컴포넌트에 전달되는 props의 타입 정의
 interface HeaderProps {
@@ -25,10 +31,20 @@ export interface User {
 
 function Header({ authenticated, onLogout }: HeaderProps) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
   const [user, setUser] = useState<User | undefined>(undefined);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // 선택된 대 카테고리 ID
+  const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
+    null
+  ); // 선택된 중 카테고리 ID
+  const [category, setCategory] = useState<CategoryResponse[]>([]); // 대 카테고리 목록
+  const [subCategories, setSubCategories] = useState<CategoryResponse[]>([]); // 중 카테고리 목록
+  const [smallCategories, setSmallCategories] = useState<CategoryResponse[]>(
+    []
+  ); // 소 카테고리 목록
+
   const dropdownRef = useRef<HTMLDivElement | null>(null); // 드롭다운을 참조하는 ref
   const navigate = useNavigate();
 
@@ -58,88 +74,53 @@ function Header({ authenticated, onLogout }: HeaderProps) {
     }
   };
 
+  // 대 카테고리 데이터 조회
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchCategory = async () => {
       try {
-        const response = await getCurrentUser();
-        console.log('유저 데이터:', response);
-        setUser(response);
+        const response = await getCategory();
+        setCategory(Array.isArray(response) ? response : [response]); // 배열로 설정
       } catch (err) {
-        console.error('데이터를 불러오는 중 오류 발생:', err);
+        console.error('대 카테고리 조회 중 오류 발생:', err);
       }
     };
 
-    fetchProducts();
+    fetchCategory();
   }, []);
 
-  // 카테고리 목록 데이터 예시
-  const categories = [
-    {
-      name: '채소',
-      subcategories: [
-        '친환경',
-        '고구마·감자·당근',
-        '시금치·쌈채소·나물',
-        '브로콜리·피프리카·양배추',
-        '양파·대파·마늘·배추',
-      ],
-    },
-    {
-      name: '과일·견과·쌀',
-      subcategories: [
-        '제철과일',
-        '국산과일',
-        '수입과일',
-        '간편과일',
-        '냉동·건과일',
-      ],
-    },
-    {
-      name: '수산·해산·건어물',
-      subcategories: ['생선류', '조개류', '오징어·낙지·문어', '건어물·해조류'],
-    },
-    {
-      name: '정육·가공육·계란',
-      subcategories: ['소고기', '돼지고기', '닭고기', '계란류', '양고기'],
-    },
-    {
-      name: '국·반찬·메인요리',
-      subcategories: [
-        '국/탕/찌개',
-        '밑반찬',
-        '김치/젓갈/장류',
-        '두부/어묵/부침개',
-        '메인요리',
-      ],
-    },
-    {
-      name: '간편식·밀키트·샐러드',
-      subcategories: ['간편식', '밀키트', '샐러드', '도시락', '즉석밥/죽'],
-    },
-    {
-      name: '면·양념·오일',
-      subcategories: ['면류', '파스타', '양념', '소스/드레싱', '식용유/오일'],
-    },
-    {
-      name: '생수·음료',
-      subcategories: ['생수/탄산수', '주스', '탄산음료', '커피', '차류'],
-    },
-    {
-      name: '베이커리·간식',
-      subcategories: ['빵류', '케이크', '과자/스낵', '초콜릿', '떡/한과'],
-    },
-    {
-      name: '유제품·아이스크림',
-      subcategories: ['우유', '치즈', '버터/마가린', '요거트', '아이스크림'],
-    },
-  ];
+  // 중 카테고리 데이터 조회
+  const fetchSubCategories = async (categoryId: number) => {
+    try {
+      const response = await getSubCategory({ id: categoryId });
+      setSubCategories(Array.isArray(response) ? response : [response]); // 중 카테고리 설정
+      setSmallCategories([]); // 소 카테고리 초기화
+      setSelectedSubCategory(null); // 이전 선택 초기화
+    } catch (err) {
+      console.error('중 카테고리 조회 중 오류 발생:', err);
+      setSubCategories([]);
+    }
+  };
+
+  // 소 카테고리 데이터 조회
+  const fetchSmallCategories = async (subCategoryId: number) => {
+    try {
+      const response = await getSubCategory({ id: subCategoryId });
+      setSmallCategories(Array.isArray(response) ? response : [response]); // 소 카테고리 설정
+    } catch (err) {
+      console.error('소 카테고리 조회 중 오류 발생:', err);
+      setSmallCategories([]);
+    }
+  };
+
+  const handleCategoryHover = (categoryId: number) => {
+    setSelectedCategory(categoryId); // 선택된 대 카테고리 업데이트
+    fetchSubCategories(categoryId); // 중 카테고리 조회
+  };
+
+  const handleSubCategoryHover = (subCategoryId: number) => {
+    setSelectedSubCategory(subCategoryId); // 선택된 중 카테고리 업데이트
+    fetchSmallCategories(subCategoryId); // 소 카테고리 조회
+  };
 
   return (
     <div className={styles.HeaderContainer}>
@@ -169,7 +150,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
                     <ul className={styles.DropdownMenu}>
                       <li>
                         <Link
-                          to="/favorites"
+                          to="/userwishes"
                           className={styles.DropdownItem}
                           onClick={() => setIsDropdownOpen(false)} // 항목 클릭 시 드롭다운 닫기
                         >
@@ -249,116 +230,109 @@ function Header({ authenticated, onLogout }: HeaderProps) {
         </div>
       </div>
       {/* 헤더 카테고리 */}
-      <div className={styles.HeaderCategory}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '12px',
-            fontWeight: '550',
-            position: 'relative',
-            cursor: 'pointer',
-          }}
-          onMouseEnter={() => setDropdownVisible(true)}
-          onMouseLeave={() => setDropdownVisible(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 18 24"
-            fill="currentColor"
-            aria-label="Hamburger menu icon"
-            style={{ marginRight: '10px' }}
+      <div className={styles.HeaderContainer}>
+        <div className={styles.HeaderCategory}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '12px',
+              fontWeight: '550',
+              position: 'relative',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={() => setDropdownVisible(true)}
+            onMouseLeave={() => setDropdownVisible(false)}
           >
-            <rect y="3" width="18" height="2" rx="1" />
-            <rect y="10" width="18" height="2" rx="1" />
-            <rect y="17" width="18" height="2" rx="1" />
-          </svg>
-          <span>카테고리</span>
-
-          {isDropdownVisible && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                display: 'flex',
-                backgroundColor: 'white',
-                border: '1px solid #ccc',
-                boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.2)',
-                width: '400px',
-                zIndex: 1,
-              }}
-              onMouseEnter={() => setDropdownVisible(true)}
-              onMouseLeave={() => setDropdownVisible(false)} // 드롭다운 전체 영역에서 마우스가 벗어날 때 닫힘
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 18 24"
+              fill="currentColor"
+              aria-label="Hamburger menu icon"
+              style={{ marginRight: '10px' }}
             >
-              {/* 왼쪽 카테고리 목록 */}
-              <div
-                style={{
-                  width: '50%',
-                  maxHeight: '300px',
-                  overflowY: 'auto',
-                  borderRight: '1px solid #ccc',
-                }}
-              >
-                {categories.map((category, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      padding: '8px 16px',
-                      fontSize: '14px',
-                      color:
-                        selectedCategory === category.name ? '#5c2ea6' : '#333',
-                      backgroundColor:
-                        selectedCategory === category.name
-                          ? '#f5f5f5'
-                          : 'transparent',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={() => setSelectedCategory(category.name)}
-                  >
-                    {category.name}
-                  </div>
-                ))}
-              </div>
+              <rect y="3" width="18" height="2" rx="1" />
+              <rect y="10" width="18" height="2" rx="1" />
+              <rect y="17" width="18" height="2" rx="1" />
+            </svg>
+            <span>카테고리</span>
 
-              {/* 오른쪽 하위 카테고리 목록 */}
+            {isDropdownVisible && (
               <div
                 style={{
-                  width: '50%',
-                  maxHeight: '300px',
-                  overflowY: 'auto',
-                  padding: '8px 16px',
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  display: 'flex',
+                  backgroundColor: 'white',
+                  border: '1px solid #ccc',
+                  width: '600px',
+                  zIndex: 1,
                 }}
               >
-                {selectedCategory &&
-                  categories
-                    .find((category) => category.name === selectedCategory)
-                    ?.subcategories.map((subcategory, index) => (
+                {/* 대 카테고리 */}
+                <div className={styles.categoryColumn}>
+                  {category.map((item) => (
+                    <div
+                      key={item.id}
+                      className={`${styles.categoryItem} ${
+                        selectedCategory === item.id
+                          ? styles.categoryItemSelected
+                          : ''
+                      }`}
+                      onMouseEnter={() => handleCategoryHover(item.id)}
+                    >
+                      {item.title}
+                    </div>
+                  ))}
+                </div>
+                {/* 중 카테고리 */}
+                <div className={styles.categoryColumn}>
+                  {subCategories.length > 0 ? (
+                    subCategories.map((subItem) => (
                       <div
-                        key={index}
-                        style={{
-                          padding: '4px 0',
-                          fontSize: '14px',
-                          color: '#333',
-                          cursor: 'pointer',
-                        }}
-                        onMouseEnter={(e) => {
-                          const target = e.currentTarget as HTMLDivElement;
-                          target.style.backgroundColor = '#f0f0f0';
-                        }}
-                        onMouseLeave={(e) => {
-                          const target = e.currentTarget as HTMLDivElement;
-                          target.style.backgroundColor = 'transparent';
-                        }}
+                        key={subItem.id}
+                        className={`${styles.categoryItem} ${
+                          selectedSubCategory === subItem.id
+                            ? styles.categoryItemSelected
+                            : ''
+                        }`}
+                        onMouseEnter={() => handleSubCategoryHover(subItem.id)}
                       >
-                        {subcategory}
+                        {subItem.title}
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <div style={{ color: '#999' }}>중 카테고리가 없습니다.</div>
+                  )}
+                </div>
+                {/* 소 카테고리 */}
+                <div className={styles.smalCategoryColumn}>
+                  {smallCategories.length > 0 ? (
+                    smallCategories.map((smallItem) => (
+                      <div
+                        key={smallItem.id}
+                        className={`${styles.categoryItem} ${
+                          selectedSubCategory === smallItem.id
+                            ? styles.categoryItemSelected
+                            : ''
+                        }`}
+                        onMouseEnter={() =>
+                          setSelectedSubCategory(smallItem.id)
+                        }
+                      >
+                        {smallItem.title}
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ color: '#999' }}>소 카테고리가 없습니다.</div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
