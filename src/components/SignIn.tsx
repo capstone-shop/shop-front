@@ -44,15 +44,11 @@ function SignIn() {
       // 토큰을 로컬 스토리지에 저장
       localStorage.setItem('accessToken', response.accessToken);
       if (response.refreshToken) {
-        localStorage.setItem('refreshToken', response.refreshToken);
+        localStorage.setItem('accessToken', response.accessToken);
       }
 
       setModalMessage('로그인이 성공적으로 완료되었습니다!');
       setIsModalOpen(true);
-      // 로그인 성공 후 리디렉션
-
-      // navigate('/'); // 경로를 navigate 함수에 인자로 넘김
-      // window.location.reload(); // 강제 새로고침
     } catch (err) {
       // 에러 처리
       const message =
@@ -60,12 +56,15 @@ function SignIn() {
         '로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.';
       setError(message);
       console.error(err);
+
       setModalMessage('로그인이 실패했습니다. 다시 시도해주세요.');
       setIsModalOpen(true);
     }
   };
 
   const handleSocialLogin = (url: string) => {
+    // const response = await signIn(formData);
+    // localStorage.setItem('accessToken', response.accessToken);
     window.location.href = url;
   };
 

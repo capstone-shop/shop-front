@@ -15,6 +15,7 @@ import ProductDetail from '../components/ProductDetail';
 import Chat from '../components/chat';
 import UserInfoEdit from '../components/ProfileEdit';
 import ProfileEdit from '../components/ProfileEdit';
+import OAuth2RedirectHandler from '../api/OAuth2';
 
 function UserRoutes() {
   const [authState, setAuthState] = useState({
@@ -72,7 +73,8 @@ function UserRoutes() {
         {/* 채팅 */}
         <Route path="/profileedit" element={<ProfileEdit />} />
         {/* 내 정보 수정 */}
-
+        <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+        {/* 토큰 추출 */}
         {/*<Route*/}
         {/*  path="/productSale"*/}
         {/*  element={*/}
