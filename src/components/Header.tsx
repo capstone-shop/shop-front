@@ -74,6 +74,21 @@ function Header({ authenticated, onLogout }: HeaderProps) {
     }
   };
 
+  // 사용자 유저 조회
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getCurrentUser();
+        console.log('유저 데이터:', response);
+        setUser(response); // 유저 데이터를 상태로 설정
+      } catch (err) {
+        console.error('유저 데이터를 불러오는 중 오류 발생:', err);
+      }
+    };
+
+    fetchUserData(); // 유저 데이터를 가져오는 함수 호출
+  }, []);
+
   // 대 카테고리 데이터 조회
   useEffect(() => {
     const fetchCategory = async () => {
@@ -168,7 +183,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
                       </li>
                       <li>
                         <Link
-                          to="/products"
+                          to="/userproducts"
                           className={styles.DropdownItem}
                           onClick={() => setIsDropdownOpen(false)}
                         >

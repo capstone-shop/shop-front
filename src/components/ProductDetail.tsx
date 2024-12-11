@@ -81,7 +81,16 @@ function ProductDetail() {
               : '가격 흥정 불가'}
           </span>
         </div>
-        <div>{productDetail?.merchandise.category[0]?.title}</div>
+        <div>
+          {productDetail?.merchandise.category.map((cat, index) => (
+            <span key={cat.id}>
+              <span className={styles.categoryTitle}>{cat.title}</span>
+              {index < productDetail.merchandise.category.length - 1 && (
+                <span className={styles.separator}> / </span>
+              )}
+            </span>
+          ))}
+        </div>
       </div>
       {/**/}
       <div className={styles.productInfoContainer}>
@@ -205,7 +214,9 @@ function ProductDetail() {
                     : productDetail?.merchandise.transactionMethod ===
                         'DELIVERY'
                       ? ' 택배'
-                      : ' 알 수 없음'}{' '}
+                      : productDetail?.merchandise.transactionMethod === 'BOTH'
+                        ? ' 직거래/택배'
+                        : ' 알 수 없음'}{' '}
                   ({productDetail?.merchandise.location || '위치 정보 없음'})
                 </div>
                 <div className={styles.productStatus}>

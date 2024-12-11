@@ -42,7 +42,6 @@ interface SignUpResponse {
 export interface userRequest {
   name: string;
   email: string;
-  password: string;
   address: string;
   phone_number: string;
   profileImages: string;
@@ -83,6 +82,21 @@ export interface Product {
   images: string[];
   createdAt: string;
 }
+
+export interface UserProductRequest {
+  images: string[]; // 이미지 배열
+  name: string; // 상품명
+  categoryId: number; // 카테고리 ID
+  state: string;
+  description: string; // 상품 설명
+  price: number; // 가격
+  direct: boolean; // 직거래 가능 여부
+  nego: boolean; // 가격 네고 가능 여부
+  delivery: boolean; // 택배 거래 가능 여부
+  location: string; // 거래 장소
+}
+
+export interface UserProductResponse {}
 
 // 카테고리 데이터 타입 (API) 응답 데이터)
 export interface CategoryResponse {
@@ -169,24 +183,23 @@ const request = async (
         const errorResponse = JSON.parse(errorText);
         throw new Error(errorResponse.message || 'API 요청 실패');
       } catch {
-        throw new Error('API 요청 실패: 응답 본문을 파싱할 수 없습니다.');
+        throw new Error(`API 요청 실패: ${errorText}`);
       }
     }
 
     // 응답 본문 처리
     const text = await response.text();
     if (!text) {
-      // 빈 본문 처리
       console.log('응답 본문이 비어 있습니다.');
-      return null;
+      return null; // 빈 응답 반환
     }
 
     // JSON 파싱 시도
     try {
       return JSON.parse(text);
     } catch (error) {
-      console.error('응답 JSON 파싱 오류:', error);
-      throw new Error('API 응답을 JSON으로 파싱할 수 없습니다.');
+      console.warn('응답이 JSON이 아닙니다. 텍스트로 반환합니다.');
+      return text; // JSON 파싱 실패 시 텍스트 반환
     }
   } catch (error) {
     console.error('API 요청 오류:', error);
@@ -327,7 +340,7 @@ export function getCategory(): Promise<CategoryResponse> {
     });
 }
 
-// 중/소 카테고리 목록 조회
+// 중, 소 카테고리 목록 조회
 export function getSubCategory(data: {
   id: number;
 }): Promise<CategoryResponse> {
@@ -348,6 +361,25 @@ export function getSubCategory(data: {
       return Promise.reject(
         new Error('카테고리 목록 조회 중 문제가 발생했습니다.')
       );
+    });
+}
+
+// 상품 등록 API
+export function postProduct(data: UserProductRequest): Promise<void> {
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/merchandise`,
+      method: 'POST',
+      body: JSON.stringify(data), // 사용자 입력 데이터를 JSON으로 변환하여 요청 본문에 포함
+    },
+    true // 헤더 포함
+  )
+    .then(() => {
+      console.log('상품 등록 성공');
+    })
+    .catch((error) => {
+      console.error('상품 등록 요청중 오류가 발생했습니다:', error);
+      return Promise.reject(new Error('상품 등록 요청중 문제가 발생했습니다.'));
     });
 }
 
@@ -486,6 +518,51 @@ export function patchProductWish(data: {
     });
 }
 
+// 찜한 상품 조회 API
+export function getUserWishlist(
+  data: ProductRequest
+): Promise<ProductSearchResponse> {
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/my-info/wishlist`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    true
+  )
+    .then((response) => response as ProductSearchResponse)
+    .catch((error) => {
+      console.error('찜한 상품 조회 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('찜한 상품 조회 중 문제가 발생했습니다.')
+      );
+    });
+}
+
+// 등록한 상품 목록 조회 API
+export function getUserRegisterdMerchandise(
+  data: ProductRequest
+): Promise<ProductSearchResponse> {
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/my-info/registered-merchandise`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    true
+  )
+    .then((response) => response as ProductSearchResponse)
+    .catch((error) => {
+      console.error('사용자 등록 조회 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('사용자 등록 조회 중 문제가 발생했습니다.')
+      );
+    });
+}
 // Admin 카테고리 조회 요청 함수
 export function getAdminCategory(categoryId: string | number = '') {
   const url = categoryId

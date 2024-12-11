@@ -17,6 +17,7 @@ import ProfileEdit from '../components/ProfileEdit';
 import AdditionalInfo from '../components/AdditionalInfo';
 import OAuth2RedirectHandler from '../api/OAuth2';
 import UserWishes from '../components/UserWishes';
+import UserProducts from '../components/UserProducts';
 
 function UserRoutes() {
   const [authState, setAuthState] = useState({
@@ -80,6 +81,8 @@ function UserRoutes() {
         {/* 토큰 추출 */}
         <Route path="/userwishes" element={<UserWishes />} />
         {/* 찜한 상품 조회 */}
+        <Route path="/userproducts" element={<UserProducts />} />
+        {/* 등록한 상품 조회 */}
 
         {/*<Route*/}
         {/*  path="/productSale"*/}

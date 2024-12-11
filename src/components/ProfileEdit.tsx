@@ -8,7 +8,6 @@ import SuccessModal from './SuccessModal';
 
 interface ProfileEditFormInputs {
   email: string;
-  password: string;
   name: string;
   phone: string;
   address: string;
@@ -61,7 +60,6 @@ function ProfileEdit() {
     const formData = {
       name: data.name,
       email: data.email,
-      password: data.password,
       address: data.address,
       phone_number: data.phone,
       profileImages: data.profileImages || '',
@@ -133,42 +131,42 @@ function ProfileEdit() {
             <div className={styles.emptySpace}></div>
           </div>
 
-          {/* 비밀번호 */}
-          <div className={styles.signUpGroup}>
-            <div className={styles.labelContainer}>
-              <label>
-                비밀번호<span className={styles.signUpRequired}>*</span>
-              </label>
-            </div>
-            <div className={styles.signUpInputContainer}>
-              <input
-                type="password"
-                {...register('password', {
-                  required: '비밀번호를 입력해주세요.',
-                })}
-                placeholder="비밀번호를 입력해주세요"
-                className={styles.signUpInput}
-              />
-            </div>
-            <div className={styles.emptySpace}></div>
-          </div>
+          {/*/!* 비밀번호 *!/*/}
+          {/*<div className={styles.signUpGroup}>*/}
+          {/*  <div className={styles.labelContainer}>*/}
+          {/*    <label>*/}
+          {/*      비밀번호<span className={styles.signUpRequired}>*</span>*/}
+          {/*    </label>*/}
+          {/*  </div>*/}
+          {/*  <div className={styles.signUpInputContainer}>*/}
+          {/*    <input*/}
+          {/*      type="password"*/}
+          {/*      {...register('password', {*/}
+          {/*        required: '비밀번호를 입력해주세요.',*/}
+          {/*      })}*/}
+          {/*      placeholder="비밀번호를 입력해주세요"*/}
+          {/*      className={styles.signUpInput}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*  <div className={styles.emptySpace}></div>*/}
+          {/*</div>*/}
 
-          {/* 비밀번호 오류 메세지 */}
-          {errors.password && (
-            <div className={styles.signUpGroup}>
-              <div className={styles.labelContainer}>
-                <label>
-                  <span className={styles.signUpRequired}></span>
-                </label>
-              </div>
-              <div className={styles.errorMessageContainer}>
-                <span className={styles.errorMessage}>
-                  {errors.password.message}
-                </span>
-              </div>
-              <div className={styles.emptySpace}></div>
-            </div>
-          )}
+          {/*/!* 비밀번호 오류 메세지 *!/*/}
+          {/*{errors.password && (*/}
+          {/*  <div className={styles.signUpGroup}>*/}
+          {/*    <div className={styles.labelContainer}>*/}
+          {/*      <label>*/}
+          {/*        <span className={styles.signUpRequired}></span>*/}
+          {/*      </label>*/}
+          {/*    </div>*/}
+          {/*    <div className={styles.errorMessageContainer}>*/}
+          {/*      <span className={styles.errorMessage}>*/}
+          {/*        {errors.password.message}*/}
+          {/*      </span>*/}
+          {/*    </div>*/}
+          {/*    <div className={styles.emptySpace}></div>*/}
+          {/*  </div>*/}
+          {/*)}*/}
 
           {/* 이름 */}
           <div className={styles.signUpGroup}>

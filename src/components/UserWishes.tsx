@@ -1,6 +1,6 @@
 import styles from '../styles/css/UserWishes.module.css';
 import React, { useEffect, useState } from 'react';
-import formatDate, { getProductSearch } from '../api/Utils';
+import formatDate, { getProductSearch, getUserWishlist } from '../api/Utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Product } from '../api/Utils'; // Product를 타입으로 import
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -124,8 +124,7 @@ function UserWishes() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getProductSearch({
-          search: query, // 검색어 전달
+        const data = await getUserWishlist({
           page: currentPage, // 현재 페이지 전달
           size: pageSize, // 페이지 크기 전달
         });
@@ -171,26 +170,6 @@ function UserWishes() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* 하단 필터 영역 */}
-        <div className={styles.filterFooter}>
-          <div className={styles.footerOptions}>
-            <div className={styles.priceFilter}>
-              <input
-                type="text"
-                className={styles.priceInput}
-                placeholder="원"
-              />
-              <span>~</span>
-              <input
-                type="text"
-                className={styles.priceInput}
-                placeholder="원"
-              />
-            </div>
-          </div>
-          <button className={styles.searchButton}>검색</button>
         </div>
       </div>
       {/* 상품 리스트 */}
@@ -292,17 +271,22 @@ function UserWishes() {
             </button>
 
             {/* 페이지 번호 버튼 */}
-            {pageButtons.map((page) => (
-              <button
-                key={page}
-                className={`${styles.pageButton} ${
-                  page === currentPage ? styles.active : ''
-                }`}
-                onClick={() => setCurrentPage(page)}
-              >
-                {page + 1}
-              </button>
-            ))}
+            {Array.from({
+              length: Math.min(maxButtons, totalPages - startPage),
+            }).map((_, index) => {
+              const page = startPage + index;
+              return (
+                <button
+                  key={page}
+                  className={`${styles.pageButton} ${
+                    page === currentPage ? styles.active : ''
+                  }`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page + 1}
+                </button>
+              );
+            })}
 
             {/* 다음 그룹 버튼 */}
             <button

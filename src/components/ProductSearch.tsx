@@ -8,6 +8,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
+import SearchFilter from './SearchFilter';
 
 function ProductSearch() {
   const navigate = useNavigate(); // React Router의 useNavigate 훅 사용
@@ -155,44 +156,25 @@ function ProductSearch() {
 
   return (
     <div className={styles.productSearchContainer}>
-      <div className={styles.container}>
-        {/* 카테고리 영역 */}
-        <div className={styles.categoryRow}>
-          {categories.map((category, idx) => (
-            <div key={idx} className={styles.categoryCell}>
-              <span className={styles.categoryName}>{category.name}</span>
-              <div className={styles.options}>
-                {category.options.map((option, i) => (
-                  <label key={i} className={styles.option}>
-                    <input type="checkbox" className={styles.checkbox} />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* 하단 필터 영역 */}
-        <div className={styles.filterFooter}>
-          <div className={styles.footerOptions}>
-            <div className={styles.priceFilter}>
-              <input
-                type="text"
-                className={styles.priceInput}
-                placeholder="원"
-              />
-              <span>~</span>
-              <input
-                type="text"
-                className={styles.priceInput}
-                placeholder="원"
-              />
-            </div>
-          </div>
-          <button className={styles.searchButton}>검색</button>
-        </div>
-      </div>
+      <SearchFilter />
+      {/*<div className={styles.container}>*/}
+      {/*  /!* 카테고리 필터 영역 *!/*/}
+      {/*  <div className={styles.categoryRow}>*/}
+      {/*    {categories.map((category, idx) => (*/}
+      {/*      <div key={idx} className={styles.categoryCell}>*/}
+      {/*        <span className={styles.categoryName}>{category.name}</span>*/}
+      {/*        <div className={styles.options}>*/}
+      {/*          {category.options.map((option, i) => (*/}
+      {/*            <label key={i} className={styles.option}>*/}
+      {/*              <input type="checkbox" className={styles.checkbox} />*/}
+      {/*              <span>{option}</span>*/}
+      {/*            </label>*/}
+      {/*          ))}*/}
+      {/*        </div>*/}
+      {/*      </div>*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
       {/* 상품 리스트 */}
       <div>
         {/* 정렬기능 */}
@@ -232,7 +214,15 @@ function ProductSearch() {
                   dangerouslySetInnerHTML={{ __html: product.description }}
                 ></p>
                 <p className={styles.category}>
-                  카테고리 : {product.category[0]?.title}
+                  카테고리 :{' '}
+                  {product.category
+                    ? product.category.map((cat, index) => (
+                        <span key={cat.id}>
+                          {cat.title}
+                          {index < product.category.length - 1 && ' > '}
+                        </span>
+                      ))
+                    : '카테고리 정보 없음'}
                 </p>
                 <p className={styles.category}>
                   네고 :
@@ -241,8 +231,21 @@ function ProductSearch() {
                     : ' 가격흥정 불가'}
                 </p>
                 <p className={styles.category}>
-                  거래방식 :{product.transactionMethod ? ' 택배' : ' 직거래'}
+                  거래방식 :
+                  {(() => {
+                    switch (product.transactionMethod) {
+                      case 'DIRECT':
+                        return ' 직거래';
+                      case 'DELIVERY':
+                        return ' 택배';
+                      case 'BOTH':
+                        return ' 택배/직거래';
+                      default:
+                        return ' 알 수 없음';
+                    }
+                  })()}
                 </p>
+
                 <p className={styles.category}>
                   상품 상태 :
                   {(() => {

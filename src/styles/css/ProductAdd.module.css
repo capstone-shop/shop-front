@@ -331,3 +331,46 @@ button {
 .submitButton:hover {
     background-color: rgb(230, 120, 50);
 }
+
+
+/* 카테고리 컨테이너 */
+.categoryContainer {
+    display: flex;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* 카테고리 컬럼 */
+.categoryColumn {
+    flex: 1;
+    max-height: 300px;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+    padding: 8px;
+}
+
+/* 마지막 컬럼에 우측 경계선 제거 */
+.categoryColumn:last-child {
+    border-right: none;
+}
+
+/* 공통 카테고리 스타일 */
+.categoryItem {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* 호버 스타일 */
+.categoryItem:hover {
+    background-color: #f5f5f5;
+}
+
+/* 선택된 카테고리 스타일 */
+.categoryItemSelected {
+    color: #f6880b;
+    background-color: #f5f5f5;
+}

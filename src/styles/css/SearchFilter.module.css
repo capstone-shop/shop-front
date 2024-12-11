@@ -1,0 +1,213 @@
+.container {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    width: 1050px;
+    margin: 0 auto;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    /*margin-bottom: 16px;*/
+}
+
+.tab {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+    flex: 1;
+}
+
+.tab:hover {
+    background-color: #f9f9f9;
+}
+
+.activeTab {
+    border-bottom: 2px solid #f6880b;
+    font-weight: bold;
+    color: #f6880b;
+}
+
+.table {
+    margin-top: 16px;
+}
+
+.tableGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.tableCell {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.tableCell:hover {
+    background-color: #f6880b;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.selectedCell {
+    background-color: #f6880b;
+    color: #fff;
+}
+
+.selectedFilters {
+    /*margin-top: 24px;*/
+    border-top: 1px solid #ddd;
+    padding-top: 16px;
+}
+
+.selectedFiltersHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.resetButton {
+    font-size: 14px;
+    color: #f6880b;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.selectedFiltersList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.selectedFilters span{
+    font-size: 14px;
+    color: #495057;
+}
+
+.filterItem {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.removeButton {
+    background: none;
+    border: none;
+    color: #ff0000;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+
+/* 카테고리 컨테이너 */
+.categoryContainer {
+    display: flex;
+    /*margin-top: 10px;*/
+    width: 100%;
+}
+
+/* 카테고리 컬럼 */
+.categoryColumn {
+    flex: 1;
+    height: 300px;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+    padding: 8px;
+}
+
+/*!* 마지막 컬럼에 우측 경계선 제거 *!*/
+/*.categoryColumn:last-child {*/
+/*    border-right: none;*/
+/*}*/
+
+/* 공통 카테고리 스타일 */
+.categoryItem {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* 호버 스타일 */
+.categoryItem:hover {
+    background-color: #f5f5f5;
+}
+
+
+
+
+.categoryColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 336px;
+}
+
+.categoryItem {
+    padding: 8px 12px;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.categoryItem:hover {
+    background-color: #f6880b;
+    color: white;
+}
+
+/* 선택된 카테고리 스타일 */
+.categoryItemSelected {
+    background-color: #f6880b;
+    color: white;
+    border-color: #f6880b;
+}
+
+.noItems{
+    font-size: 14px;
+}
+
+/* 스크롤바 전체 */
+.categoryColumn::-webkit-scrollbar {
+    width: 4px; /* 스크롤바 너비 */
+    height: 4px; /* 가로 스크롤바 높이 */
+}
+
+/*!* 스크롤바 트랙 *!*/
+/*.categoryColumn::-webkit-scrollbar-track {*/
+/*    background-color: #f0f0f0; !* 트랙 배경색 *!*/
+/*    border-radius: 4px; !* 둥근 모서리 *!*/
+/*}*/
+
+/* 스크롤바 손잡이 */
+.categoryColumn::-webkit-scrollbar-thumb {
+    background-color: #f6880b; /* 손잡이 색상 */
+    border-radius: 5px; /* 둥근 모서리 */
+    border: 1px solid #f6880b; /* 손잡이와 트랙 간격 */
+}
+
+/* 스크롤바 손잡이 호버 효과 */
+.categoryColumn::-webkit-scrollbar-thumb:hover {
+    background-color: #ff9800; /* 호버 시 색상 */
+}
+
