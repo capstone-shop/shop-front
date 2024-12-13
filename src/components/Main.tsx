@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/css/Main.module.css';
+import testImg1 from '../styles/img/testimage.png';
+import testImg2 from '../styles/img/testimage2.jpg';
+import testImg3 from '../styles/img/testimage3.jpg';
 import Carousel from 'react-bootstrap/Carousel';
 import { getProductHome, HomeData } from '../api/Utils';
 import { useNavigate } from 'react-router-dom';
@@ -92,17 +95,24 @@ function Main() {
       <div className={styles.carousel}>
         <Carousel className={styles.carousel} interval={10000}>
           <Carousel.Item>
-            <img src="https://via.placeholder.com/800x400" alt="1번" />
+            <img src={testImg1} alt="1번" />
             <Carousel.Caption>
-              <span>믿을만한 이웃 간 중고거래!</span>
-              <p>동네 주민들과 가깝고 따뜻한 거래를 지금 경험해보세요.</p>
+              {/*<span>믿을만한 이웃 간 중고거래!</span>*/}
+              {/*<p>동네 주민들과 가깝고 따뜻한 거래를 지금 경험해보세요.</p>*/}
             </Carousel.Caption>
           </Carousel.Item>
           <Carousel.Item>
-            <img src="https://via.placeholder.com/800x400" alt="2번" />
+            <img src={testImg2} alt="2번" />
             <Carousel.Caption>
-              <span>동네 이웃들과 함께하는 중고거래</span>
-              <p>지금 등록하고, 현금으로 바꿔보세요!</p>
+              {/*<span>동네 이웃들과 함께하는 중고거래</span>*/}
+              {/*<p>지금 등록하고, 현금으로 바꿔보세요!</p>*/}
+            </Carousel.Caption>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src={testImg3} alt="3번" />
+            <Carousel.Caption>
+              {/*<span>동네 이웃들과 함께하는 중고거래</span>*/}
+              {/*<p>지금 등록하고, 현금으로 바꿔보세요!</p>*/}
             </Carousel.Caption>
           </Carousel.Item>
         </Carousel>
