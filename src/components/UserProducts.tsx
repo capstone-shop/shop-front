@@ -141,7 +141,7 @@ function UserProducts() {
     };
 
     fetchProducts();
-  }, [query, currentPage]); // query와 currentPage 변경 시 실행
+  }, [currentPage, pageSize]); // pageSize도 종속성에 추가
 
   useEffect(() => {
     const sortedProducts = sortProducts(originalProducts, selected); // 원본 데이터 사용

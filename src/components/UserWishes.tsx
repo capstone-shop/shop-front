@@ -8,6 +8,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
+import SearchFilter from './SearchFilter';
 
 function UserWishes() {
   const navigate = useNavigate(); // React Router의 useNavigate 훅 사용
@@ -52,51 +53,6 @@ function UserWishes() {
     console.log(`Selected sorting option: ${option}`);
   };
 
-  const categories = [
-    {
-      name: '카테고리',
-      options: [
-        '노트북',
-        '남성의류',
-        '여성의류',
-        '도서',
-        '휴대폰',
-        '데스크톱',
-        '노트북',
-        '남성의류',
-        '여성의류',
-        '도서',
-        '휴대폰',
-        '데스크톱',
-      ],
-    },
-    {
-      name: '찜 횟수 기준',
-      options: ['100 이상', '50 이상', '10 이상'],
-    },
-    {
-      name: '등록자 평점 기준',
-      options: ['100 이상', '50 이상', '10 이상'],
-    },
-    {
-      name: '거래 방식',
-      options: ['직거래 가능', '택배거래 가능'],
-    },
-    {
-      name: '상품 상태',
-      options: [
-        '새 상품(미사용)',
-        '사용감 적음',
-        '사용감 중간',
-        '사용감 많음',
-        '고장/파손 상품',
-      ],
-    },
-  ];
-
-  const location = useLocation(); // URL 파라미터 추출
-  const query = new URLSearchParams(location.search).get('query') || ''; // 검색어 추출
-
   const [originalProducts, setOriginalProducts] = useState<Product[]>([]); // 원본 데이터
   const [products, setProducts] = useState<Product[]>([]); // 정렬된 데이터
   const [totalPages, setTotalPages] = useState<number>(0); // 전체 페이지 수
@@ -121,6 +77,7 @@ function UserWishes() {
     (_, index) => startPage + index
   );
 
+  // query 의존성 제거
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -137,7 +94,7 @@ function UserWishes() {
     };
 
     fetchProducts();
-  }, [query, currentPage]); // query와 currentPage 변경 시 실행
+  }, [currentPage]); // query 대신 currentPage만 의존성으로 추가
 
   useEffect(() => {
     const sortedProducts = sortProducts(originalProducts, selected); // 원본 데이터 사용
@@ -148,30 +105,10 @@ function UserWishes() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]); // currentPage 변경 시 실행
 
-  useEffect(() => {
-    setCurrentPage(0); // 검색어가 변경되면 현재 페이지를 초기화
-  }, [query]); // 검색어(query)가 변경될 때 실행
-
   return (
     <div className={styles.productSearchContainer}>
-      <div className={styles.container}>
-        {/* 카테고리 영역 */}
-        <div className={styles.categoryRow}>
-          {categories.map((category, idx) => (
-            <div key={idx} className={styles.categoryCell}>
-              <span className={styles.categoryName}>{category.name}</span>
-              <div className={styles.options}>
-                {category.options.map((option, i) => (
-                  <label key={i} className={styles.option}>
-                    <input type="checkbox" className={styles.checkbox} />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* 검색 필터 */}
+      <SearchFilter />
       {/* 상품 리스트 */}
       <div>
         {/* 정렬기능 */}
@@ -271,22 +208,17 @@ function UserWishes() {
             </button>
 
             {/* 페이지 번호 버튼 */}
-            {Array.from({
-              length: Math.min(maxButtons, totalPages - startPage),
-            }).map((_, index) => {
-              const page = startPage + index;
-              return (
-                <button
-                  key={page}
-                  className={`${styles.pageButton} ${
-                    page === currentPage ? styles.active : ''
-                  }`}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page + 1}
-                </button>
-              );
-            })}
+            {pageButtons.map((page) => (
+              <button
+                key={page}
+                className={`${styles.pageButton} ${
+                  page === currentPage ? styles.active : ''
+                }`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page + 1}
+              </button>
+            ))}
 
             {/* 다음 그룹 버튼 */}
             <button

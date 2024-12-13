@@ -48,7 +48,7 @@ function Main() {
           {product.price.toLocaleString()}원
         </p>
         <p className={styles.productMeta}>
-          ♥ {product.wish} 댓글: {product.chat} 조회수: {product.view}
+          ♥ {product.wish} 채팅: {product.chat} 조회수: {product.view}
           <br />
           {product.transactionMethod === 'DIRECT'
             ? '직거래'

@@ -520,11 +520,14 @@ export function patchProductWish(data: {
 
 // 찜한 상품 조회 API
 export function getUserWishlist(
-  data: ProductRequest
+  data: ProductRequest & { page: number; size: number }
 ): Promise<ProductSearchResponse> {
+  // 쿼리 파라미터 생성
+  const queryParams = createQueryParams(data);
+
   return request(
     {
-      url: `${API_BASE_URL}/api/v1/my-info/wishlist`,
+      url: `${API_BASE_URL}/api/v1/my-info/wishlist?${queryParams}`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -543,11 +546,14 @@ export function getUserWishlist(
 
 // 등록한 상품 목록 조회 API
 export function getUserRegisterdMerchandise(
-  data: ProductRequest
+  data: ProductRequest & { page: number; size: number } // page와 size를 포함한 타입
 ): Promise<ProductSearchResponse> {
+  // 쿼리 파라미터 생성
+  const queryParams = createQueryParams(data);
+
   return request(
     {
-      url: `${API_BASE_URL}/api/v1/my-info/registered-merchandise`,
+      url: `${API_BASE_URL}/api/v1/my-info/registered-merchandise?${queryParams}`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -563,6 +569,7 @@ export function getUserRegisterdMerchandise(
       );
     });
 }
+
 // Admin 카테고리 조회 요청 함수
 export function getAdminCategory(categoryId: string | number = '') {
   const url = categoryId
