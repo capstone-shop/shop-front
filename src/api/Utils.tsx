@@ -117,7 +117,7 @@ export interface ProductRequest {
   size?: number; // 페이지 크기 (기본값=20)
   sort?: string; // 정렬 기준, 예: "wish,desc"
   search?: string; // 검색어 (기본값="")
-  filter?: string; // 필터 조건, 예: "wish,0;stat,1,2"
+  filter?: string | null; // null도 허용 필터 조건, 예: "wish,0;stat,1,2"
 }
 
 // 검색 화면 데이터 타입 (API 응답 데이터)
@@ -407,24 +407,28 @@ export function getProductHome(data: ProductRequest): Promise<HomeData> {
     });
 }
 
-// 쿼리 파라미터 생성 유틸리티
 export function createQueryParams(data: ProductRequest): string {
-  const params = new URLSearchParams();
-
-  Object.entries(data).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      params.append(key, String(value)); // 값이 존재하는 경우만 추가
-    }
-  });
-
-  return params.toString(); // "key1=value1&key2=value2" 형식 반환
+  return Object.entries(data)
+    .filter(([_, value]) => value !== undefined && value !== null)
+    .map(([key, value]) => {
+      if (key === 'filter') {
+        return `${key}=${value}`; // filter는 그대로 추가 (인코딩하지 않음)
+      }
+      return `${key}=${encodeURIComponent(String(value))}`; // 다른 값은 인코딩
+    })
+    .join('&');
 }
 
 // 검색화면 상품 조회
 export function getProductSearch(
   data: ProductRequest
 ): Promise<ProductSearchResponse> {
-  const queryParams = createQueryParams(data);
+  const queryParams = createQueryParams({
+    search: data.search,
+    filter: data.filter,
+    page: data.page,
+    size: data.size,
+  });
 
   return request(
     {

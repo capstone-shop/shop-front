@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/css/SearchFilter.module.css';
 import { CategoryResponse, getCategory, getSubCategory } from '../api/Utils';
 
@@ -9,24 +10,35 @@ const categories = [
   },
   {
     name: '찜 횟수 기준',
-    options: ['100 이상', '50 이상', '10 이상'],
+    options: [
+      { label: '100 이상', value: 100 },
+      { label: '50 이상', value: 50 },
+      { label: '10 이상', value: 10 },
+    ],
   },
   {
     name: '등록자 평점 기준',
-    options: ['100 이상', '50 이상', '10 이상'],
+    options: [
+      { label: '100 이상', value: 100 },
+      { label: '50 이상', value: 50 },
+      { label: '10 이상', value: 10 },
+    ],
   },
   {
     name: '거래 방식',
-    options: ['직거래 가능', '택배거래 가능'],
+    options: [
+      { label: '직거래 가능', value: 0 },
+      { label: '택배거래 가능', value: 1 },
+    ],
   },
   {
     name: '상품 상태',
     options: [
-      '새 상품(미사용)',
-      '사용감 적음',
-      '사용감 중간',
-      '사용감 많음',
-      '고장/파손 상품',
+      { label: '새 상품(미사용)', value: 0 },
+      { label: '사용감 적음', value: 1 },
+      { label: '사용감 중간', value: 2 },
+      { label: '사용감 많음', value: 3 },
+      { label: '고장/파손 상품', value: 4 },
     ],
   },
 ];
@@ -34,45 +46,84 @@ const categories = [
 function SearchFilter() {
   const [activeTab, setActiveTab] = useState<string>('카테고리 선택');
   const [selectedFilters, setSelectedFilters] = useState<{
-    [key: string]: string | string[];
+    [key: string]: (string | number)[];
   }>({});
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
-    null
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<number[]>(
+    []
   );
-  const [selectedSmallCategory, setSelectedSmallCategory] = useState<
-    number | null
-  >(null);
+  const [selectedSmallCategories, setSelectedSmallCategories] = useState<
+    number[]
+  >([]);
   const [category, setCategory] = useState<CategoryResponse[]>([]);
   const [subCategories, setSubCategories] = useState<CategoryResponse[]>([]);
   const [smallCategories, setSmallCategories] = useState<CategoryResponse[]>(
     []
   );
+  const navigate = useNavigate();
 
-  const toggleFilter = (category: string, option: string) => {
+  // 필터 변경 시 URL 업데이트
+  useEffect(() => {
+    const generateFilterString = () => {
+      const mappings: { [key: string]: string } = {
+        '대 카테고리': 'cate',
+        '중 카테고리': 'cate',
+        '소 카테고리': 'cate',
+        '찜 횟수 기준': 'wish',
+        '등록자 평점 기준': 'repu',
+        '거래 방식': 'tran',
+        '상품 상태': 'stat',
+      };
+
+      // 병합된 카테고리 값 생성
+      const categoryValues = [
+        ...(selectedFilters['대 카테고리'] || []),
+        ...(selectedFilters['중 카테고리'] || []),
+        ...(selectedFilters['소 카테고리'] || []),
+      ];
+
+      // 필터 문자열 생성
+      return Object.entries(selectedFilters)
+        .filter(
+          ([key]) =>
+            key !== '대 카테고리' &&
+            key !== '중 카테고리' &&
+            key !== '소 카테고리'
+        ) // 카테고리 제외
+        .map(([key, values]) => {
+          const filterKey = mappings[key];
+          if (!filterKey) return '';
+          const filterValues = values.join(',');
+          return `${filterKey},${filterValues}`;
+        })
+        .filter(Boolean)
+        .concat(categoryValues.length ? `cate,${categoryValues.join(',')}` : []) // 병합된 카테고리 추가
+        .join(';');
+    };
+
+    const filterString = generateFilterString();
+    navigate(`/productSearch?filter=${encodeURIComponent(filterString)}`);
+  }, [selectedFilters]);
+
+  const toggleFilter = (category: string, option: string | number) => {
     setSelectedFilters((prev) => {
-      const current = prev[category];
-      if (Array.isArray(current)) {
-        // 다중 선택
-        return {
-          ...prev,
-          [category]: current.includes(option)
-            ? current.filter((item) => item !== option)
-            : [...current, option],
-        };
-      }
-      // 단일 선택
-      return { ...prev, [category]: option };
+      const current = prev[category] || [];
+      return {
+        ...prev,
+        [category]: current.includes(option)
+          ? current.filter((item) => item !== option)
+          : [...current, option],
+      };
     });
   };
 
   const resetFilters = () => {
     setSelectedFilters({});
-    setSelectedCategory(null);
+    setSelectedCategories([]);
+    setSelectedSubCategories([]);
+    setSelectedSmallCategories([]);
     setSubCategories([]);
-    setSelectedSubCategory(null);
     setSmallCategories([]);
-    setSelectedSmallCategory(null);
   };
 
   const fetchCategory = async () => {
@@ -88,9 +139,8 @@ function SearchFilter() {
     try {
       const response = await getSubCategory({ id: categoryId });
       setSubCategories(Array.isArray(response) ? response : [response]);
-      setSmallCategories([]);
-      setSelectedSubCategory(null);
-      setSelectedSmallCategory(null);
+      setSmallCategories([]); // 중카테고리 선택 시 소카테고리 초기화
+      setSelectedSmallCategories([]); // 소카테고리 선택 초기화
     } catch (err) {
       console.error('중 카테고리 조회 중 오류 발생:', err);
     }
@@ -100,7 +150,6 @@ function SearchFilter() {
     try {
       const response = await getSubCategory({ id: subCategoryId });
       setSmallCategories(Array.isArray(response) ? response : [response]);
-      setSelectedSmallCategory(null);
     } catch (err) {
       console.error('소 카테고리 조회 중 오류 발생:', err);
     }
@@ -112,23 +161,86 @@ function SearchFilter() {
     }
   }, [activeTab]);
 
-  // 카테고리 선택 렌더링
+  const handleCategorySelect = (categoryId: number) => {
+    const selected = category.find((c) => c.id === categoryId);
+    if (selected) {
+      setSelectedCategories((prev) =>
+        prev.includes(categoryId)
+          ? prev.filter((id) => id !== categoryId)
+          : [...prev, categoryId]
+      );
+
+      setSelectedFilters((prev) => ({
+        ...prev,
+        '대 카테고리': selectedCategories.includes(categoryId)
+          ? selectedCategories.filter((id) => id !== categoryId)
+          : [...selectedCategories, categoryId],
+      }));
+
+      fetchSubCategories(categoryId);
+    }
+  };
+
+  const handleSubCategorySelect = (subCategoryId: number) => {
+    const selected = subCategories.find((c) => c.id === subCategoryId);
+    if (selected) {
+      setSelectedSubCategories((prev) =>
+        prev.includes(subCategoryId)
+          ? prev.filter((id) => id !== subCategoryId)
+          : [...prev, subCategoryId]
+      );
+
+      // 업데이트된 필터에 반영
+      setSelectedFilters((prev) => ({
+        ...prev,
+        '중 카테고리': prev['중 카테고리']
+          ? prev['중 카테고리'].includes(subCategoryId)
+            ? prev['중 카테고리'].filter((id) => id !== subCategoryId)
+            : [...prev['중 카테고리'], subCategoryId]
+          : [subCategoryId],
+      }));
+
+      fetchSmallCategories(subCategoryId);
+    }
+  };
+
+  const handleSmallCategorySelect = (smallCategoryId: number) => {
+    const selected = smallCategories.find((c) => c.id === smallCategoryId);
+    if (selected) {
+      setSelectedSmallCategories((prev) =>
+        prev.includes(smallCategoryId)
+          ? prev.filter((id) => id !== smallCategoryId)
+          : [...prev, smallCategoryId]
+      );
+
+      // `selectedFilters` 업데이트
+      setSelectedFilters((prev) => ({
+        ...prev,
+        '소 카테고리': prev['소 카테고리']
+          ? prev['소 카테고리'].includes(smallCategoryId)
+            ? prev['소 카테고리'].filter((id) => id !== smallCategoryId)
+            : [...prev['소 카테고리'], smallCategoryId]
+          : [smallCategoryId],
+      }));
+    }
+  };
+
   const renderCategoryItems = (
-    items: string[],
-    selectedItem: string | null,
-    onSelect: (item: string) => void
+    items: CategoryResponse[],
+    selectedItems: number[],
+    onSelect: (id: number) => void
   ) => (
     <div className={styles.categoryColumn}>
       {items.length > 0 ? (
         items.map((item) => (
           <div
-            key={item}
+            key={item.id}
             className={`${styles.categoryItem} ${
-              selectedItem === item ? styles.categoryItemSelected : ''
+              selectedItems.includes(item.id) ? styles.categoryItemSelected : ''
             }`}
-            onClick={() => onSelect(item)}
+            onClick={() => onSelect(item.id)}
           >
-            {item}
+            {item.title}
           </div>
         ))
       ) : (
@@ -137,32 +249,28 @@ function SearchFilter() {
     </div>
   );
 
-  // 옵션 탭 렌더링
-  const renderOptionItems = (items: string[]) => (
+  const renderOptionItems = (
+    items: { label: string; value: number | string }[]
+  ) => (
     <div className={styles.categoryColumn}>
-      {items.length > 0 ? (
-        items.map((item) => (
-          <div
-            key={item}
-            className={`${styles.categoryItem} ${
-              (selectedFilters[activeTab] || []).includes(item)
-                ? styles.categoryItemSelected
-                : ''
-            }`}
-            onClick={() => toggleFilter(activeTab, item)}
-          >
-            {item}
-          </div>
-        ))
-      ) : (
-        <div className={styles.noItems}>항목이 없습니다.</div>
-      )}
+      {items.map((item) => (
+        <div
+          key={item.value}
+          className={`${styles.categoryItem} ${
+            (selectedFilters[activeTab] || []).includes(item.value)
+              ? styles.categoryItemSelected
+              : ''
+          }`}
+          onClick={() => toggleFilter(activeTab, item.value)}
+        >
+          {item.label}
+        </div>
+      ))}
     </div>
   );
 
   return (
     <div className={styles.container}>
-      {/* 카테고리 탭 */}
       <div className={styles.tabs}>
         {categories.map((category) => (
           <div
@@ -177,71 +285,22 @@ function SearchFilter() {
         ))}
       </div>
 
-      {/* 카테고리 선택 또는 옵션 테이블 */}
       {activeTab === '카테고리 선택' ? (
         <div className={styles.categoryContainer}>
           {renderCategoryItems(
-            category.map((c) => c.title),
-            selectedCategory
-              ? category.find((c) => c.id === selectedCategory)?.title || null
-              : null,
-            (title) => {
-              const selected = category.find((c) => c.title === title);
-              if (selected) {
-                setSelectedCategory(selected.id);
-                setSelectedSubCategory(null);
-                setSelectedSmallCategory(null);
-                fetchSubCategories(selected.id);
-
-                // Update selectedFilters with selected category
-                setSelectedFilters((prev) => ({
-                  ...prev,
-                  '대 카테고리': selected.title,
-                }));
-              }
-            }
+            category,
+            selectedCategories,
+            handleCategorySelect
           )}
-
           {renderCategoryItems(
-            subCategories.map((c) => c.title),
-            selectedSubCategory
-              ? subCategories.find((c) => c.id === selectedSubCategory)
-                  ?.title || null
-              : null,
-            (title) => {
-              const selected = subCategories.find((c) => c.title === title);
-              if (selected) {
-                setSelectedSubCategory(selected.id);
-                setSelectedSmallCategory(null);
-                fetchSmallCategories(selected.id);
-
-                // Update selectedFilters with selected subcategory
-                setSelectedFilters((prev) => ({
-                  ...prev,
-                  '중 카테고리': selected.title,
-                }));
-              }
-            }
+            subCategories,
+            selectedSubCategories,
+            handleSubCategorySelect
           )}
-
           {renderCategoryItems(
-            smallCategories.map((c) => c.title),
-            selectedSmallCategory
-              ? smallCategories.find((c) => c.id === selectedSmallCategory)
-                  ?.title || null
-              : null,
-            (title) => {
-              const selected = smallCategories.find((c) => c.title === title);
-              if (selected) {
-                setSelectedSmallCategory(selected.id);
-
-                // Update selectedFilters with selected small category
-                setSelectedFilters((prev) => ({
-                  ...prev,
-                  '소 카테고리': selected.title,
-                }));
-              }
-            }
+            smallCategories,
+            selectedSmallCategories,
+            handleSmallCategorySelect // 수정된 부분
           )}
         </div>
       ) : (
@@ -250,33 +309,57 @@ function SearchFilter() {
         )
       )}
 
-      {/* 선택한 필터 */}
       <div className={styles.selectedFilters}>
-        <div className={styles.selectedFiltersHeader}>
-          <span>선택한 필터</span>
-          <button className={styles.resetButton} onClick={resetFilters}>
-            초기화
-          </button>
-        </div>
-        <div className={styles.selectedFiltersList}>
-          {Object.entries(selectedFilters).map(([category, value]) => (
-            <div key={category} className={styles.filterItem}>
-              <strong>{category}: </strong>
-              {Array.isArray(value) ? value.join(', ') : value}{' '}
-              <button
-                className={styles.removeButton}
-                onClick={() =>
-                  setSelectedFilters((prev) => {
-                    const updated = { ...prev };
-                    delete updated[category];
-                    return updated;
+        <div className={styles.selectedFilters}>
+          <div className={styles.selectedFiltersHeader}>
+            <span>선택한 필터</span>
+            <button className={styles.resetButton} onClick={resetFilters}>
+              초기화
+            </button>
+          </div>
+          <div className={styles.selectedFiltersList}>
+            {Object.entries(selectedFilters).map(([categoryKey, values]) => (
+              <div key={categoryKey} className={styles.filterItem}>
+                <strong>{categoryKey}: </strong>
+                {values
+                  .map((value) => {
+                    if (categoryKey === '대 카테고리') {
+                      const found = category.find((cat) => cat.id === value);
+                      return found ? found.title : value;
+                    }
+                    if (categoryKey === '중 카테고리') {
+                      const found = subCategories.find(
+                        (cat) => cat.id === value
+                      );
+                      return found ? found.title : value;
+                    }
+                    if (categoryKey === '소 카테고리') {
+                      const found = smallCategories.find(
+                        (cat) => cat.id === value
+                      );
+                      return found ? found.title : value;
+                    }
+                    const option = categories
+                      .find((cat) => cat.name === categoryKey)
+                      ?.options?.find((opt) => opt.value === value);
+                    return option?.label || value; // label이 없으면 value 출력
                   })
-                }
-              >
-                X
-              </button>
-            </div>
-          ))}
+                  .join(', ')}
+                <button
+                  className={styles.removeButton}
+                  onClick={() =>
+                    setSelectedFilters((prev) => {
+                      const updated = { ...prev };
+                      delete updated[categoryKey];
+                      return updated;
+                    })
+                  }
+                >
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

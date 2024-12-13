@@ -53,48 +53,6 @@ function ProductSearch() {
     console.log(`Selected sorting option: ${option}`);
   };
 
-  const categories = [
-    {
-      name: '카테고리',
-      options: [
-        '노트북',
-        '남성의류',
-        '여성의류',
-        '도서',
-        '휴대폰',
-        '데스크톱',
-        '노트북',
-        '남성의류',
-        '여성의류',
-        '도서',
-        '휴대폰',
-        '데스크톱',
-      ],
-    },
-    {
-      name: '찜 횟수 기준',
-      options: ['100 이상', '50 이상', '10 이상'],
-    },
-    {
-      name: '등록자 평점 기준',
-      options: ['100 이상', '50 이상', '10 이상'],
-    },
-    {
-      name: '거래 방식',
-      options: ['직거래 가능', '택배거래 가능'],
-    },
-    {
-      name: '상품 상태',
-      options: [
-        '새 상품(미사용)',
-        '사용감 적음',
-        '사용감 중간',
-        '사용감 많음',
-        '고장/파손 상품',
-      ],
-    },
-  ];
-
   const location = useLocation(); // URL 파라미터 추출
   const query = new URLSearchParams(location.search).get('query') || ''; // 검색어 추출
 
@@ -105,6 +63,9 @@ function ProductSearch() {
   const [startPage, setStartPage] = useState(0); // 현재 버튼 그룹의 시작 페이지
   const pageSize = 5; // 한 페이지당 항목 수
   const maxButtons = 10; // 한 번에 표시할 최대 버튼 수
+  const queryParams = new URLSearchParams(location.search);
+  const rawFilter = queryParams.get('filter'); // 원본 추출
+  const filter = rawFilter ? decodeURIComponent(rawFilter) : null; // 명시적으로 디코딩
 
   const handlePrevGroup = () => {
     if (startPage > 0) {
@@ -125,11 +86,19 @@ function ProductSearch() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        // URL에서 추출한 filter 값 디코딩
+        const decodedFilter = filter ? decodeURIComponent(filter) : undefined;
+
+        console.log('Raw filter:', filter); // 인코딩된 원본 filter
+        console.log('Decoded filter:', decodedFilter); // 디코딩된 filter 값
+
         const data = await getProductSearch({
-          search: query, // 검색어 전달
-          page: currentPage, // 현재 페이지 전달
-          size: pageSize, // 페이지 크기 전달
+          search: query || '', // 검색어
+          filter: decodedFilter, // 디코딩된 필터 조건
+          page: currentPage, // 현재 페이지
+          size: pageSize, // 페이지 크기
         });
+
         setOriginalProducts(data.merchandise);
         setProducts(data.merchandise);
         setTotalPages(data.totalPage);
@@ -139,7 +108,7 @@ function ProductSearch() {
     };
 
     fetchProducts();
-  }, [query, currentPage]); // query와 currentPage 변경 시 실행
+  }, [query, filter, currentPage]);
 
   useEffect(() => {
     const sortedProducts = sortProducts(originalProducts, selected); // 원본 데이터 사용
@@ -157,25 +126,6 @@ function ProductSearch() {
   return (
     <div className={styles.productSearchContainer}>
       <SearchFilter />
-      {/*<div className={styles.container}>*/}
-      {/*  /!* 카테고리 필터 영역 *!/*/}
-      {/*  <div className={styles.categoryRow}>*/}
-      {/*    {categories.map((category, idx) => (*/}
-      {/*      <div key={idx} className={styles.categoryCell}>*/}
-      {/*        <span className={styles.categoryName}>{category.name}</span>*/}
-      {/*        <div className={styles.options}>*/}
-      {/*          {category.options.map((option, i) => (*/}
-      {/*            <label key={i} className={styles.option}>*/}
-      {/*              <input type="checkbox" className={styles.checkbox} />*/}
-      {/*              <span>{option}</span>*/}
-      {/*            </label>*/}
-      {/*          ))}*/}
-      {/*        </div>*/}
-      {/*      </div>*/}
-      {/*    ))}*/}
-      {/*  </div>*/}
-      {/*</div>*/}
-      {/* 상품 리스트 */}
       <div>
         {/* 정렬기능 */}
         <div className={styles.sortOptions}>

@@ -137,6 +137,20 @@ function Header({ authenticated, onLogout }: HeaderProps) {
     fetchSmallCategories(subCategoryId); // 소 카테고리 조회
   };
 
+  // 대, 중, 소카테고리 클릭 검색 조회
+  const handleCategoryClick = (categoryId: number) => {
+    const filterString = `cate,${categoryId}`;
+    navigate(`/productSearch?filter=${filterString}`);
+  };
+  const handleSubCategoryClick = (subCategoryId: number) => {
+    const filterString = `cate,${subCategoryId}`;
+    navigate(`/productSearch?filter=${filterString}`);
+  };
+  const handleSmallCategoryClick = (smallCategoryId: number) => {
+    const filterString = `cate,${smallCategoryId}`;
+    navigate(`/productSearch?filter=${filterString}`);
+  };
+
   return (
     <div className={styles.HeaderContainer}>
       <div className={styles.HeaderSubContainer}>
@@ -298,6 +312,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
                           : ''
                       }`}
                       onMouseEnter={() => handleCategoryHover(item.id)}
+                      onClick={() => handleCategoryClick(item.id)} // 대 카테고리 클릭
                     >
                       {item.title}
                     </div>
@@ -315,6 +330,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
                             : ''
                         }`}
                         onMouseEnter={() => handleSubCategoryHover(subItem.id)}
+                        onClick={() => handleSubCategoryClick(subItem.id)} // 중 카테고리 클릭
                       >
                         {subItem.title}
                       </div>
@@ -337,6 +353,7 @@ function Header({ authenticated, onLogout }: HeaderProps) {
                         onMouseEnter={() =>
                           setSelectedSubCategory(smallItem.id)
                         }
+                        onClick={() => handleSmallCategoryClick(smallItem.id)} // 소 카테고리 클릭
                       >
                         {smallItem.title}
                       </div>
