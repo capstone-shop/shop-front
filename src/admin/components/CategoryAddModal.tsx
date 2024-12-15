@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import styles from '../styles/categoryModal.module.css'; // CSS 모듈 import
+import React, { useEffect, useState } from 'react';
+import styles from '../styles/categoryModal.module.css';
+import { getCurrentUser } from '../../api/Utils';
+import { User } from './AdminHeader'; // CSS 모듈 import
 
 interface CategoryAddModalProps {
+  parentsId: number | null;
   parentsTitle: string | null;
   categoryType: 'large' | 'middle' | 'small'; // 카테고리 타입 (대/중/소)
   onSave: (
@@ -13,6 +16,7 @@ interface CategoryAddModalProps {
 }
 
 function CategoryAddModal({
+  parentsId,
   parentsTitle,
   categoryType,
   onSave,
@@ -20,10 +24,26 @@ function CategoryAddModal({
 }: CategoryAddModalProps) {
   const [categoryName, setCategoryName] = useState<string>(''); // 카테고리 이름 상태
   const [hasSubcategory, setHasSubcategory] = useState('false'); // 하위 카테고리 여부 상태
+  const [user, setUser] = useState<User | undefined>(undefined); // 로그인 사용자 이름 상태
 
   // 카테고리 타입에 따른 텍스트 라벨
   const categoryTypeLabel =
     categoryType === 'large' ? '대' : categoryType === 'middle' ? '중' : '소';
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getCurrentUser();
+        console.log('유저 데이터:', response);
+        setUser(response);
+      } catch (err) {
+        console.error('데이터를 불러오는 중 오류 발생:', err);
+        alert('사용자 정보를 불러오는데 실패했습니다.');
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   // 저장 버튼 클릭 시 처리
   const handleSaveClick = () => {
@@ -40,6 +60,8 @@ function CategoryAddModal({
         <div className={styles.modalContent}>
           {parentsTitle && <p>부모 카테고리 : {parentsTitle} </p>}
           <p>카테고리 분류 : {categoryTypeLabel}</p>
+          <p>부모 카테고리 id : {parentsId}</p>
+          <p>사용자 이름 : {user?.name}</p>
           <div className={styles.labelDiv}>
             <label>
               <span>카테고리 이름 :</span>
@@ -56,9 +78,9 @@ function CategoryAddModal({
                 value={hasSubcategory} // 선택된 하위 카테고리 여부 값
                 onChange={(e) => setHasSubcategory(e.target.value)} // 선택값 변경 시 상태 업데이트
               >
-                <option value="false">하위 카테고리 없음</option>
+                <option value="true">하위 카테고리 없음</option>
                 {categoryType !== 'small' && ( // '소' 카테고리에는 하위 카테고리가 없음
-                  <option value="true">하위 카테고리 있음</option>
+                  <option value="false">하위 카테고리 있음</option>
                 )}
               </select>
             </label>
