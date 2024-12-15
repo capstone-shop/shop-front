@@ -19,6 +19,7 @@ function Category() {
   const [selectedMiddleId, setSelectedMiddleId] = useState<number | null>(null);
 
   const [addCategory, setAddCategory] = useState<{
+    parentsId: number | null;
     parentsTitle: string | null;
     type: CategoryType;
   } | null>(null);
@@ -107,48 +108,48 @@ function Category() {
     fetchSmallCategories();
   }, [selectedMiddleId]);
 
-  // 드래그 시작될 때 실행
-  const dragStart = (e: React.DragEvent<HTMLLIElement>, position: number) => {
-    dragItem.current = position;
-    console.log(e.currentTarget.innerHTML); // 드래그 시작된 아이템 출력
-  };
-
-  // 드래그중인 대상이 위로 포개졌을 때
-  const dragEnter = (e: React.DragEvent<HTMLLIElement>, position: number) => {
-    dragOverItem.current = position;
-    console.log(e.currentTarget.innerHTML); // 드래그 대상 아이템 출력
-  };
-
-  // 드랍 (커서 뗐을 때)
-  const drop = (
-    e: React.DragEvent<HTMLLIElement>,
-    categoryType: CategoryType
-  ) => {
-    e.preventDefault(); // 드롭 이벤트의 기본 동작을 막음
-    const updatedCategories = { ...categories }; // 카테고리 리스트 가져옴
-    // 드래그, 오버한 아이템을 가져옴
-    if (dragItem.current === null || dragOverItem.current === null) return;
-    const dragItemValue = updatedCategories[categoryType][dragItem.current];
-    const dragOverItemValue =
-      updatedCategories[categoryType][dragOverItem.current];
-    // 리스트 내에서 두 아이템을 교환
-    updatedCategories[categoryType].splice(
-      dragItem.current,
-      1,
-      dragOverItemValue
-    );
-    updatedCategories[categoryType].splice(
-      dragOverItem.current,
-      1,
-      dragItemValue
-    );
-    // 상태를 업데이트하여 화면에 반영
-    setCategories(updatedCategories);
-    // 드래그와 드랍 아이템 참조를 초기화
-    dragItem.current = null;
-    dragOverItem.current = null;
-    console.log(categories);
-  };
+  // // 드래그 시작될 때 실행
+  // const dragStart = (e: React.DragEvent<HTMLLIElement>, position: number) => {
+  //   dragItem.current = position;
+  //   console.log(e.currentTarget.innerHTML); // 드래그 시작된 아이템 출력
+  // };
+  //
+  // // 드래그중인 대상이 위로 포개졌을 때
+  // const dragEnter = (e: React.DragEvent<HTMLLIElement>, position: number) => {
+  //   dragOverItem.current = position;
+  //   console.log(e.currentTarget.innerHTML); // 드래그 대상 아이템 출력
+  // };
+  //
+  // // 드랍 (커서 뗐을 때)
+  // const drop = (
+  //   e: React.DragEvent<HTMLLIElement>,
+  //   categoryType: CategoryType
+  // ) => {
+  //   e.preventDefault(); // 드롭 이벤트의 기본 동작을 막음
+  //   const updatedCategories = { ...categories }; // 카테고리 리스트 가져옴
+  //   // 드래그, 오버한 아이템을 가져옴
+  //   if (dragItem.current === null || dragOverItem.current === null) return;
+  //   const dragItemValue = updatedCategories[categoryType][dragItem.current];
+  //   const dragOverItemValue =
+  //     updatedCategories[categoryType][dragOverItem.current];
+  //   // 리스트 내에서 두 아이템을 교환
+  //   updatedCategories[categoryType].splice(
+  //     dragItem.current,
+  //     1,
+  //     dragOverItemValue
+  //   );
+  //   updatedCategories[categoryType].splice(
+  //     dragOverItem.current,
+  //     1,
+  //     dragItemValue
+  //   );
+  //   // 상태를 업데이트하여 화면에 반영
+  //   setCategories(updatedCategories);
+  //   // 드래그와 드랍 아이템 참조를 초기화
+  //   dragItem.current = null;
+  //   dragOverItem.current = null;
+  //   console.log(categories);
+  // };
 
   // 카테고리 선택 이벤트
   const handleCategoryClick = (
@@ -266,7 +267,11 @@ function Category() {
             <button
               className={styles.categoryBtn}
               onClick={() =>
-                setAddCategory({ parentsTitle: null, type: 'large' })
+                setAddCategory({
+                  parentsId: null,
+                  parentsTitle: null,
+                  type: 'large',
+                })
               }
             >
               등록하기
@@ -325,6 +330,7 @@ function Category() {
                       (cat) => cat.id === selectedLargeId
                     );
                     setAddCategory({
+                      parentsId: selectedLargeId,
                       parentsTitle: selectedCategory
                         ? selectedCategory.title
                         : null,
@@ -391,6 +397,7 @@ function Category() {
                       (cat) => cat.id === selectedMiddleId
                     );
                     setAddCategory({
+                      parentsId: selectedMiddleId,
                       parentsTitle: selectedCategory
                         ? selectedCategory.title
                         : null, // 상위 카테고리 이름 전달
@@ -439,6 +446,7 @@ function Category() {
       {/* 추가 모달 컴포넌트 */}
       {addCategory && (
         <CategoryAddModal
+          parentsId={addCategory.parentsId}
           parentsTitle={addCategory.parentsTitle}
           categoryType={addCategory.type}
           onSave={(name) => console.log(`Add: ${name}`)} // 추가 로직
