@@ -2,11 +2,19 @@ import React, { useEffect, useState, useRef } from 'react';
 import { getAdminCategory } from '../../api/Utils'; // API 함수 임포트
 import styles from '../styles/category.module.css';
 import CategoryAddModal from './CategoryAddModal';
+import { meta } from 'eslint-plugin-react/lib/rules/jsx-props-no-spread-multi';
+import category = meta.docs.category;
 // import CategoryEditModal from './CategoryEditModal';
 // import CategoryDeleteModal from './CategoryDeleteModal';
 
 type CategoryType = 'large' | 'middle' | 'small';
 type CategoryItem = { id: number; title: string; isLeaf: boolean };
+// 카테고리 개수 타입 정의
+interface CategoryCounts {
+  large: number;
+  middle: number;
+  small: number;
+}
 
 function Category() {
   const [categories, setCategories] = useState<{
@@ -14,6 +22,12 @@ function Category() {
     middle: CategoryItem[];
     small: CategoryItem[];
   }>({ large: [], middle: [], small: [] });
+  // 카테고리 개수 상태 변수
+  const [categoryCounts, setCategoryCounts] = useState<CategoryCounts>({
+    large: 0,
+    middle: 0,
+    small: 0,
+  });
 
   const [selectedLargeId, setSelectedLargeId] = useState<number | null>(null);
   const [selectedMiddleId, setSelectedMiddleId] = useState<number | null>(null);
@@ -21,8 +35,10 @@ function Category() {
   const [addCategory, setAddCategory] = useState<{
     parentsId: number | null;
     parentsTitle: string | null;
+    categoryCounts: number;
     type: CategoryType;
   } | null>(null);
+
   const [editCategory, setEditCategory] = useState<{
     id: number;
     name: string;
@@ -58,6 +74,12 @@ function Category() {
           middle: [], //대 카테고리 선택 시 중 카테고리 초기화
           small: [], //소 카테고리 초기화
         }));
+        setCategoryCounts((prev) => ({
+          ...prev,
+          large: mapCategoryData(data).length, // 대 카테고리 개수 업데이트
+          middle: 0, // 초기화
+          small: 0, // 초기화
+        }));
         console.log(categories);
       } catch (error) {
         console.error('대 카테고리 데이터를 가져오는 중 오류:', error);
@@ -79,6 +101,11 @@ function Category() {
           middle: mapCategoryData(data), // 중분류 업데이트
           small: [], // 대분류 선택 시 소분류 초기화
         }));
+        setCategoryCounts((prev) => ({
+          ...prev,
+          middle: mapCategoryData(data).length, // 중 카테고리 개수 업데이트
+          small: 0, // 초기화
+        }));
         console.log(categories);
       } catch (error) {
         console.error('중 카테고리 데이터를 가져오는 중 오류:', error);
@@ -99,6 +126,10 @@ function Category() {
           ...prev,
           small: mapCategoryData(data), // 소분류 업데이트
         }));
+        setCategoryCounts((prev) => ({
+          ...prev,
+          small: mapCategoryData(data).length, // 소 카테고리 개수 업데이트
+        }));
         console.log(categories);
       } catch (error) {
         console.error('소 카테고리 데이터를 가져오는 중 오류:', error);
@@ -107,6 +138,34 @@ function Category() {
 
     fetchSmallCategories();
   }, [selectedMiddleId]);
+
+  // 카테고리 추가(저장) 후 UI에서의 "카테고리 추가" 동작을 처리하는 핸들러
+  const handleAdd = async (newCategory: string, categoryType: CategoryType) => {
+    try {
+      let selectedId: number | null | undefined =
+        categoryType === 'large'
+          ? undefined // 'large'일 때는 categoryId를 전달하지 않음
+          : categoryType === 'middle'
+            ? selectedLargeId // 'middle'일 때는 selectedLargeId를 사용
+            : selectedMiddleId; // 'small'일 때는 selectedMiddleId 사용
+      if (selectedId == null) {
+        console.error('선택된 카테고리 ID가 없습니다.');
+        return;
+      }
+      const data = await getAdminCategory(selectedId); // 최신 데이터를 다시 가져오기
+      // 카테고리 상태를 갱신하면서, 해당 categoryType만 업데이트
+      setCategories((prev) => {
+        const updatedCategory = mapCategoryData(data);
+        return {
+          ...prev, // 기존 상태는 그대로 두고,
+          [categoryType]: updatedCategory, // 해당 categoryType에 대해서만 새 데이터 반영
+        };
+      });
+      setAddCategory(null); // 모달 닫기
+    } catch (error) {
+      console.error('카테고리 추가 후 데이터 갱신 중 오류:', error);
+    }
+  };
 
   // // 드래그 시작될 때 실행
   // const dragStart = (e: React.DragEvent<HTMLLIElement>, position: number) => {
@@ -263,13 +322,14 @@ function Category() {
         {/* 대 카테고리 */}
         <div className={styles.categoryColumn}>
           <div className={styles.title}>
-            <p>대 카테고리 </p>
+            <p>대 카테고리</p>
             <button
               className={styles.categoryBtn}
               onClick={() =>
                 setAddCategory({
                   parentsId: null,
                   parentsTitle: null,
+                  categoryCounts: categoryCounts.large,
                   type: 'large',
                 })
               }
@@ -318,7 +378,7 @@ function Category() {
 
         {/* 중 카테고리 */}
         {selectedLargeId &&
-          categories.large.find((cat) => cat.id === selectedLargeId)?.isLeaf ===
+          categories.large.find((ctg) => ctg.id === selectedLargeId)?.isLeaf ===
             false && (
             <div className={styles.categoryColumn}>
               <div className={styles.title}>
@@ -327,13 +387,14 @@ function Category() {
                   className={styles.categoryBtn}
                   onClick={() => {
                     const selectedCategory = categories.large.find(
-                      (cat) => cat.id === selectedLargeId
+                      (ctg) => ctg.id === selectedLargeId
                     );
                     setAddCategory({
                       parentsId: selectedLargeId,
                       parentsTitle: selectedCategory
                         ? selectedCategory.title
                         : null,
+                      categoryCounts: categoryCounts.middle,
                       type: 'middle',
                     });
                   }}
@@ -385,7 +446,7 @@ function Category() {
 
         {/* 소 카테고리 */}
         {selectedMiddleId &&
-          categories.middle.find((cat) => cat.id === selectedMiddleId)
+          categories.middle.find((ctg) => ctg.id === selectedMiddleId)
             ?.isLeaf === false && (
             <div className={styles.categoryColumn}>
               <div className={styles.title}>
@@ -394,13 +455,14 @@ function Category() {
                   className={styles.categoryBtn}
                   onClick={() => {
                     const selectedCategory = categories.middle.find(
-                      (cat) => cat.id === selectedMiddleId
+                      (ctg) => ctg.id === selectedMiddleId
                     );
                     setAddCategory({
                       parentsId: selectedMiddleId,
                       parentsTitle: selectedCategory
                         ? selectedCategory.title
                         : null, // 상위 카테고리 이름 전달
+                      categoryCounts: categoryCounts.small,
                       type: 'small',
                     });
                   }}
@@ -448,8 +510,9 @@ function Category() {
         <CategoryAddModal
           parentsId={addCategory.parentsId}
           parentsTitle={addCategory.parentsTitle}
+          categoryCounts={addCategory.categoryCounts}
           categoryType={addCategory.type}
-          onSave={(name) => console.log(`Add: ${name}`)} // 추가 로직
+          onSave={handleAdd} // 추가 로직
           onCancel={() => setAddCategory(null)}
         />
       )}
