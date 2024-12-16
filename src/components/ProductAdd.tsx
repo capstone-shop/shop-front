@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { Simulate } from 'react-dom/test-utils';
 import submit = Simulate.submit;
 import SuccessModal from './SuccessModal';
+import uploadS3 from 'api/S3Upload';
 
 function ProductAdd() {
   const navigate = useNavigate();
@@ -52,18 +53,14 @@ function ProductAdd() {
     const files = event.target.files;
     if (files) {
       const newImages: string[] = [];
-      Array.from(files).forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (typeof reader.result === 'string') {
-            newImages.push(reader.result); // 이미지 URL을 배열에 추가
-            // 모든 이미지를 로드한 후 상태 업데이트
-            if (newImages.length === files.length) {
-              setImages((prev) => [...prev, ...newImages]); // 기존 이미지와 병합
-            }
-          }
-        };
-        reader.readAsDataURL(file);
+      let uploadedCount: number = 0;
+      Array.from(files).forEach((file, i) => {
+        uploadS3(file, images).then(url => {
+          newImages[i] = url;
+          uploadedCount++;
+          if (uploadedCount == files.length)
+            setImages(newImages);
+        });
       });
     }
   };
@@ -293,11 +290,10 @@ function ProductAdd() {
               {category.map((item) => (
                 <div
                   key={item.id}
-                  className={`${styles.categoryItem} ${
-                    selectedCategory === item.id
-                      ? styles.categoryItemSelected
-                      : ''
-                  }`}
+                  className={`${styles.categoryItem} ${selectedCategory === item.id
+                    ? styles.categoryItemSelected
+                    : ''
+                    }`}
                   onClick={() => {
                     setSelectedCategory(item.id);
                     fetchSubCategories(item.id);
@@ -314,11 +310,10 @@ function ProductAdd() {
                 subCategories.map((subItem) => (
                   <div
                     key={subItem.id}
-                    className={`${styles.categoryItem} ${
-                      selectedSubCategory === subItem.id
-                        ? styles.categoryItemSelected
-                        : ''
-                    }`}
+                    className={`${styles.categoryItem} ${selectedSubCategory === subItem.id
+                      ? styles.categoryItemSelected
+                      : ''
+                      }`}
                     onClick={() => {
                       setSelectedSubCategory(subItem.id);
                       fetchSmallCategories(subItem.id);
@@ -338,11 +333,10 @@ function ProductAdd() {
                 smallCategories.map((smallItem) => (
                   <div
                     key={smallItem.id}
-                    className={`${styles.categoryItem} ${
-                      selectedSmallCategory === smallItem.id
-                        ? styles.categoryItemSelected
-                        : ''
-                    }`}
+                    className={`${styles.categoryItem} ${selectedSmallCategory === smallItem.id
+                      ? styles.categoryItemSelected
+                      : ''
+                      }`}
                     onClick={() => {
                       setSelectedSmallCategory(smallItem.id);
                       console.log(`소 카테고리 선택됨: ${smallItem.title}`);
