@@ -26,12 +26,6 @@ function SignIn() {
     }));
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false); // 모달 닫기
-    navigate('/'); // 성공 시 메인 페이지로 이동
-    window.location.reload(); // 강제 새로고침
-  };
-
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -50,7 +44,6 @@ function SignIn() {
       setModalMessage('로그인이 성공적으로 완료되었습니다!');
       setIsModalOpen(true);
     } catch (err) {
-      // 에러 처리
       const message =
         (err as Error).message ||
         '로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.';
@@ -59,6 +52,17 @@ function SignIn() {
 
       setModalMessage('로그인이 실패했습니다. 다시 시도해주세요.');
       setIsModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+
+    if (error) {
+      navigate('/signIn'); // 로그인 실패 시 로그인 페이지로 이동
+    } else {
+      navigate('/'); // 성공 시 메인 페이지로 이동
+      window.location.reload(); // 강제 새로고침
     }
   };
 
