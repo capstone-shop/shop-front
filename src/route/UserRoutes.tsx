@@ -67,7 +67,7 @@ function UserRoutes() {
         {/* 상품 검색 */}
         <Route path="/productAdd" element={<ProductAdd />} />
         {/* 상품 등록 */}
-        <Route path="/productEdit" element={<ProductEdit />} />
+        <Route path="/productEdit/:id" element={<ProductEdit />} />
         {/* 상품 수정 */}
         <Route path="/productDelete" element={<ProductDelete />} />
         {/* 상품 삭제 */}

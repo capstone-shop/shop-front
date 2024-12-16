@@ -364,7 +364,7 @@ export function getSubCategory(data: {
     });
 }
 
-// 상품 등록 API
+// 유저 상품 등록 API
 export function postProduct(data: UserProductRequest): Promise<void> {
   return request(
     {
@@ -380,6 +380,52 @@ export function postProduct(data: UserProductRequest): Promise<void> {
     .catch((error) => {
       console.error('상품 등록 요청중 오류가 발생했습니다:', error);
       return Promise.reject(new Error('상품 등록 요청중 문제가 발생했습니다.'));
+    });
+}
+
+// 유저 상품 수정 API
+export function putProduct(
+  data: { id: number } & UserProductRequest
+): Promise<void> {
+  const { id } = data;
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/merchandise/${id}`, // URL에 상품 ID 포함
+      method: 'PUT', // 수정 작업은 PUT 메서드 사용
+      body: JSON.stringify(data), // 전체 데이터를 JSON 문자열로 변환하여 본문에 포함
+    },
+    true // true로 설정하여 헤더를 포함
+  )
+    .then(() => {
+      console.log('상품 수정 성공');
+    })
+    .catch((error) => {
+      console.error('상품 수정 요청 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('상품 수정 요청 중 문제가 발생했습니다.')
+      );
+    });
+}
+
+// 유저 상품 삭제 API
+export function deleteProduct(data: { id: number }): Promise<void> {
+  const { id } = data;
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/merchandise/${id}`, // URL에 상품 ID 포함
+      method: 'DELETE',
+      body: JSON.stringify(data), // 전체 데이터를 JSON 문자열로 변환하여 본문에 포함
+    },
+    true // true로 설정하여 헤더를 포함
+  )
+    .then(() => {
+      console.log('상품 삭제 성공');
+    })
+    .catch((error) => {
+      console.error('상품 삭제 요청 중 오류 발생:', error);
+      return Promise.reject(
+        new Error('상품 삭제 요청 중 문제가 발생했습니다.')
+      );
     });
 }
 

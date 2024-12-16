@@ -363,3 +363,12 @@
 }
 
 /* 관련 물품 리스트 */
+.deleteButton{
+    color: white;
+    background: #fc3535;
+}
+
+.editButton{
+    color: white;
+    background: rgb(241, 134, 60);
+}

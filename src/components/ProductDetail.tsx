@@ -1,6 +1,8 @@
 import styles from '../styles/css/ProductDetail.module.css';
 import React, { useEffect, useState } from 'react';
 import formatDate, {
+  deleteProduct,
+  getCurrentUser,
   getProductDetail,
   getProductWish,
   patchProductWish,
@@ -15,6 +17,25 @@ function ProductDetail() {
   const [isWished, setIsWished] = useState(false); // 찜하기 상태
   const [isLoading, setIsLoading] = useState(false); // 요청 중 상태
   const navigate = useNavigate(); // React Router의 navigate 함수
+  // 예: 현재 로그인된 사용자 정보 가져오기
+  const [currentUser, setCurrentUser] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        // 로그인된 사용자 정보 API 호출
+        const response = await getCurrentUser(); // API 함수 가정
+        setCurrentUser(response);
+      } catch (error) {
+        console.error('사용자 정보를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
 
   // 상품 상세 정보 및 찜 상태 로드
   useEffect(() => {
@@ -240,13 +261,46 @@ function ProductDetail() {
                 </div>
 
                 <div className={styles.actions}>
-                  <button className={styles.chatButton}>채팅하기</button>
-                  <button
-                    className={`${styles.likeButton} ${isWished ? styles.liked : ''}`} // 찜 상태에 따른 스타일
-                    onClick={() => handleWishToggle()}
-                  >
-                    {isWished ? '찜 취소' : '찜 하기'}
-                  </button>
+                  {currentUser?.id ===
+                  productDetail?.merchandise.register.id ? (
+                    // 등록자 == 현재 사용자
+                    <>
+                      <button
+                        className={styles.editButton}
+                        onClick={() => navigate(`/productEdit/${id}`)} // 수정 페이지로 이동
+                      >
+                        수정하기
+                      </button>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={async () => {
+                          if (window.confirm('정말로 삭제하시겠습니까?')) {
+                            try {
+                              await deleteProduct({ id: Number(id) }); // 삭제 API 호출
+                              alert('상품이 삭제되었습니다.');
+                              navigate('/'); // 삭제 후 메인 페이지로 이동
+                            } catch (error) {
+                              console.error('상품 삭제 중 오류 발생:', error);
+                              alert('삭제에 실패했습니다.');
+                            }
+                          }
+                        }}
+                      >
+                        삭제하기
+                      </button>
+                    </>
+                  ) : (
+                    // 등록자 != 현재 사용자
+                    <>
+                      <button className={styles.chatButton}>채팅하기</button>
+                      <button
+                        className={`${styles.likeButton} ${isWished ? styles.liked : ''}`}
+                        onClick={() => handleWishToggle()}
+                      >
+                        {isWished ? '찜 취소' : '찜 하기'}
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
 
