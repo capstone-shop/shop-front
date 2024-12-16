@@ -32,7 +32,6 @@ const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const stompClient = useRef<Client | null>(null);
-  const currentUserId = useParams<{ id: string }>(); // 실제 로그인된 사용자 ID로 대체
   const [error, setError] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<{
     id: number;
@@ -48,7 +47,7 @@ const Chat: React.FC = () => {
       try {
         // 로그인된 사용자 정보 API 호출
         const response = await getCurrentUser(); // API 함수 가정
-        setCurrentUser(response);
+        setCurrentUser(response); // 현재 유저 정보 설정
       } catch (error) {
         console.error('사용자 정보를 가져오는 중 오류 발생:', error);
       }
@@ -56,6 +55,9 @@ const Chat: React.FC = () => {
 
     fetchCurrentUser();
   }, []);
+
+  // `currentUser`에서 `id` 추출
+  const currentUserId = currentUser?.id;
 
   // 채팅방 목록 가져오기
   useEffect(() => {
@@ -92,6 +94,7 @@ const Chat: React.FC = () => {
 
       setChatLogs(enrichedLogs);
       setCurrentRoomId(Number(chatRoomId));
+      console.log(logs);
 
       // URL 업데이트
       navigate(`/chat/${chatRoomId}`);
@@ -225,7 +228,7 @@ const Chat: React.FC = () => {
         <div className={styles.chatMessages}>
           {chatLogs.map((message, index) => (
             <React.Fragment key={message.id}>
-              {/* 이름 출력 조건: sender가 'other'이고, 첫 메시지거나 이전 메시지의 senderId가 다른 경우 */}
+              {/* 상대방 이름 출력 조건: senderId가 currentUserId와 다르고, 첫 메시지이거나 이전 메시지의 senderId가 다른 경우 */}
               {message.senderId !== currentUserId &&
                 (index === 0 ||
                   chatLogs[index - 1]?.senderId === currentUserId) && (
@@ -234,6 +237,7 @@ const Chat: React.FC = () => {
                   </div>
                 )}
 
+              {/* 메시지 버블 */}
               <div
                 className={`${styles.chatMessage} ${
                   message.senderId === currentUserId ? styles.me : styles.other
@@ -241,10 +245,7 @@ const Chat: React.FC = () => {
               >
                 <div className={styles.messageBubble}>{message.content}</div>
                 <div className={styles.messageTime}>
-                  {/* 읽지 않은 메시지의 읽음 상태 표시 */}
-                  {message.senderId === currentUserId && !message.read && (
-                    <span className={styles.unreadBadge}>1</span>
-                  )}
+                  {/* 메시지 시간 출력 */}
                   {getFormattedTime(message.createdAt)}
                 </div>
               </div>

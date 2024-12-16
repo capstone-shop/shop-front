@@ -6,6 +6,7 @@
     margin: auto; /* 가로 및 세로 가운데 정렬 */
     font-family: Arial, sans-serif;
     border: 1px solid #e1e1e1;
+    margin-bottom: 60px;
 }
 
 /* 좌측 유저 목록 */
@@ -140,3 +141,5 @@
 .chatInput:focus {
     border-color: #0078ff;
 }
+
+
