@@ -83,6 +83,8 @@ function UserRoutes() {
         {/* 찜한 상품 조회 */}
         <Route path="/userproducts" element={<UserProducts />} />
         {/* 등록한 상품 조회 */}
+        <Route path="/chat/:roomId" element={<Chat />} />
+        {/* 채팅방 */}
 
         {/*<route*/}
         {/*  path="/productSale"*/}

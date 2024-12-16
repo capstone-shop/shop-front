@@ -144,6 +144,33 @@ export interface ProductWishPatchResponse {
   isWished: boolean;
 }
 
+export interface ChatResponse {
+  id: number; // Chat의 고유 ID
+  sellerId: number; // 판매자의 ID
+  buyerId: number; // 구매자의 ID
+  createdAt: string; // 생성 시간, ISO 형식
+  lastMessage?: string; // 선택적으로 마지막 메시지를 저장
+  unreadCount?: number; // 읽지 않은 메시지 개수
+}
+
+export interface ChatRoomResponse {
+  chatRoomId: number;
+  otherUserName: string;
+  otherUserProfileImage: string;
+  lastMessage: string;
+  lastMessageSendTime: string;
+}
+
+export interface ChatLogResponse {
+  id: number;
+  content: string;
+  createdAt: string;
+  senderId: number;
+  chatRoomId: number;
+  read: boolean;
+  otherUserName?: string; // 추가 속성
+}
+
 // 어드민 카테고리 응답 타입
 interface AdminCategory {
   id: number;
@@ -157,52 +184,58 @@ const request = async (
   includeAuth = true
 ): Promise<any> => {
   const headers = new Headers({
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json', // 기본 Content-Type 헤더
   });
 
-  // includeAuth가 true인 경우에만 Authorization 헤더 추가
+  // includeAuth가 true인 경우 Authorization 헤더 추가
   if (includeAuth) {
     const accessToken = localStorage.getItem(ACCESS_TOKEN);
+    console.log('Access Token:', accessToken); // 디버깅 로그
     if (accessToken) {
-      headers.append('Authorization', 'Bearer ' + accessToken);
+      headers.append('Authorization', `Bearer ${accessToken}`);
+    } else {
+      console.warn('Access Token이 없습니다.');
     }
   }
 
   // 옵션 병합
-  options = { ...options, headers };
+  const mergedOptions = { ...options, headers };
+
+  // 헤더와 요청 정보 디버깅 출력
+  console.log('Request Headers:', Array.from(headers.entries())); // 헤더 확인
+  console.log('Request Options:', mergedOptions);
 
   try {
-    const response = await fetch(options.url, options);
+    const response = await fetch(mergedOptions.url, mergedOptions);
 
-    // 상태 코드와 응답 내용을 확인
+    // 응답 상태 코드와 본문 출력
     console.log('HTTP 상태 코드:', response.status);
+    const responseText = await response.text();
 
+    // 응답 확인
     if (!response.ok) {
-      const errorText = await response.text(); // 오류 응답 본문을 텍스트로 읽음
       try {
-        const errorResponse = JSON.parse(errorText);
+        const errorResponse = JSON.parse(responseText);
         throw new Error(errorResponse.message || 'API 요청 실패');
       } catch {
-        throw new Error(`API 요청 실패: ${errorText}`);
+        throw new Error(`API 요청 실패: ${responseText}`);
       }
     }
 
     // 응답 본문 처리
-    const text = await response.text();
-    if (!text) {
+    if (responseText) {
+      try {
+        return JSON.parse(responseText); // JSON 파싱 성공
+      } catch (error) {
+        console.warn('JSON 파싱 실패, 텍스트로 반환:', responseText);
+        return responseText; // JSON 파싱 실패 시 텍스트 반환
+      }
+    } else {
       console.log('응답 본문이 비어 있습니다.');
       return null; // 빈 응답 반환
     }
-
-    // JSON 파싱 시도
-    try {
-      return JSON.parse(text);
-    } catch (error) {
-      console.warn('응답이 JSON이 아닙니다. 텍스트로 반환합니다.');
-      return text; // JSON 파싱 실패 시 텍스트 반환
-    }
   } catch (error) {
-    console.error('API 요청 오류:', error);
+    console.error('API 요청 중 오류:', error);
     throw error;
   }
 };
@@ -618,6 +651,77 @@ export function getUserRegisterdMerchandise(
         new Error('사용자 등록 조회 중 문제가 발생했습니다.')
       );
     });
+}
+
+// 채팅하기 요청 API
+export function postChat(data: { id: number }): Promise<ChatResponse> {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  const { id } = data;
+  if (!token) {
+    // 토큰이 없을 경우 즉시 한글 메시지로 에러 반환
+    return Promise.reject(
+      new Error('채팅하기 액세스 토큰이 설정되지 않았습니다.')
+    );
+  }
+
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/chat/create?sellerId=${id}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    },
+    true // 반드시 true로 설정
+  );
+}
+
+// 채팅방 조회 요청 API
+export function getChatRoom(data: { id: number }): Promise<ChatRoomResponse[]> {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  if (!token) {
+    // 토큰이 없을 경우 즉시 한글 메시지로 에러 반환
+    return Promise.reject(
+      new Error('채팅방 액세스 토큰이 설정되지 않았습니다.')
+    );
+  }
+
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/chat/my-chat-rooms`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    true // 반드시 true로 설정
+  );
+}
+
+// 채팅 전송 API
+
+// 채팅 로그 조회 API
+export function getChatLog(data: { id: number }): Promise<ChatLogResponse[]> {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  const { id } = data;
+  if (!token) {
+    // 토큰이 없을 경우 즉시 한글 메시지로 에러 반환
+    return Promise.reject(
+      new Error('채팅방 액세스 토큰이 설정되지 않았습니다.')
+    );
+  }
+
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/chat/${id}`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    true // 반드시 true로 설정
+  );
 }
 
 // Admin 카테고리 조회 요청 함수

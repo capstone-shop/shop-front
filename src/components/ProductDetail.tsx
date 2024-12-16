@@ -6,6 +6,7 @@ import formatDate, {
   getProductDetail,
   getProductWish,
   patchProductWish,
+  postChat,
   ProductDetailResponse,
 } from '../api/Utils';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -83,6 +84,26 @@ function ProductDetail() {
       console.error('찜 상태 변경 중 오류 발생:', error);
     } finally {
       setIsLoading(false); // 요청 종료
+    }
+  };
+
+  const handlePostChat = async () => {
+    if (!productDetail || !productDetail.merchandise.register) {
+      console.error('상품 등록자 정보가 없습니다.');
+      return;
+    }
+
+    const id = productDetail.merchandise.register.id;
+
+    try {
+      const response = await postChat({ id });
+      console.log('채팅 생성 성공:', response);
+
+      // 추가 작업
+      alert('채팅방이 생성되었습니다!');
+    } catch (error) {
+      console.error('채팅 생성 실패:', error);
+      alert('채팅 생성 중 오류가 발생했습니다.');
     }
   };
 
@@ -292,7 +313,12 @@ function ProductDetail() {
                   ) : (
                     // 등록자 != 현재 사용자
                     <>
-                      <button className={styles.chatButton}>채팅하기</button>
+                      <button
+                        className={styles.chatButton}
+                        onClick={handlePostChat}
+                      >
+                        채팅하기
+                      </button>
                       <button
                         className={`${styles.likeButton} ${isWished ? styles.liked : ''}`}
                         onClick={() => handleWishToggle()}
