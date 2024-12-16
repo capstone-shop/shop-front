@@ -202,8 +202,8 @@ const request = async (
   const mergedOptions = { ...options, headers };
 
   // 헤더와 요청 정보 디버깅 출력
-  console.log('Request Headers:', Array.from(headers.entries())); // 헤더 확인
-  console.log('Request Options:', mergedOptions);
+  // console.log('Request Headers:', Array.from(headers.entries())); // 헤더 확인
+  // console.log('Request Options:', mergedOptions);
 
   try {
     const response = await fetch(mergedOptions.url, mergedOptions);
