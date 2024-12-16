@@ -53,20 +53,22 @@ function ProductAdd() {
     const files = event.target.files;
     if (files) {
       const newImages: string[] = [];
-      let uploadedCount: number = 0;
+      let uploadedCount = 0;
+
       Array.from(files).forEach((file, i) => {
-        uploadS3(file, images).then(url => {
+        uploadS3(file, images).then((url) => {
           newImages[i] = url;
           uploadedCount++;
-          if (uploadedCount == files.length)
-            setImages(newImages);
+          if (uploadedCount === files.length) {
+            setImages((prev) => [...prev, ...newImages]);
+            event.target.value = ''; // 파일 입력 필드 초기화
+          }
         });
       });
     }
   };
 
   const handleRemoveImage = (index: number) => {
-    // 특정 인덱스의 이미지를 삭제
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -290,10 +292,11 @@ function ProductAdd() {
               {category.map((item) => (
                 <div
                   key={item.id}
-                  className={`${styles.categoryItem} ${selectedCategory === item.id
-                    ? styles.categoryItemSelected
-                    : ''
-                    }`}
+                  className={`${styles.categoryItem} ${
+                    selectedCategory === item.id
+                      ? styles.categoryItemSelected
+                      : ''
+                  }`}
                   onClick={() => {
                     setSelectedCategory(item.id);
                     fetchSubCategories(item.id);
@@ -310,10 +313,11 @@ function ProductAdd() {
                 subCategories.map((subItem) => (
                   <div
                     key={subItem.id}
-                    className={`${styles.categoryItem} ${selectedSubCategory === subItem.id
-                      ? styles.categoryItemSelected
-                      : ''
-                      }`}
+                    className={`${styles.categoryItem} ${
+                      selectedSubCategory === subItem.id
+                        ? styles.categoryItemSelected
+                        : ''
+                    }`}
                     onClick={() => {
                       setSelectedSubCategory(subItem.id);
                       fetchSmallCategories(subItem.id);
@@ -333,10 +337,11 @@ function ProductAdd() {
                 smallCategories.map((smallItem) => (
                   <div
                     key={smallItem.id}
-                    className={`${styles.categoryItem} ${selectedSmallCategory === smallItem.id
-                      ? styles.categoryItemSelected
-                      : ''
-                      }`}
+                    className={`${styles.categoryItem} ${
+                      selectedSmallCategory === smallItem.id
+                        ? styles.categoryItemSelected
+                        : ''
+                    }`}
                     onClick={() => {
                       setSelectedSmallCategory(smallItem.id);
                       console.log(`소 카테고리 선택됨: ${smallItem.title}`);

@@ -2,8 +2,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import UserRoutes from './Route/UserRoutes';
-import AdminRoutes from './Route/AdminRoutes';
+import UserRoutes from './route/UserRoutes';
+import AdminRoutes from './route/AdminRoutes';
 
 function AppWrapper() {
   return (

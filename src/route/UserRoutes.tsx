@@ -84,7 +84,7 @@ function UserRoutes() {
         <Route path="/userproducts" element={<UserProducts />} />
         {/* 등록한 상품 조회 */}
 
-        {/*<Route*/}
+        {/*<route*/}
         {/*  path="/productSale"*/}
         {/*  element={*/}
         {/*    authState.authenticated ? (*/}
