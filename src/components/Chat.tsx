@@ -93,9 +93,9 @@ const Chat: React.FC = () => {
         otherUserName: selectedRoom?.otherUserName ?? '알 수 없음',
       }));
 
-      setChatLogs(enrichedLogs);
-      setCurrentRoomId(Number(chatRoomId));
-      console.log(logs);
+      setChatLogs(enrichedLogs); // 채팅 로그 초기화
+      setCurrentRoomId(Number(chatRoomId)); // 현재 채팅방 ID 설정
+      console.log('채팅 로그:', enrichedLogs);
 
       // URL 업데이트
       navigate(`/chat/${chatRoomId}`);
@@ -104,47 +104,79 @@ const Chat: React.FC = () => {
     }
   };
 
-  // STOMP 클라이언트 초기화
-  useEffect(() => {
-    if (!currentRoomId) return;
+  // STOMP 클라이언트 초기화 및 메시지 구독
+  const [isConnected, setIsConnected] = useState(false); // STOMP 연결 상태
 
+  useEffect(() => {
     const socket = new SockJS('https://api.induk.shop/chat');
     stompClient.current = new Client({
       webSocketFactory: () => socket,
       debug: (str) => console.log(str),
-      reconnectDelay: 5000,
+      reconnectDelay: 3000, // 3초 간격으로 재연결
+      heartbeatIncoming: 5000, // 5초 간격으로 서버와 연결 확인
+      heartbeatOutgoing: 5000, // 5초 간격으로 클라이언트에서 확인
       onConnect: () => {
         console.log('STOMP 연결 성공');
+        setIsConnected(true); // 연결 상태 업데이트
 
-        // 구독 초기화
-        if (stompClient.current) {
-          stompClient.current.subscribe(
-            `/topic/messages/${currentRoomId}`,
+        // 모든 채팅방에 대해 메시지 구독
+        chatRooms.forEach((room) => {
+          const subscription = stompClient.current?.subscribe(
+            `/topic/messages/${room.chatRoomId}`,
             (message: StompMessage) => {
               console.log('수신한 메시지:', message.body);
               const newMessage = JSON.parse(message.body);
 
-              // 채팅 로그에 새 메시지 추가
-              setChatLogs((prevLogs) => [...prevLogs, newMessage]);
+              // 1. 채팅방 목록 업데이트
+              setChatRooms((prevRooms) => {
+                const updatedRooms = prevRooms.map((r) =>
+                  r.chatRoomId === newMessage.chatRoomId
+                    ? {
+                        ...r,
+                        lastMessage: newMessage.content,
+                        lastMessageSendTime: newMessage.createdAt,
+                      }
+                    : r
+                );
+
+                // 최신 메시지를 포함한 채팅방을 맨 위로 이동
+                return updatedRooms.sort(
+                  (a, b) =>
+                    new Date(b.lastMessageSendTime).getTime() -
+                    new Date(a.lastMessageSendTime).getTime()
+                );
+              });
+
+              // 2. 현재 채팅방의 메시지 갱신
+              if (newMessage.chatRoomId === currentRoomId) {
+                setChatLogs((prevLogs) => [...prevLogs, newMessage]);
+              }
             }
           );
-        }
+
+          // 중복 구독 방지
+          return () => {
+            subscription?.unsubscribe();
+          };
+        });
       },
       onDisconnect: () => {
         console.log('STOMP 연결 종료');
+        setIsConnected(false); // 연결 상태 해제
       },
       onStompError: (frame) => {
         console.error('STOMP 오류:', frame);
+        setIsConnected(false); // 오류 발생 시 연결 상태 해제
       },
     });
 
     stompClient.current.activate();
 
-    // 컴포넌트 언마운트 또는 방 변경 시 클라이언트 비활성화
     return () => {
       stompClient.current?.deactivate();
+      setIsConnected(false); // 클라이언트 비활성화 시 상태 해제
     };
-  }, [currentRoomId]);
+  }, [chatRooms, currentRoomId]); // chatRooms와 currentRoomId 변경 시 재구독
 
   // 자동 스크롤
   // 기존의 자동 스크롤 기능을 개선한 부분
@@ -179,19 +211,34 @@ const Chat: React.FC = () => {
       return;
     }
 
-    console.log('currentUserId : ', currentUserId);
-
     const message = {
       chatRoomId: currentRoomId,
       senderId: currentUserId,
       content: messageInput,
     };
 
-    console.log('전송 중인 메시지:', message);
-
     stompClient.current.publish({
       destination: `/app/sendMessage/${currentRoomId}`,
       body: JSON.stringify(message),
+    });
+
+    // 채팅방 목록 업데이트 (내 메시지 반영)
+    setChatRooms((prevRooms) => {
+      const updatedRooms = prevRooms.map((room) =>
+        room.chatRoomId === currentRoomId
+          ? {
+              ...room,
+              lastMessage: message.content,
+              lastMessageTime: new Date().toISOString(), // 현재 시간으로 설정
+            }
+          : room
+      );
+
+      return updatedRooms.sort(
+        (a, b) =>
+          new Date(b.lastMessageSendTime).getTime() -
+          new Date(a.lastMessageSendTime).getTime()
+      );
     });
 
     setMessageInput('');
