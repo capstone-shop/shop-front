@@ -101,6 +101,8 @@ function ProductDetail() {
 
       // 추가 작업
       alert('채팅방이 생성되었습니다!');
+
+      navigate('/chat'); // 채팅방 리스트 페이지로 이동
     } catch (error) {
       console.error('채팅 생성 실패:', error);
       alert('채팅 생성 중 오류가 발생했습니다.');

@@ -44,16 +44,17 @@ const Chat: React.FC = () => {
   // 현재 유저 조회
   useEffect(() => {
     const fetchCurrentUser = async () => {
+      console.log('fetchCurrentUser 실행');
       try {
-        // 로그인된 사용자 정보 API 호출
-        const response = await getCurrentUser(); // API 함수 가정
-        setCurrentUser(response); // 현재 유저 정보 설정
+        const response = await getCurrentUser();
+        console.log('사용자 데이터:', response); // 여기에 로그 추가
+        setCurrentUser(response);
       } catch (error) {
         console.error('사용자 정보를 가져오는 중 오류 발생:', error);
       }
     };
 
-    fetchCurrentUser();
+    fetchCurrentUser().then(() => console.log('fetchCurrentUser 완료'));
   }, []);
 
   // `currentUser`에서 `id` 추출
@@ -105,6 +106,8 @@ const Chat: React.FC = () => {
 
   // STOMP 클라이언트 초기화
   useEffect(() => {
+    if (!currentRoomId) return;
+
     const socket = new SockJS('https://api.induk.shop/chat');
     stompClient.current = new Client({
       webSocketFactory: () => socket,
@@ -113,14 +116,16 @@ const Chat: React.FC = () => {
       onConnect: () => {
         console.log('STOMP 연결 성공');
 
-        // 연결 성공 시 메시지 구독
+        // 구독 초기화
         if (stompClient.current) {
           stompClient.current.subscribe(
             `/topic/messages/${currentRoomId}`,
             (message: StompMessage) => {
               console.log('수신한 메시지:', message.body);
               const newMessage = JSON.parse(message.body);
-              setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+              // 채팅 로그에 새 메시지 추가
+              setChatLogs((prevLogs) => [...prevLogs, newMessage]);
             }
           );
         }
@@ -135,10 +140,35 @@ const Chat: React.FC = () => {
 
     stompClient.current.activate();
 
+    // 컴포넌트 언마운트 또는 방 변경 시 클라이언트 비활성화
     return () => {
       stompClient.current?.deactivate();
     };
   }, [currentRoomId]);
+
+  // 자동 스크롤
+  // 기존의 자동 스크롤 기능을 개선한 부분
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      const container = messagesEndRef.current.parentElement; // 스크롤 컨테이너
+      if (container) {
+        // 현재 컨테이너의 전체 스크롤 높이
+        const scrollHeight = container.scrollHeight;
+
+        // 컨테이너의 뷰포트 높이
+        const clientHeight = container.clientHeight;
+
+        // 스크롤 조정 (예: 전체 높이에서 클라이언트 높이를 빼고 약간 더 빼기)
+        const targetScroll = scrollHeight - clientHeight - 20; // 20px 여유
+
+        // 스크롤 설정
+        container.scrollTo({
+          top: targetScroll,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [chatLogs]); // chatLogs 변경 시 호출
 
   // 메시지 전송
   const sendMessage = () => {
@@ -148,6 +178,8 @@ const Chat: React.FC = () => {
       );
       return;
     }
+
+    console.log('currentUserId : ', currentUserId);
 
     const message = {
       chatRoomId: currentRoomId,
@@ -182,11 +214,6 @@ const Chat: React.FC = () => {
 
     return `${period} ${adjustedHours}:${minutes}`;
   };
-
-  // 자동 스크롤
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
 
   return (
     <div className={styles.chatContainer}>
