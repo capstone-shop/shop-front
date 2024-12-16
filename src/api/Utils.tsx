@@ -178,6 +178,20 @@ interface AdminCategory {
   isLeaf: boolean;
 }
 
+// 카테고리 추가 요청 데이터 타입
+interface AddCategoryRequest {
+  title: string;
+  parentId: number;
+  sequence: number;
+  leaf: boolean;
+}
+
+// 카테고리 추가 응답 데이터 타입
+interface AddCategoryResponse {
+  success: boolean;
+  message: string;
+}
+
 // request 함수: 주어진 옵션을 사용하여 HTTP 요청을 보내고, 응답을 처리
 const request = async (
   options: RequestOptions,
@@ -741,6 +755,29 @@ export function getAdminCategory(categoryId: string | number = '') {
       console.error('카테고리 정보를 불러오는 중 오류가 발생했습니다:', error);
       return Promise.reject(
         new Error('카테고리 정보를 불러오는 중 문제가 발생했습니다.')
+      );
+    });
+}
+
+// Admin 카테고리 추가 요청 함수
+export function postAdminCategory(
+  data: AddCategoryRequest
+): Promise<AddCategoryResponse> {
+  return request(
+    {
+      url: `${API_BASE_URL}/api/v1/admin/categories`,
+      method: 'POST',
+      body: JSON.stringify(data),
+    },
+    true // 인증 헤더 포함
+  )
+    .then((response) => {
+      return response as AddCategoryResponse;
+    })
+    .catch((error) => {
+      console.error('카테고리 추가 요청 중 오류가 발생했습니다:', error);
+      return Promise.reject(
+        new Error('카테고리 추가 요청 중 문제가 발생했습니다.')
       );
     });
 }
