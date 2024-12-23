@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getCurrentUser } from '../../api/Utils';
-
 import styles from '../styles/header.module.css';
 
 export interface User {
@@ -37,14 +36,16 @@ function AdminHeader() {
 
   return (
     <div className={styles.header}>
-      <h3>로고 이미지</h3>
+      <h3 className={styles.logo}>FASTBUYING</h3> {/* logo 스타일 추가 */}
       <div className={styles.headerRight}>
-        <span>{user?.name}</span>
+        <span className={styles.username}>{user?.name}</span>{' '}
+        {/* 사용자 이름에 스타일 적용 */}
         <Link to="../">
-          <span>쇼핑몰 가기</span>
+          <span className={styles.shopLink}>쇼핑몰 가기</span>{' '}
+          {/* 쇼핑몰 가기 링크 스타일 적용 */}
         </Link>
-        <span></span>
-        <span>로그아웃</span>
+        <span className={styles.logout}>로그아웃</span>{' '}
+        {/* 로그아웃 버튼 스타일 적용 */}
       </div>
     </div>
   );

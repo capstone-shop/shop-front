@@ -8,8 +8,6 @@ import Login from '../admin/components/Login';
 import { Route, Routes } from 'react-router-dom';
 import React from 'react';
 
-import sideMenuStyles from '../admin/styles/sideMenu.module.css';
-
 function AdminRoutes() {
   // 권한 확인
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
