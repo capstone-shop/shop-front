@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import styles from '../styles/categoryModal.module.css';
 import { getCurrentUser } from '../../api/Utils';
 import { postAdminCategory } from '../../api/Utils';
@@ -73,7 +74,7 @@ function CategoryAddModal({
     }
   };
 
-  return (
+  return ReactDOM.createPortal(
     <div className={styles.modalContainer}>
       <div className={styles.modal}>
         <h3>카테고리 추가하기</h3>
@@ -113,7 +114,8 @@ function CategoryAddModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
