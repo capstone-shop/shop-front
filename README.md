@@ -8,23 +8,25 @@
 
 ## 기술 스택
 
-#### 프론트엔드
+### 프론트엔드
 
 * React, TypeScript, Vercel
 
-#### 백엔드
+### 백엔드
 
 * Spring Boot, Security, JPA, JPA Specification, Query DSL, MySQL, Swagger
 
-#### 인프라 및 배포 (CI/CD)
+### 인프라 및 배포 (CI/CD)
 
 * AWS, Docker, GitHub Actions, Vercel
 
-#### 디자인 및 협업
+### 디자인 및 협업
 
 * Figma, ERD Cloud
 
-#### 개발 기간
+##
+
+### 개발 기간
 
 2024.10 ~ 2024.12 (총 3개월)
 
@@ -32,22 +34,15 @@
 |:---:|:---:|
 |<img width="400" height="400" src="https://github.com/user-attachments/assets/45a11b1c-69df-4473-8b84-62f6b730c314" /><br>메인화면|<img width="400" height="400" src="https://github.com/user-attachments/assets/45a11b1c-69df-4473-8b84-62f6b730c314" /><br>로그인화면|
 
-프로젝트 실행 방법
-
-git clone [프로젝트의 GitHub 주소]
-cd [프로젝트 폴더명]
-npm install
-npm run dev
-
-#### 배포 주소
+### 배포 주소
 
 https://induk.shop/
 
-#### API 관리
+### API 관리
 
 스웨거주소 작성좀요
 
-#### 주요 기능
+### 주요 기능
 
 정확한 상품명 기반의 상품 검색
 
@@ -55,23 +50,31 @@ https://induk.shop/
 
 사용자 중심의 UI 제공
 
-#### 팀원
+## 팀원
 
-박수한(백엔드 어쩌구 저쩌구 담당)
+#### 박수한(백엔드)
 
-git 주소 : github.com/example
+* git 레포지토리 : 
 
-김진영(디자인 및 기획, 프론트엔드 담당)
+##
 
-git 주소 : github.com/example
+#### 김진영(UI/UX 설계, 프론트엔드)
 
-이상민(백엔드 어쩌구 저쩌구 담당)
+* git 레포지토리 : https://github.com/capstone-shop/shop-front
 
-git 주소 : github.com/example
+* figma : https://www.figma.com/design/XDTAmEmpXGyV4mhjdKQ5qp/shop-front?node-id=0-1&p=f&t=2BW1nh530gu2Lcp1-0
 
-김도현(프론트엔드 담당)
+##
 
-git 주소 : github.com/example
+#### 이상민(백엔드)
 
-김도현
+* git 레포지토리 : 
+
+##
+
+#### 김도현(백엔드)
+
+* git 레포지토리 : 
+
+##
 
