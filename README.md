@@ -43,6 +43,10 @@ npm run dev
 
 https://induk.shop/
 
+#### API 관리
+
+스웨거주소 작성좀요
+
 #### 주요 기능
 
 정확한 상품명 기반의 상품 검색
@@ -51,25 +55,23 @@ https://induk.shop/
 
 사용자 중심의 UI 제공
 
-팀원
+#### 팀원
 
-이름
+박수한(백엔드 어쩌구 저쩌구 담당)
 
-담당 업무
+git 주소 : github.com/example
 
-GitHub
+김진영(디자인 및 기획, 프론트엔드 담당)
 
-홍길동
+git 주소 : github.com/example
 
-프론트엔드 개발
+이상민(백엔드 어쩌구 저쩌구 담당)
 
-github.com/example
+git 주소 : github.com/example
 
-김철수
+김도현(프론트엔드 담당)
 
-디자인 및 기획
+git 주소 : github.com/example
 
-github.com/example
-
-
+김도현
 
