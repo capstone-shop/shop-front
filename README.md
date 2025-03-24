@@ -28,21 +28,8 @@
 
 2024.10 ~ 2024.12 (총 3개월)
 
-프로젝트 화면
-
-메인 화면
-
-상품 상세 화면
-
-검색 결과 화면
-
-(이미지 삽입)
-
-(이미지 삽입)
-
-(이미지 삽입)
-
-(각 화면에 대한 간략한 설명을 추가해주세요.)
+|:---:|:---:|
+|<img width="400" height="400" src="https://github.com/user-attachments/assets/243622f2-c87a-4bdb-bdad-bd4d747351e1" /><br>메인화면|<img width="400" height="400" src="https://github.com/user-attachments/assets/243622f2-c87a-4bdb-bdad-bd4d747351e1" /><br>로그인화면|
 
 프로젝트 실행 방법
 
