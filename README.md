@@ -39,11 +39,11 @@ cd [프로젝트 폴더명]
 npm install
 npm run dev
 
-배포 주소
+#### 배포 주소
 
 https://induk.shop/
 
-주요 기능
+#### 주요 기능
 
 정확한 상품명 기반의 상품 검색
 
@@ -71,7 +71,5 @@ github.com/example
 
 github.com/example
 
-📜 License
 
-본 프로젝트는 MIT 라이선스를 따릅니다.
 
