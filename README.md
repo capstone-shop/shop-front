@@ -52,29 +52,11 @@ https://induk.shop/
 
 ## 팀원
 
-#### 박수한(백엔드)
+* 이상민 - 팀장, 백엔드 어쩌구저쩌구
 
-* git 레포지토리 : 
+* 박수한 - 백엔드어쩌구저쩌구랑 이것저것담당
 
-##
+* 김진영 - UI/UX 설계, 프론트엔드
 
-#### 김진영(UI/UX 설계, 프론트엔드)
-
-* git 레포지토리 : https://github.com/capstone-shop/shop-front
-
-* figma : https://www.figma.com/design/XDTAmEmpXGyV4mhjdKQ5qp/shop-front?node-id=0-1&p=f&t=2BW1nh530gu2Lcp1-0
-
-##
-
-#### 이상민(백엔드)
-
-* git 레포지토리 : 
-
-##
-
-#### 김도현(백엔드)
-
-* git 레포지토리 : 
-
-##
+* 김도현 - 프론트엔드 어쩌구저저구
 
