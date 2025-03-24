@@ -28,7 +28,7 @@
 
 2024.10 ~ 2024.12 (총 3개월)
 
-|<img width="400" height="400" src="https://private-user-images.githubusercontent.com/29143149/426062691-45a11b1c-69df-4473-8b84-62f6b730c314.JPG" /><br>메인화면|<img width="400" height="400" src="https://private-user-images.githubusercontent.com/29143149/426062691-45a11b1c-69df-4473-8b84-62f6b730c314.JPG" /><br>로그인화면|
+|<img width="400" height="400" src="https://github.com/user-attachments/assets/45a11b1c-69df-4473-8b84-62f6b730c314" /><br>메인화면|<img width="400" height="400" src="https://github.com/user-attachments/assets/45a11b1c-69df-4473-8b84-62f6b730c314" /><br>로그인화면|
 
 프로젝트 실행 방법
 
