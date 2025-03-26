@@ -40,7 +40,7 @@ https://induk.shop/
 
 ### API 관리
 
-스웨거주소 작성좀요
+https://api.induk.shop/swagger-ui/index.html
 
 ### 주요 기능
 
