@@ -30,17 +30,20 @@
 
 2024.10 ~ 2024.12 (총 3개월)
 
-|||
+|  |  |
 |:---:|:---:|
-|<img width="400" height="400" src="https://github.com/user-attachments/assets/45a11b1c-69df-4473-8b84-62f6b730c314" /><br>메인화면|<img width="400" height="400" src="https://github.com/user-attachments/assets/45a11b1c-69df-4473-8b84-62f6b730c314" /><br>로그인화면|
+| <img width="400" height="400" src="https://github.com/user-attachments/assets/243622f2-c87a-4bdb-bdad-bd4d747351e1" /><br>메인 화면| <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/3c9ec463-5d3f-4f43-8a43-ca8a6a5063b2" /><br>상품 검색 화면|
+| <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/e67f344b-bdd4-4066-bae6-57fa723ed60a" /><br>상품 상세보기 화면 | <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/ed64d5a7-2f9c-4199-823f-b61f43320ad1" /><br>상품 판매 화면 |
+| <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/3fe2f079-803b-49f1-89d7-f13254964113" /><br>회원가입 화면 | <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/db4e6d3a-2870-4a52-958c-1aefcb80625a" /><br>Excel, 소셜 로그인 화면 |
+| <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/d33de20c-f8b4-4639-8f8b-2a82894beaa4" /><br>채팅하기 화면 |  |
 
 ### 배포 주소
 
-https://induk.shop/
+* https://induk.shop/
 
 ### API 관리
 
-https://api.induk.shop/swagger-ui/index.html
+* https://api.induk.shop/swagger-ui/index.html
 
 ### 주요 기능
 
