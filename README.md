@@ -35,7 +35,7 @@
 | <img width="400" height="400" src="https://github.com/user-attachments/assets/27db3b29-02a0-45d8-947f-bc2702e1051d" /><br>메인 화면| <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/a39e6569-67df-4924-932d-c0450fa7f12a" /><br>상품 검색 화면|
 | <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/1d75843b-36ed-4348-8276-7b42fe2b453e" /><br>상품 상세보기 화면 | <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/0cd05361-b509-4660-aef4-49bcdf20beea" /><br>상품 판매 화면 |
 | <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/ea7799d5-32c0-4b9c-80a7-e609510526de" /><br>회원가입 화면 | <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/75153622-7bfd-49a7-95a9-5c5b71b59c69" /><br>로그인 화면 |
-| <img width="400" height="400" alt="Image" src="" /><br>채팅 화면 | <img width="400" height="400" src="https://github.com/user-attachments/assets/a3a1b4f1-d005-4ec1-b1c3-292812a3236a" /><br>상품 목록 화면 |
+| <img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/e01eea31-70ec-4838-ac0e-d25369426c87" /><br>채팅 화면 | <img width="400" height="400" src="https://github.com/user-attachments/assets/a3a1b4f1-d005-4ec1-b1c3-292812a3236a" /><br>상품 목록 화면 |
 
 ### 배포 주소
 
